@@ -11,6 +11,11 @@
 </head>
 <body>
 
+	<h3>Monroe County 911 Incident Feed API</h3>
+
+	<br>
+	This is the landing page for the Monroe County 911 Indident Feed API.<br>
+	
 	<?php
 	
 		include_once("Database.class.php");
@@ -30,25 +35,23 @@
 		$results = $db->GetAllItems();
 		
 		// display the results from the database
-		echo "System Stats: <br>";
 		echo '<p class="tab">';
+		echo "System Stats: <br>";
+		echo '</p>';
+		echo '<p class="tab2">';
 		echo "Total scraper runs: " . $runCount . "<br>";
 		echo "Total unique incidents: " . $uniqueEntrees . "<br>";
 		echo "Total number of API calls: " . $apicalls . "<br>";
 		echo '</p>';
 	?>
 
-	Want access to the API?  Well here it is!
-	<a href="http://monroe911.mycodespace.net/getapi.php?startdate=1970-1-1">Web API</a><br>
+	Want access to the API?  Well here it is!<br>
 	Note: The API takes in two parameters: startdate and enddate, with enddate being optional (it will return all items up to todays date).<br>
-	Note: An example of running the API would look like this:<br>
-	
-	<p class="tab">
-		<a href="http://monroe911.mycodespace.net/getapi.php?startdate=2013-1-1">http://monroe911.mycodespace.net/getapi.php?startdate=2013-1-1</a><br>
-	</p>
-	
-	Here is an example of what the returned json looks like:<br>
 	<br>
+	Example API Call:<br>
+	<p class="tab">
+	<a href="http://monroe911.mycodespace.net/getapi.php?startdate=2013-1-1">http://monroe911.mycodespace.net/getapi.php?startdate=2013-1-1</a>
+	</p>
 	{<br>
 	"apiversion": "1.0",<br>
 	"errorcode": "0",<br>
@@ -87,9 +90,6 @@
 			</p>
 		</p>
 	}<br>
-	
-	<br>
-	Enjoy!<br>
 
 </body>
 </html>
