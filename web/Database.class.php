@@ -6,6 +6,18 @@
 	class Database
 	{
 		
+		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'INSERT INTO apicalls (ipaddress, startdate, enddate, calldatetime) VALUES("' . $ipaddress . '", "' . $startDate . '", "' . $endDate . '", "' . $callDateTime . '")';
+			
+			// execute the query
+			$results = $this->Query($query);
+		}
+		
 		function GetAllItems()
 		{
 			// connect to the database
@@ -93,6 +105,24 @@
 			
 			// create the query
 			$query = "SELECT count(*) FROM runs";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["count(*)"]; 
+		}
+		
+		function GetNumberOfAPICalls()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = "SELECT count(*) FROM apicalls";
 			
 			// execute the query
 			$results = $this->Query($query);

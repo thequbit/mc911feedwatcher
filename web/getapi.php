@@ -8,7 +8,16 @@
 	
 	// get start and stop dates
 	$startDate = $_GET['startdate'];
-	$stopDate = $_GET['stopdate'];
+	$endDate = $_GET['enddate'];
+	
+	// get the current datetime
+	$todaysDate = date( 'Y-m-d H:i:s' );
+	
+	// get the ip of the client
+	$ipaddress = $_SERVER['REMOTE_ADDR'];
+	
+	// record the API call in the database
+	$db->AddAPICall($ipaddress, $startDate, $endDate, $todaysDate);
 	
 	// test to make sure at least a start date was supplied
 	if( $startDate == "" )
