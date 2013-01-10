@@ -88,7 +88,7 @@
 				$item->pudtime = $r['pubtime'];
 				$item->status = $r['status'];
 				$item->incidentid = $r['itemid'];
-				$item->scrapedatetime = $r['event'];
+				$item->scrapedatetime = $r['scrapedatetime'];
 		
 				// add the item to the array of items
 				$retVal[] = $item;
