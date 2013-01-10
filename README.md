@@ -9,18 +9,13 @@ Next to come is a nice little web API that will host up any data you want.
 
 Items saved:
 
-+----------------+--------------+------+-----+---------+----------------+
-| Field          | Type         | Null | Key | Default | Extra          |
-+----------------+--------------+------+-----+---------+----------------+
-| incidentid     | int(11)      | NO   | PRI | NULL    | auto increment |
-| event          | varchar(255) | NO   |     | NULL    |                |
-| address        | varchar(255) | NO   |     | NULL    |                |
-| pubdate        | date         | NO   |     | NULL    |                |
-| pubtime        | time         | NO   |     | NULL    |                |
-| status         | varchar(255) | NO   |     | NULL    |                |
-| itemid         | varchar(255) | NO   |     | NULL    |                |
-| scrapedatetime | datetime     | NO   |     | NULL    |                |
-+----------------+--------------+------+-----+---------+----------------+
-
+	incidentid - int
+	event - varchar(255)
+	address - varchar(255)
+	pubdate - date
+	pubtime - time
+	status - varchar(255)
+	itemid - varchar(255)
+	scrapedatetime - datetime
 
 
