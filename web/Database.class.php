@@ -98,6 +98,42 @@
 			return $retVal; 
 		}
 		
+		function GetUniqueAPIUsersToday()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT COUNT(DISTINCT ipaddress) FROM apicalls WHERE calldatetime>="' . date("Y-m-d") . '"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["COUNT(DISTINCT ipaddress)"]; 
+		}
+		
+		function GetTotalUniqueAPIUsers()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT COUNT(DISTINCT ipaddress) FROM apicalls';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["COUNT(DISTINCT ipaddress)"]; 
+		}
+		
 		function GetNumberOfRuns()
 		{
 			// connect to the database

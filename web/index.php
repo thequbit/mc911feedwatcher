@@ -25,14 +25,14 @@
 		
 		// get the total number of times the scraper has run
 		$runCount = $db->GetNumberOfRuns();
-		
 		// get the total number of unique entrees in the database
 		$uniqueEntrees = $db->GetTotalUniqueEntrees();
-		
 		// get the total number of API calls that have been made
 		$apicalls = $db->GetNumberOfAPICalls();
-		
-		$results = $db->GetAllItems();
+		// get the number of unique api users today
+		$totalUniqueApiUsers = $db->GetTotalUniqueAPIUsers();
+		// get the number of unique api users today
+		$uniqueApiUsersToday = $db->GetUniqueAPIUsersToday();
 		
 		// display the results from the database
 		echo '<p class="tab">';
@@ -42,6 +42,8 @@
 		echo "Total scraper runs: " . $runCount . "<br>";
 		echo "Total unique incidents: " . $uniqueEntrees . "<br>";
 		echo "Total number of API calls: " . $apicalls . "<br>";
+		echo "Total Unique API users: " . $totalUniqueApiUsers . "<br>";
+		echo "Unique API users today: " . $uniqueApiUsersToday . "<br>";
 		echo '</p>';
 	?>
 
