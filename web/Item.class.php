@@ -5,7 +5,7 @@
 		public $event;
 		public $address;
 		public $pubdate;
-		public $pudtime;
+		public $pubtime;
 		public $status;
 		public $incidentid;
 		public $scrapedatetime;

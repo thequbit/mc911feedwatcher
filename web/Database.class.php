@@ -85,7 +85,7 @@
 				$item->event = $r['event'];
 				$item->address = $r['address'];
 				$item->pubdate = $r['pubdate'];
-				$item->pudtime = $r['pubtime'];
+				$item->pubtime = $r['pubtime'];
 				$item->status = $r['status'];
 				$item->incidentid = $r['itemid'];
 				$item->scrapedatetime = $r['scrapedatetime'];
