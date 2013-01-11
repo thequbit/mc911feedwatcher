@@ -6,6 +6,12 @@
 	class Database
 	{
 		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// API Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
 		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime)
 		{
 			// connect to the database
@@ -98,6 +104,12 @@
 			return $retVal; 
 		}
 		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// System Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
 		function GetUniqueAPIUsersToday()
 		{
 			// connect to the database
@@ -170,7 +182,31 @@
 			return $r["count(*)"]; 
 		}
 		
-		function GetTotalUniqueEntrees()
+		function GetAverageQueryToday()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT avg(querytime) FROM apicalls where calldatetime>="' . date("Y-m-d") . '"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["avg(querytime)"]; 
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Data functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
+		function GetTotalUniqueIncidents()
 		{
 			// connect to the database
 			$chandle = $this->Connect();
@@ -187,6 +223,48 @@
 			// return the count
 			return $r["count(*)"];
 		}
+		
+		function GetTotalEventTypes()
+		{
+			// connect to the database
+			$chandle = $this->Connect();
+			
+			// create the query
+			$query = "SELECT count(*) FROM eventtypes";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["count(*)"];
+		}
+		
+		function GetTotalStatusTypes()
+		{
+			// connect to the database
+			$chandle = $this->Connect();
+			
+			// create the query
+			$query = "SELECT count(*) FROM statustypes";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["count(*)"];
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Private functions
+		//
+		////////////////////////////////////////////////////////////////////////
 		
 		function Connect()
 		{

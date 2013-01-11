@@ -18,6 +18,7 @@
 
 	<br>
 	This is the landing page for the Monroe County 911 Indident Feed API.<br>
+	<br>
 	
 	<?php
 	
@@ -26,28 +27,50 @@
 		// create a database tool to use to pull information from the database
 		$db = new Database();
 		
+		//
+		// System Stats
+		//
+		
 		// get the total number of times the scraper has run
 		$runCount = $db->GetNumberOfRuns();
-		// get the total number of unique entrees in the database
-		$uniqueEntrees = $db->GetTotalUniqueEntrees();
 		// get the total number of API calls that have been made
 		$apicalls = $db->GetNumberOfAPICalls();
 		// get the number of unique api users today
 		$totalUniqueApiUsers = $db->GetTotalUniqueAPIUsers();
 		// get the number of unique api users today
 		$uniqueApiUsersToday = $db->GetUniqueAPIUsersToday();
+		// get the average querytime today
+		$averageQueryToday = $db->GetAverageQueryToday();
 		
 		// display the results from the database
+		echo "<b><br>System Stats: </b><br>";
 		echo '<p class="tab">';
-		echo "System Stats: <br>";
-		echo '</p>';
-		echo '<p class="tab2">';
 		echo "Total scraper runs: " . $runCount . "<br>";
-		echo "Total unique incidents: " . $uniqueEntrees . "<br>";
 		echo "Total number of API calls: " . $apicalls . "<br>";
 		echo "Total Unique API users: " . $totalUniqueApiUsers . "<br>";
-		echo "Unique API users today: " . $uniqueApiUsersToday . "<br>";
+		echo "Unique API Users Today: " . $uniqueApiUsersToday . "<br>";
+		echo "Average Query Time Today: " . number_format($averageQueryToday,4) . " Seconds<br>";
 		echo '</p>';
+		
+		
+		//
+		// Data Stats
+		//
+		
+		// get the total number of unique entrees in the database
+		$uniqueIncidents = $db->GetTotalUniqueIncidents();
+		// get the total number of event types logged into the system
+		$totalEventTypes = $db->GetTotalEventTypes();
+		// get the total number of status types logged into the system
+		$totalStatusTypes = $db->GetTotalStatusTypes();
+			
+		echo "<b>Data Stats: </b><br>";
+		echo '<p class="tab">';
+		echo "Total Unique Incidents: " . $uniqueIncidents . "<br>";
+		echo "Total Incident Types: " . $totalEventTypes . "<br>";
+		echo "Total Status Types: " . $totalStatusTypes . "<br>";
+		echo '</p>';
+		
 	?>
 
 	Want access to the API?  Well here it is!<br>
@@ -95,6 +118,9 @@
 			</p>
 		</p>
 	}<br>
+
+	<br>
+	Check out the source code on Github <a href="https://github.com/thequbit/mc911feedwatcher">here</a>!
 
 </body>
 </html>
