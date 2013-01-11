@@ -10,14 +10,15 @@
 		.tab2 { margin-left: 80px; }
 		-->
 	</style>
+	
+
+	
 <head>
 </head>
 <body>
 
 	<h3>Monroe County 911 Incident Feed API</h3>
 
-	<br>
-	This is the landing page for the Monroe County 911 Indident Feed API.<br>
 	<br>
 	
 	<?php
@@ -72,6 +73,12 @@
 		echo '</p>';
 		
 	?>
+
+	<p class="tab">
+		<a href="stats.php">See Today's Stats</a>
+		<br>
+		<a href="statsapi.php">Today's Stats API</a>
+	</p>
 
 	Want access to the API?  Well here it is!<br>
 	Note: The API takes in two parameters: startdate and enddate, with enddate being optional (it will return all items up to todays date).<br>
