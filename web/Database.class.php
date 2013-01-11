@@ -2,7 +2,7 @@
 
 	require_once("sqlcredentials.php");
 	require_once("Item.class.php");
-	require_once("Stat.class.php");
+	//require_once("Stat.class.php");
 	
 	class Database
 	{
@@ -282,7 +282,8 @@
 			{
 			
 				// query the count of the eventtype on this day
-				$query = 'SELECT count(*) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . date("Y-m-d") . '"';
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . date("Y-m-d") . '"';
+				//$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("parking complaint") AND pubdate>="2013-1-11"';
 			
 				// execute the query
 				$results = $this->Query($query);
@@ -293,7 +294,7 @@
 				//if( $r["count(*)"] != "0" )
 				//{
 					// create entry
-					$stat = $letter . "\t" . $r["count(*)"] . "\n";
+					$stat = $letter . "\t" . $r["count(DISTINCT itemid)"] . "\n";
 					
 					// append entry to return string
 					$stats = $stats . $stat;

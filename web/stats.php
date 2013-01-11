@@ -28,6 +28,8 @@
 </head>
 <body>
 
+	<h2>Statistics on 911 Calls for Monroe County, NY - <?php echo date("D M d, Y"); ?></h2>
+
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script>
 
@@ -94,6 +96,8 @@
 	});
 
 	</script>
+
+	<h4>Stats are for Today, <?php echo date("Y-m-d"); ?></h4><br>
 
 	<?php
 	

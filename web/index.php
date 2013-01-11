@@ -19,8 +19,6 @@
 
 	<h3>Monroe County 911 Incident Feed API</h3>
 
-	<br>
-	
 	<?php
 	
 		include_once("Database.class.php");
@@ -75,9 +73,7 @@
 	?>
 
 	<p class="tab">
-		<a href="stats.php">See Today's Stats</a>
-		<br>
-		<a href="statsapi.php">Today's Stats API</a>
+		<a href="stats.php">See Today's Stats</a><br>
 	</p>
 
 	Want access to the API?  Well here it is!<br>
