@@ -4,11 +4,27 @@
 
 	$db = new Database();
 
-	$stats = $db->GetStats();
-
-	echo $stats;
-
-	//$json_stats = json_encode($stats);
-	//echo $json_stats;
+	// get URL data
+	$startdate = $_GET['startdate'];
+	$enddate = $_GET['enddate'];
+	
+	if( $startdate == "" )
+	{
+		
+		echo "event,freq\nBADREQUEST\t0";
+		
+	}
+	else
+	{
+	
+		//
+		// TODO: Sanitize/check inputs
+		//
+		
+		$stats = $db->GetStats($startdate, $enddate);
+		
+		echo $stats;
+		
+	}
 
 ?>

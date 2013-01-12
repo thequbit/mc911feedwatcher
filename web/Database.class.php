@@ -261,7 +261,7 @@
 			return $r["count(*)"];
 		}
 		
-		function GetStats()
+		function GetStats($startdate, $enddate)
 		{
 			//
 			// first we need to get the list of eventtypes
@@ -282,8 +282,13 @@
 			{
 			
 				// query the count of the eventtype on this day
-				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . date("Y-m-d") . '"';
-				//$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("parking complaint") AND pubdate>="2013-1-11"';
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . $startdate . '"';
+				
+				// check to see if there is an end date passed in
+				if( $enddate != "" )
+				{
+					$query = ' AND pubdate<="' . $enddate . '"';
+				}
 			
 				// execute the query
 				$results = $this->Query($query);
