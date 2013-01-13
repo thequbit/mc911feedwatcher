@@ -2,9 +2,16 @@
 
 	require_once("sqlcredentials.php");
 	require_once("Item.class.php");
+	//require_once("Stat.class.php");
 	
 	class Database
 	{
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// API Functions
+		//
+		////////////////////////////////////////////////////////////////////////
 		
 		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime)
 		{
@@ -98,6 +105,12 @@
 			return $retVal; 
 		}
 		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// System Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
 		function GetUniqueAPIUsersToday()
 		{
 			// connect to the database
@@ -170,7 +183,31 @@
 			return $r["count(*)"]; 
 		}
 		
-		function GetTotalUniqueEntrees()
+		function GetAverageQueryToday()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT avg(querytime) FROM apicalls where calldatetime>="' . date("Y-m-d") . '"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["avg(querytime)"]; 
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Data functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
+		function GetTotalUniqueIncidents()
 		{
 			// connect to the database
 			$chandle = $this->Connect();
@@ -187,6 +224,130 @@
 			// return the count
 			return $r["count(*)"];
 		}
+		
+		function GetTotalEventTypes()
+		{
+			// connect to the database
+			$chandle = $this->Connect();
+			
+			// create the query
+			$query = "SELECT count(*) FROM eventtypes";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["count(*)"];
+		}
+		
+		function GetTotalStatusTypes()
+		{
+			// connect to the database
+			$chandle = $this->Connect();
+			
+			// create the query
+			$query = "SELECT count(*) FROM statustypes";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["count(*)"];
+		}
+		
+		function GetStats($startdate, $enddate)
+		{
+			//
+			// first we need to get the list of eventtypes
+			//
+			
+			// get the list of event types
+			$eventtypes = $this->GetEventTypes();
+		
+			//
+			// Now we need to get the count of each eventtype for the day
+			//
+			
+			$stats = "event\tfrequency\n";
+			
+			$letter = "A";
+			
+			foreach($eventtypes as $event)
+			{
+			
+				// query the count of the eventtype on this day
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . $startdate . '"';
+				
+				// check to see if there is an end date passed in
+				if( $enddate != "" )
+				{
+					$query = ' AND pubdate<="' . $enddate . '"';
+				}
+			
+				// execute the query
+				$results = $this->Query($query);
+			
+				// get the row
+				$r = mysql_fetch_assoc($results);
+				
+				//if( $r["count(*)"] != "0" )
+				//{
+					// create entry
+					$stat = $letter . "\t" . $r["count(DISTINCT itemid)"] . "\n";
+					
+					// append entry to return string
+					$stats = $stats . $stat;
+				//}
+				
+				// increment our letter
+				$letter++;
+			
+			}
+			
+			//$stats = $stats . "}";
+			
+			return $stats;
+			
+		}
+		
+		function GetEventTypes()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			//
+			// first we need to get the list of eventtypes
+			//
+			
+			// create the query
+			$query = 'SELECT eventtype FROM eventtypes';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$eventtypes = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// add the eventype to the array
+				$eventtypes[] = $r['eventtype'];
+			}
+			
+			return $eventtypes;
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Private functions
+		//
+		////////////////////////////////////////////////////////////////////////
 		
 		function Connect()
 		{

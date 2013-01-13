@@ -18,9 +18,6 @@
 	//$ipaddress = $_SERVER['REMOTE_ADDR'];
 	$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
 	
-	// record the API call in the database
-	$db->AddAPICall($ipaddress, $startDate, $endDate, $todaysDate);
-	
 	$errorcode = 0;
 	$errortext = "No Errors Reported";
 	
@@ -54,6 +51,9 @@
 		$json_results = json_encode($results);
 	
 		echo '{"apiversion": "1.0","errorcode": "' . $errorcode . '", "errortext": "' . $errortext . '", "querytime": "' . $totaltime . '", "resultcount": "' . $resultscount . '", "results": ' . $json_results . '}';
+		
+		// record the API call in the database
+		$db->AddAPICall($ipaddress, $startDate, $endDate, $todaysDate, $totaltime);
 	}
 	
 ?>
