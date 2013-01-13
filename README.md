@@ -7,8 +7,8 @@ Scraper runs every 60 seconds and pushes only unique Incident ID's and Incident 
 
 Next to come is a nice little web API that will host up any data you want.
 
------------------------------
---        GET API          --
+
+GET API
 -----------------------------
 
 Example API Call:
@@ -52,8 +52,7 @@ Example Result:
 	}
 
 
------------------------------
---     EVENT TYPE API      --
+EVENT TYPE API
 -----------------------------
 
 Example API Call:
@@ -74,8 +73,7 @@ Example Results:
 		"9": "small aircraft operational defect"
 	}
 
------------------------------
---       EVENT API         --
+EVENT API
 -----------------------------
 
 Example API Call:
