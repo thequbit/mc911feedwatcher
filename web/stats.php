@@ -237,7 +237,7 @@
 				
 					foreach($eventtypes as $eventtype)
 					{
-						echo "<b>" . $letter . "</b>: " . $eventtype . "<br>";
+						echo "<b>" . $letter . "</b>: " . $eventtype->eventtype . "<br>";
 						
 						$letter++;
 					}

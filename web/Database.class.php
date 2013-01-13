@@ -13,13 +13,13 @@
 		//
 		////////////////////////////////////////////////////////////////////////
 		
-		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime)
+		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime, $totalTime, $api)
 		{
 			// connect to the database
 			$this->Connect();
 			
 			// create the query
-			$query = 'INSERT INTO apicalls (ipaddress, startdate, enddate, calldatetime) VALUES("' . $ipaddress . '", "' . $startDate . '", "' . $endDate . '", "' . $callDateTime . '")';
+			$query = 'INSERT INTO apicalls (ipaddress, startdate, enddate, calldatetime, querytime, api) VALUES("' . $ipaddress . '", "' . $startDate . '", "' . $endDate . '", "' . $callDateTime . '", "' . $totalTime . '", "' . $api . '")';
 			
 			// execute the query
 			$results = $this->Query($query);
@@ -316,7 +316,7 @@
 			{
 			
 				// query the count of the eventtype on this day
-				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event . '") AND pubdate>="' . $startdate . '"';
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event->eventtype . '") AND pubdate>="' . $startdate . '"';
 				
 				// check to see if there is an end date passed in
 				if( $enddate != "" )
