@@ -13,13 +13,13 @@
 		//
 		////////////////////////////////////////////////////////////////////////
 		
-		function AddAPICall($ipaddress, $startDate, $endDate, $callDateTime, $totalTime, $api)
+		function AddAPICall($ipaddress, $callDateTime, $totalTime, $api)
 		{
 			// connect to the database
 			$this->Connect();
 			
 			// create the query
-			$query = 'INSERT INTO apicalls (ipaddress, startdate, enddate, calldatetime, querytime, api) VALUES("' . $ipaddress . '", "' . $startDate . '", "' . $endDate . '", "' . $callDateTime . '", "' . $totalTime . '", "' . $api . '")';
+			$query = 'INSERT INTO apicalls (ipaddress, calldatetime, querytime, api) VALUES("' . $ipaddress . '", "' . $callDateTime . '", "' . $totalTime . '", "' . $api . '")';
 			
 			// execute the query
 			$results = $this->Query($query);

@@ -24,6 +24,6 @@
 	
 	// record the API call in the database
 	$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	$db->AddAPICall($ipaddress, $startDate, $endDate, $todaysDate, $totaltime, "EVENTD3API");
+	$db->AddAPICall($ipaddress, $todaysDate, $totaltime, "EVENTD3API");
 
 ?>
