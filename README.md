@@ -123,6 +123,7 @@ Example Results:
 		}
 	]
 
+
 EVENT API
 -----------------------------
 
@@ -150,4 +151,28 @@ Example Results:
 	G	16 
 	H	119 
 
+
+EVENT D3 API
+-----------------------------
+
+Description:
+
+	This returns a TSV file that can be usd with D3 of the frequency of a specific event type since a 
+	specified date
+
+Example API Call:
+
+	http://monroe911.mycodespace.net/eventd3api.php?eventtypeid=13&startdate=2013-1-1
+
+Variables Passed In:
+
+	eventtypeid - ID of the eventtype, note you must get this from the eventtypeapi.php api
+        startdate - start date to return incidents from, in YYYY-MM-DD format
+
+Example Results:
+
+	day	quantity
+	01-10	24
+	01-11	28
+	01-12	35
 
