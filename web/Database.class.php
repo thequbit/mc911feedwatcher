@@ -2,7 +2,7 @@
 
 	require_once("sqlcredentials.php");
 	require_once("Item.class.php");
-	//require_once("Stat.class.php");
+	require_once("EventType.class.php");
 	
 	class Database
 	{
@@ -99,6 +99,40 @@
 		
 				// add the item to the array of items
 				$retVal[] = $item;
+			}
+			
+			// return the count
+			return $retVal; 
+		}
+		
+		function GetTotalItemsByEventTypeID($eventtypeid, $startdate)
+		{
+			$eventtype = $this->GetEventTextFromID($eventtypeid);
+			
+			$results = $this->GetTotalItemsByEventType($eventtype, $startdate);
+			
+			return $results;
+		}
+		
+		function GetTotalItemsByEventType($eventtype, $startdate)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			$query = 'SELECT pubdate,count(distinct itemid) FROM incidents WHERE LOWER(event)="' . $eventtype . '" AND pubdate>="' . $startdate . '" GROUP BY pubdate';
+			
+			//echo $query . "<br>";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = "day\tquantity\n";
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// assign the values 
+				$retVal = $retVal . substr($r['pubdate'],5) . "\t" . $r['count(distinct itemid)'] . "\n";
 			}
 			
 			// return the count
@@ -326,7 +360,7 @@
 			//
 			
 			// create the query
-			$query = 'SELECT eventtype FROM eventtypes';
+			$query = 'SELECT * FROM eventtypes';
 			
 			// execute the query
 			$results = $this->Query($query);
@@ -336,11 +370,86 @@
 			// decode the rows
 			while($r = mysql_fetch_assoc($results)) {
 			
-				// add the eventype to the array
-				$eventtypes[] = $r['eventtype'];
+				$eventtype = new EventType();
+			
+				// pull the information from the row
+				$eventtype->eventtypeid = $r['eventtypeid'];
+				$eventtype->eventtype = $r['eventtype'];
+				
+				$eventtypes[] = $eventtype;
 			}
 			
 			return $eventtypes;
+		}
+		
+		function GetEventTextFromID($id)
+		{
+			// connect to the database
+			$chandle = $this->Connect();
+			
+			// create the query
+			$query = 'SELECT eventtype FROM eventtypes WHERE eventtypeid=' . $id;
+			
+			//echo $query;
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// return the count
+			return $r["eventtype"];
+		}
+		
+		function GetItemsByEventID($eventtypeid, $startdate)
+		{
+			// get event text from id
+			$eventtype = $this->GetEventTextFromID($eventtypeid);
+			
+			//echo $eventtype;
+			
+			$result = $this->GetItemsByEvent($eventtype, $startdate);
+			
+			return $result;
+		}
+		
+		function GetItemsByEvent($eventtype, $startdate)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT * FROM incidents WHERE LOWER(event)="' . $eventtype . '" AND pubdate>="' . $startdate . '"';
+			
+			//echo $query;
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// create a temp object to populate
+				$item = new Item();
+			
+				// assign the values 
+				$item->event = $r['event'];
+				$item->address = $r['address'];
+				$item->pubdate = $r['pubdate'];
+				$item->pubtime = $r['pubtime'];
+				$item->status = $r['status'];
+				$item->incidentid = $r['itemid'];
+				$item->scrapedatetime = $r['scrapedatetime'];
+		
+				// add the item to the array of items
+				$retVal[] = $item;
+			}
+			
+			// return the count
+			return $retVal; 
 		}
 		
 		////////////////////////////////////////////////////////////////////////

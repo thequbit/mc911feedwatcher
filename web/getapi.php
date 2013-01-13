@@ -14,10 +14,6 @@
 	// get the current datetime
 	$todaysDate = date( 'Y-m-d H:i:s' );
 	
-	// get the ip of the client
-	//$ipaddress = $_SERVER['REMOTE_ADDR'];
-	$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	
 	$errorcode = 0;
 	$errortext = "No Errors Reported";
 	
@@ -53,6 +49,7 @@
 		echo '{"apiversion": "1.0","errorcode": "' . $errorcode . '", "errortext": "' . $errortext . '", "querytime": "' . $totaltime . '", "resultcount": "' . $resultscount . '", "results": ' . $json_results . '}';
 		
 		// record the API call in the database
+		$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		$db->AddAPICall($ipaddress, $startDate, $endDate, $todaysDate, $totaltime);
 	}
 	
