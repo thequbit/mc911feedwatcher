@@ -7,20 +7,17 @@ Scraper runs every 60 seconds and pushes only unique Incident ID's and Incident 
 
 Next to come is a nice little web API that will host up any data you want.
 
-Items saved:
-
-	incidentid - int
-	event - varchar(255)
-	address - varchar(255)
-	pubdate - date
-	pubtime - time
-	status - varchar(255)
-	itemid - varchar(255)
-	scrapedatetime - datetime
+-----------------------------
+--        GET API          --
+-----------------------------
 
 Example API Call:
 
 	http://monroe911.mycodespace.net/getapi.php?startdate=2013-1-1
+
+Variables Passed In:
+
+	startdate - start date to return incidents from, in YYYY-MM-DD format
 	
 Example Result:
 
@@ -53,3 +50,64 @@ Example Result:
 				}
 			]
 	}
+
+
+-----------------------------
+--     EVENT TYPE API      --
+-----------------------------
+
+Example API Call:
+
+	http://monroe911.mycodespace.net/eventtypeapi.php
+
+Variables Passed In:
+
+	- none -
+
+Example Results:
+
+	{
+		"5": "parking complaint",
+		"6": "report of something burning inside not involving the structure",
+		"7": "hit and run, no injury and no blocking",
+		"8": "dangerous condition",
+		"9": "small aircraft operational defect"
+	}
+
+-----------------------------
+--       EVENT API         --
+-----------------------------
+
+Example API Call:
+
+	http://monroe911.mycodespace.net/eventapi.php?eventtypeid=13&startdate=2012-1-1
+
+Variables Passed In:
+
+	eventtypeid - ID of the eventtype, note you must get this from the eventtypeapi.php api
+	startdate - start date to return incidents from, in YYYY-MM-DD format
+
+Example Results:
+
+	[
+		{
+			"event":"Barking dogs",
+			"address":"26 RIVERVIEW HT, Henrietta",
+			"pubdate":"2013-01-10",
+			"pubtime":"05:27:00",
+			"status":"WAITING",
+			"incidentid":"MCOP130100466",
+			"scrapedatetime":"2013-01-10 05:28:00"
+		},
+		{
+			"event":"Barking dogs",
+			"address":"26 RIVERVIEW HT, Henrietta",
+			"pubdate":"2013-01-10",
+			"pubtime":"05:27:00",
+			"status":"ENROUTE",
+			"incidentid":"MCOP130100466",
+			"scrapedatetime":"2013-01-10 05:29:00"
+		}
+	]
+
+
