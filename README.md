@@ -173,7 +173,7 @@ Variables Passed In:
 
 Example Results:
 
-	day	quantity
+	thexval	theyval
 	01-10	24
 	01-11	28
 	01-12	35
