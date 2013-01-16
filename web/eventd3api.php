@@ -5,22 +5,39 @@
 	
 	$eventtypeid = $_GET['eventtypeid'];
 	$startdate = $_GET['startdate'];
-	
+	$period = $_GET['period'];
+
 	$db = new Database();
 	
 	$time = new Time();
-	// get the current datetime
-	$todaysDate = date( 'Y-m-d H:i:s' );
-		
+	
 	// record start time
 	$starttime = $time->StartTime();
 	
-	$results = $db->GetTotalItemsByEventTypeID($eventtypeid, $startdate);
+	switch( $period )
+	{
+		case 'today':
+			$results = $db->GetTodaysItemsByEventTypeID($eventtypeid);
+			break;
+		case 'week':
+			//break;
+		case 'month':
+			//break;
+		case 'all':
+		default:
+			$results = $db->GetTotalItemsByEventTypeID($eventtypeid, $startdate);
+			break;
+	}
+	
+	
 
 	// calculate time taken
 	$totaltime = $time->TotalTime($starttime);
 
 	echo $results;
+	
+	// get the current datetime
+	$todaysDate = date( 'Y-m-d H:i:s' );
 	
 	// record the API call in the database
 	$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];

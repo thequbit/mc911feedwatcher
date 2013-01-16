@@ -1,10 +1,10 @@
 <html>
 <head>
 	
-	<title>Wham No Spell Good</title>
+	<title>Monroe County 911 Feed</title>
 	
-	<meta name="description" content="Graph of spelling quantity on 13wham.com">
-	<meta name="keywords" content="Spelling, quantity, 13wham, wham, whamnospellgood">
+	<meta name="description" content="Graph of spelling theyval on 13wham.com">
+	<meta name="keywords" content="Spelling, theyval, 13wham, wham, whamnospellgood">
 	
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	
@@ -61,13 +61,36 @@
 					$db = new Database();
 					if( $_GET['eventtypeid'] == "" )
 					{
-						echo "You must pass in a eventtypeid, like this: http://monroe911.mycodespace.net/visdata.php?eventtypeid=13";
+						echo "You must pass in a eventtypeid and period, like this: http://monroe911.mycodespace.net/visdata.php?eventtypeid=13&period=today";
 					}
 					else
 					{
-						echo '<h2>Graph of daily incidents for event: "';
-						echo $db->GetEventTextFromID($_GET['eventtypeid']);
-						echo '"</h2>';
+						
+						switch($_GET['period'])
+						{
+							case 'today':
+								echo '<h2>Hourly Graph of Daily Incidents For Event: "';
+								echo $db->GetEventTextFromID($_GET['eventtypeid']);
+								echo '"</h2>';
+								break;
+							case 'week':
+								echo '<h2>Week Graph of Daily Incidents For Event: "';
+								echo $db->GetEventTextFromID($_GET['eventtypeid']);
+								echo '"</h2>';
+								break;
+							case 'month':
+								echo '<h2>Month Graph of Daily Incidents For Event: "';
+								echo $db->GetEventTextFromID($_GET['eventtypeid']);
+								echo '"</h2>';
+								break;
+							case 'all':
+							default:
+								echo '<h2>Graph of ALL Daily Incidents For Event: "';
+								echo $db->GetEventTextFromID($_GET['eventtypeid']);
+								echo '"</h2>';
+								break;
+						}
+						
 					}
 				?>
 				
@@ -108,7 +131,7 @@
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 					.attr("class", "chart");
 
-				var apiurl = "eventd3api.php?eventtypeid=<?php echo $_GET['eventtypeid'];?>&startdate=2012-1-1";
+				var apiurl = "eventd3api.php?eventtypeid=<?php echo $_GET['eventtypeid'];?>&period=<?php echo $_GET['period']?>&startdate=2012-1-1";
 				//var apiurl = "data.tsv";
 
 				//alert(apiurl);
@@ -116,11 +139,11 @@
 				d3.tsv(apiurl, function(error, data) {
 
 				  data.forEach(function(d) {
-					d.quantity = +d.quantity;
+					d.theyval = +d.theyval;
 				  });
 
-				  x.domain(data.map(function(d) { return d.day; }));
-				  y.domain([0, d3.max(data, function(d) { return d.quantity; })]);
+				  x.domain(data.map(function(d) { return d.thexval; }));
+				  y.domain([0, d3.max(data, function(d) { return d.theyval; })]);
 
 				  svg.append("g")
 					  .attr("class", "x axis")
@@ -135,16 +158,16 @@
 					  .attr("y", 6)
 					  .attr("dy", ".71em")
 					  .style("text-anchor", "end")
-					  .text("quantity");
+					  .text("theyval");
 
 				  svg.selectAll(".bar")
 					  .data(data)
 					.enter().append("rect")
 					  .attr("class", "bar")
-					  .attr("x", function(d) { return x(d.day); })
+					  .attr("x", function(d) { return x(d.thexval); })
 					  .attr("width", x.rangeBand())
-					  .attr("y", function(d) { return y(d.quantity); })
-					  .attr("height", function(d) { return height - y(d.quantity); });
+					  .attr("y", function(d) { return y(d.theyval); })
+					  .attr("height", function(d) { return height - y(d.theyval); });
 
 				});
 

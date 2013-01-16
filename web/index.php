@@ -11,6 +11,10 @@
 			background-repeat:repeat-y repeat-x;
 		}
 		
+		div.event{
+			margin: 5px;
+		}
+		
 		div.top {
 			margin: auto;
 		}
@@ -37,7 +41,7 @@
 			margin: auto;
 			border-radius:3px;
 		}
-		.tab { margin-left: 40px; }
+		.tab { margin-left: 40px; margin-top: 5px }
 		.tab2 { margin-left: 80px; }
 		-->
 	</style>
@@ -138,7 +142,10 @@
 
 						foreach($eventtypes as $eventtype)
 						{
-							echo '<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '">' . $eventtype->eventtype . '</a><br>';
+							echo $eventtype->eventtype . " ";
+							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">today</a>) ';
+							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=week">week</a>) ';
+							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=month">month</a>)<br>';
 						}
 					
 					?>
