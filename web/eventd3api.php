@@ -7,6 +7,10 @@
 	$startdate = $_GET['startdate'];
 	$period = $_GET['period'];
 
+	//
+	// TODO: sanitize inputs
+	//
+
 	$db = new Database();
 	
 	$time = new Time();
