@@ -1,0 +1,42 @@
+body {
+	background-image:url('/media/blackorchid.png');
+	background-repeat:repeat-y repeat-x;
+}
+
+div.event{
+	margin: 5px;
+}
+
+div.top {
+	margin: auto;
+}
+
+div.content {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+div.headerwrapper {
+	margin: auto;
+	width: 900px;
+	background-color: white;
+	border-radius:3px;
+}
+
+div.header {
+	margin: 20px;
+}
+
+div.topwrapper {
+	background-color: white;
+	width: 900px;
+	margin: auto;
+	border-radius:3px;
+}
+.tab { 
+	margin-left: 40px; margin-top: 5px
+}
+
+.tab2 {
+	margin-left: 80px;
+}
