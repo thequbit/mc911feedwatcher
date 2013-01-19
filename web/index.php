@@ -4,49 +4,9 @@
 	<meta name="description" content="Monroe County, NY 911 Feed API">
 	<meta name="keywords" content="Monroe, Monroe County, 911, Public Safty, Rochester, Feed, API, Application Programming Interface, Application, Programming, Interface, FOSS, Open Source, Open Data, Open, Source, Data">
 	
-	<style>
-		<!--
-		body {
-			background-image:url('/blackorchid.png');
-			background-repeat:repeat-y repeat-x;
-		}
-		
-		div.event{
-			margin: 5px;
-		}
-		
-		div.top {
-			margin: auto;
-		}
-		
-		div.content {
-			margin-top: 10px;
-			margin-left: 10px;
-		}
-		
-		div.headerwrapper {
-			margin: auto;
-			width: 900px;
-			background-color: white;
-			border-radius:3px;
-		}
-		
-		div.header {
-			margin: 20px;
-		}
-		
-		div.topwrapper{
-			background-color: white;
-			width: 900px;
-			margin: auto;
-			border-radius:3px;
-		}
-		.tab { margin-left: 40px; margin-top: 5px }
-		.tab2 { margin-left: 80px; }
-		-->
-	</style>
+	<link rel="shortcut icon" href="media/favicon.png" type="image/x-icon" />
 	
-
+	<link href="css/main.css" rel="stylesheet" type="text/css">
 	
 <head>
 </head>
@@ -61,7 +21,21 @@
 				<h2>Monroe County 911 Incident Feed API</h2>
 				<br>
 			</div>
-
+			
+		</div>
+	
+		<div class="navwrapper">
+		
+			<div class="nav">
+					<!--
+					<a href="index.php">HOME</a> | 
+					<a href="stats.php">STATS</a> | 
+					<a href="system.php">SYSTEM</a> | 
+					<a href="developers.php">DEVELOPERS</a> | 
+					<a href="about.php">ABOUT</a>
+					-->
+			</div>
+		
 		</div>
 	
 		<div class="topwrapper">
@@ -70,7 +44,7 @@
 
 				<?php
 				
-					include_once("Database.class.php");
+					include_once("tools/Database.class.php");
 					
 					// create a database tool to use to pull information from the database
 					$db = new Database();
@@ -131,8 +105,8 @@
 				
 					<?
 					
-						require_once("Database.class.php");
-						require_once("EventType.class.php");
+						require_once("tools/Database.class.php");
+						require_once("tools/EventType.class.php");
 
 						$db = new Database();
 
