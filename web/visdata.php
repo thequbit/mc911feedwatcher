@@ -1,50 +1,14 @@
 <html>
 <head>
 	
-	<title>Monroe County 911 Feed</title>
+	<title>Monroe County, NY 911 Feed API</title>
 	
-	<meta name="description" content="Graph of spelling theyval on 13wham.com">
-	<meta name="keywords" content="Spelling, theyval, 13wham, wham, whamnospellgood">
+	<meta name="description" content="Monroe County, NY 911 Feed API">
+	<meta name="keywords" content="Monroe, Monroe County, 911, Public Safty, Rochester, Feed, API, Application Programming Interface, Application, Programming, Interface, FOSS, Open Source, Open Data, Open, Source, Data">
 	
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="media/favicon.png" type="image/x-icon" />
 	
-	<meta charset="utf-8">
-	<style>
-
-	body{
-		/*background-image:url('/subtle_grunge.png');
-		background-repeat:repeat-y repeat-x;*/
-	}
-
-	div.topwrapper{
-		width: 900px;
-		margin: auto;
-	}
-
-	div.graph {
-	  font: 10px sans-serif;
-	}
-	
-	div.header {
-	  text-align:center;
-	}
-
-	.axis path,
-	.axis line {
-	  fill: none;
-	  stroke: #000;
-	  shape-rendering: crispEdges;
-	}
-
-	.bar {
-	  fill: steelblue;
-	}
-
-	.x.axis path {
-	  display: none;
-	}
-
-	</style>
+	<link href="css/main.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -57,7 +21,7 @@
 				
 				<?php 
 					
-					require_once("Database.class.php");
+					require_once("./tools/Database.class.php");
 					$db = new Database();
 					if( $_GET['eventtypeid'] == "" )
 					{
@@ -131,7 +95,7 @@
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 					.attr("class", "chart");
 
-				var apiurl = "eventd3api.php?eventtypeid=<?php echo $_GET['eventtypeid'];?>&period=<?php echo $_GET['period']?>&startdate=2012-1-1";
+				var apiurl = "api/eventd3api.php?eventtypeid=<?php echo $_GET['eventtypeid'];?>&period=<?php echo $_GET['period']?>&startdate=2012-1-1";
 				//var apiurl = "data.tsv";
 
 				//alert(apiurl);

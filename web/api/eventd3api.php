@@ -1,7 +1,8 @@
 <?
 
-	require_once("Database.class.php");
-	require_once("Time.class.php");
+	
+	require_once("../tools/Database.class.php");
+	require_once("../tools/Time.class.php");
 	
 	$eventtypeid = $_GET['eventtypeid'];
 	$startdate = $_GET['startdate'];

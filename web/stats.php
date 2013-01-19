@@ -1,45 +1,14 @@
 <html>
 <head>
 	
-	<meta charset="utf-8">
-	<style>
-
-	div.top{
-	}
+	<title>Monroe County, NY 911 Feed API</title>
 	
-	div.topwrapper{
-		width: 900px;
-		margin: auto;
-	}
-
-	div.graph1 {
-	  font: 10px sans-serif;
-	}
+	<meta name="description" content="Monroe County, NY 911 Feed API">
+	<meta name="keywords" content="Monroe, Monroe County, 911, Public Safty, Rochester, Feed, API, Application Programming Interface, Application, Programming, Interface, FOSS, Open Source, Open Data, Open, Source, Data">
 	
-	div.graph2 {
-	  font: 10px sans-serif;
-	}
+	<link rel="shortcut icon" href="media/favicon.png" type="image/x-icon" />
 	
-	div.header {
-	  text-align:center;
-	}
-
-	.axis path,
-	.axis line {
-	  fill: none;
-	  stroke: #000;
-	  shape-rendering: crispEdges;
-	}
-
-	.bar {
-	  fill: steelblue;
-	}
-
-	.x.axis path {
-	  display: none;
-	}
-
-	</style>
+	<link href="css/main.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -88,7 +57,7 @@
 					.attr("class", "chart");
 
 				var today = new Date();
-				var apiurl = "statsapi.php?startdate=" + today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
+				var apiurl = "api/statsapi.php?startdate=" + today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
 
 				//alert(apiurl);
 
@@ -133,29 +102,35 @@
 
 			<div class="decoder">
 
-				<?php
-				
-					require_once("Database.class.php");
-				
-					$db = new Database();
+				<div class="tab">
+
+					<?php
 					
-					$eventtypes = $db->GetEventTypes();
-				
-					$letter = "A";
-				
-					echo '<br><font size="2">';
-				
-					foreach($eventtypes as $eventtype)
-					{
-						echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
-						echo ' (<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">hourly</a>)<br>';
+						require_once("./tools/Database.class.php");
+					
+						$db = new Database();
 						
-						$letter++;
-					}
+						$eventtypes = $db->GetEventTypes();
+					
+						$letter = "A";
+					
+						echo '<br><font size="2">';
+					
+						foreach($eventtypes as $eventtype)
+						{
+							echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
+							echo ' (<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">hourly</a>)<br>';
+							
+							$letter++;
+						}
+					
+						echo '</font>';
+					
+					?>
 				
-					echo '</font>';
+					<br>
 				
-				?>
+				</div>
 			
 			</div>
 

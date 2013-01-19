@@ -1,3 +1,4 @@
+
 body {
 	background-image:url('/media/blackorchid.png');
 	background-repeat:repeat-y repeat-x;
@@ -24,7 +25,36 @@ div.headerwrapper {
 }
 
 div.header {
-	margin: 20px;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align:center;
+}
+
+div.navwrapper{
+	margin: auto;
+	width: 900px;
+	background-color: white;
+	margin-bottom: 10px;
+	border-radius:3px;
+}
+
+div.nav {
+	float: right;
+	margin-bottom: 10px;
+	
+}
+
+div.navlink{
+	position:relative;
+	background-color: white;
+	border-radius: 3px;
+	
+}
+
+div.navlinkwrapper{
+	/*margin: 10px;*/
+	display: inline-block;
 }
 
 div.topwrapper {
@@ -39,4 +69,25 @@ div.topwrapper {
 
 .tab2 {
 	margin-left: 80px;
+}
+
+/* Bar Graph */
+
+div.graph {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
 }

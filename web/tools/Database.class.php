@@ -1,6 +1,7 @@
 <?php
 
 	require_once("sqlcredentials.php");
+	
 	require_once("Item.class.php");
 	require_once("EventType.class.php");
 	require_once("Event.class.php");
