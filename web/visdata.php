@@ -47,7 +47,11 @@
 								echo $db->GetEventTextFromID($_GET['eventtypeid']);
 								echo '"</h2>';
 								break;
-							case 'all':
+							case 'alltime':
+								echo '<h2>Hourly Graph of All Incidents For Event: "';
+								echo $db->GetEventTextFromID($_GET['eventtypeid']);
+								echo '"</h2>';
+								break;
 							default:
 								echo '<h2>Graph of ALL Daily Incidents For Event: "';
 								echo $db->GetEventTextFromID($_GET['eventtypeid']);
