@@ -120,7 +120,8 @@
 							echo $eventtype->eventtype . " ";
 							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">today</a>) ';
 							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=week">week</a>) ';
-							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=month">month</a>)<br>';
+							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=month">month</a>)';
+							echo '(<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '&period=alltime">all-time</a>)<br>';
 						}
 					
 					?>

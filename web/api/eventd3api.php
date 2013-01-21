@@ -24,11 +24,13 @@
 		case 'today':
 			$results = $db->GetTodaysItemsByEventTypeID($eventtypeid);
 			break;
+		case 'alltime':
+			$results = $db->GetAllTimeItemsByEventTypeID($eventtypeid);
+			break;
 		case 'week':
 			//break;
 		case 'month':
 			//break;
-		case 'all':
 		default:
 			$results = $db->GetTotalItemsByEventTypeID($eventtypeid, $startdate);
 			break;

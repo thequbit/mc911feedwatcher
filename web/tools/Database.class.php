@@ -108,6 +108,81 @@
 			return $retVal; 
 		}
 		
+		function GetAllTimeItemsByEventTypeID($eventtypeid)
+		{
+			$eventtype = $this->GetEventTextFromID($eventtypeid);
+			
+			$results = $this->GetAllTimeItemsByEventType($eventtype);
+			
+			return $results;
+		}
+		
+		function GetAllTimeItemsByEventType($eventtype)
+		{
+			// connect to the database
+			$this->Connect();
+
+			$query = 'SELECT COUNT(DISTINCT itemid), pubtime FROM incidents WHERE LOWER(event)="' .$eventtype . '" GROUP BY HOUR(pubtime)';
+			
+			//echo $query . "<br>";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = "thexval\ttheyval\n";
+			
+			$events = array();
+			
+			while($r = mysql_fetch_assoc($results)) {
+				$event = new Event();
+				
+				$event->pubtime = $r['pubtime'];
+				$event->count = $r['COUNT(DISTINCT itemid)'];
+				
+				//echo "Pubtime: " . $event->pubtime . ", Count = " . $event->count . "<br>";
+				
+				$events[] = $event;
+			}
+			
+			for($hour=0; $hour<24; $hour++)
+			{
+			
+				$count = 0;
+			
+				// decode the rows
+				foreach($events as $event)
+				{
+				
+					$pubhour = (int)substr($event->pubtime,0,2);
+				
+					//echo "comparing " . $pubhour . " and " . $hour . " ... ";
+				
+					if( $pubhour == $hour )
+					{
+						//echo "equals";
+						$count = $count + $event->count;
+					}
+					else
+					{
+						//echo "not equals";
+					}
+					
+					//echo "<br>";
+					
+				}
+				
+				//echo "<br>( " . $hour . " ) Count = " . $count . "<br><br>";
+				
+				$retVal = $retVal . $hour . ":00\t" . $count . "\n";
+			
+			}
+			
+			
+			// return the count
+			return $retVal;  
+		
+		}
+		
 		function GetTodaysItemsByEventTypeID($eventtypeid)
 		{
 			$eventtype = $this->GetEventTextFromID($eventtypeid);
