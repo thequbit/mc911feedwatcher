@@ -97,6 +97,7 @@
 
 				<p class="tab">
 					<a href="stats.php">See Today's Stats</a><br>
+					<a href="incidents.php?date=<?php echo date("Y-m-d"); ?>">See Today's Incidents</a><br>
 				</p>
 				
 				<h4>See day-by-day occurrence rates for each event type</h4>

@@ -5,6 +5,7 @@
 	require_once("Item.class.php");
 	require_once("EventType.class.php");
 	require_once("Event.class.php");
+	require_once("Incident.class.php");
 	
 	class Database
 	{
@@ -214,6 +215,39 @@
 			
 			// return the count
 			return $retVal; 
+		}
+		
+		function GetIncidentsByDay($date)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE pubdate="' . $date . '" GROUP BY itemid ORDER BY pubtime ASC';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$incidents = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				$incident = new Incident();
+			
+				// pull the information from the row
+				$incident->event = $r['event'];
+				$incident->address = $r['address'];
+				$incident->pubdate = $r['pubdate'];
+				$incident->pubtime = $r['pubtime'];
+				$incident->status = $r['status'];
+				$incident->itemid = $r['itemid'];
+				$incident->scrapedatetime = $r['scrapedatetime'];
+				
+				$incidents[] = $incident;
+			}
+			
+			return $incidents;
 		}
 		
 		////////////////////////////////////////////////////////////////////////
