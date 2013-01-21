@@ -33,6 +33,12 @@
 					<?php
 					
 						require_once("./tools/Database.class.php");
+						require_once("./tools/Time.class.php");
+					
+						$time = new Time();
+	
+						// record start time
+						$starttime = $time->StartTime();
 					
 						// get the posted data variable
 						$date = $_GET['date'];
@@ -84,6 +90,9 @@
 							echo '</div>';
 						
 						}
+						
+						// calculate time taken
+						$totaltime = $time->TotalTime($starttime);
 						
 						// record the API call in the database
 						$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
