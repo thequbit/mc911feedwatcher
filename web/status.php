@@ -123,7 +123,7 @@
 				<br>
 				
 				<p class="tab">
-				The above data represents the current status of this site and it's associated web scrapers.  What is a web scraper?  In this case, there are pieces of code that go
+				The above data represents the current status of this site and its associated web scrapers.  What is a web scraper?  In this case, there are pieces of code that go
 				out on the internet and collect information from the Monroe County, NY dispatch center and collate it.  If you would like more information about the Monroe County dispatch
 				center, check out the <a href="about.php">About</a> page.  If you would like to know more about the data that is being collected, and how you can use it, check out
 				the <a href="developers.php">Developers</a> page.
@@ -158,7 +158,7 @@
 				<b>Total Unique API users</b>
 				</p>
 				<p class="tab2">
-				This site keeps track of the number of unique users use it's API's.  Since anonymity is an important part of why the Internet is so important, IP addresses are hashed 
+				This site keeps track of the number of unique users use its API's.  Since anonymity is an important part of why the Internet is so important, IP addresses are hashed 
 				and only the hash is saved.  This prevents any information that could identify an individual from being saved by this site.
 				</p>
 				<br>

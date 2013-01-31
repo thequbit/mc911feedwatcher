@@ -65,7 +65,7 @@
 				<br>
 				<br>
 
-				This site is intended to be used as a simple too for visualizing Monroe County, NY 911 calls and incidents.  The following pages are available:<br>
+				This site is intended to be used as a simple tool for visualizing Monroe County, NY 911 calls and incidents.  The following pages are available:<br>
 				<br>
 				
 				<p class="tab">
