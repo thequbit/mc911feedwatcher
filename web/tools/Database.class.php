@@ -481,6 +481,54 @@
 			return $r["count(*)"];
 		}
 		
+		function GetStatsByDay($thedate)
+		{
+			//
+			// first we need to get the list of eventtypes
+			//
+			
+			// get the list of event types
+			$eventtypes = $this->GetEventTypes();
+		
+			//
+			// Now we need to get the count of each eventtype for the day
+			//
+			
+			$stats = "event\tfrequency\n";
+			
+			$letter = "A";
+			
+			foreach($eventtypes as $event)
+			{
+			
+				// query the count of the eventtype on this day
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event->eventtype . '") AND pubdate="' . $thedate . '"';
+			
+				//echo $query . "<br>";
+			
+				// execute the query
+				$results = $this->Query($query);
+			
+				// get the row
+				$r = mysql_fetch_assoc($results);
+				
+				// create entry
+				$stat = $letter . "\t" . $r["count(DISTINCT itemid)"] . "\n";
+				
+				// append entry to return string
+				$stats = $stats . $stat;
+			
+				// increment our letter
+				$letter++;
+			
+			}
+			
+			//$stats = $stats . "}";
+			
+			return $stats;
+		
+		}
+		
 		function GetStats($startdate, $enddate)
 		{
 			//

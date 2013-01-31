@@ -103,10 +103,19 @@
 						echo '<div class="tomorrowlink">';
 						echo '<a href="incidents.php?date=' . $tommorrow . '">See Incidents for ' . $tommorrow . '</a>';
 						echo '</div>';
+
+						echo '<div>';
+
+						echo '<center>';
+						echo '<br><br>';
+						echo '<a href="stats.php?date=' . $date . '">See Stats For ' . $date . '</a>';
+						echo '</center>';
+					
+						echo '</div>';
 					
 						echo '<div>';
 					
-						echo '<br><br>';
+						//echo '';
 					
 						if( count($incidents) == 0 )
 						{

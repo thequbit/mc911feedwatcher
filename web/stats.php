@@ -61,7 +61,7 @@
 				<div>
 				
 					<br>
-					<h3>Today's Statistics for Monroe Count, NY 911 Calls</h3>
+					<h3><?php if( $_GET["date"] == "" ) echo "Today's"; else echo $_GET["date"]; ?> Statistics for Monroe Count, NY 911 Calls</h3>
 					<br>
 				
 				</div>
@@ -100,7 +100,19 @@
 							.attr("class", "chart");
 
 						var today = new Date();
-						var apiurl = "api/statsapi.php?startdate=" + today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
+						
+						<?
+							if( $_GET["date"] == "" )
+							{
+								echo 'var thedate = today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();';
+							}
+							else
+							{
+								echo 'var thedate = "' . $_GET["date"] . '"';
+							}
+						?>
+						
+						var apiurl = "api/statsapi.php?date=" + thedate;
 
 						//alert(apiurl);
 
