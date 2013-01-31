@@ -57,36 +57,50 @@
 		<div class="contentwrapper">
 
 			<div class="content">
-
+			
 				<br>
-				<br>
-				<center><h3>Welcome to the Monroe County, NY 911 Feed Collator!</h3></center>
-
-				<br>
-				<br>
-
-				This site is intended to be used as a simple too for visualizing Monroe County, NY 911 calls and incidents.  The following pages are available:<br>
+				<h3>Different Event Types Used by Monroe County, NY Dispatch</h3>
 				<br>
 				
-				<p class="tab">
-					<a href="status.php">status</a> - This shows the current status of the website.<br>
-					<a href="stats.php">stats</a> - This is a series of statistics about the 911 incidents for today.<br>
-					<a href="incidents.php">incidents</a> - This displays all of the incidents for a particular day.<br>
-					<a href="events.php">events</a> - This is a list of different types of incidents seen by dispatch.<br>
-					<a href="developers.php">developers</a> - This is a resource for developers to get access to API's.<br>
-					<a href="about.php">about</a> - More about this site and it's developer/maintianer.<br>
-				</p>
+				There are lots of different types of incidents used by Monroe Count, NY 911 dispatch.  The list below is the currently used types by dispatch.<br>
+				<br>
+			
+				<?
 				
+					require_once("tools/Database.class.php");
+					require_once("tools/EventType.class.php");
+
+					$db = new Database();
+
+					$eventtypes = $db->GetEventTypes();
+
+					//$eventtype->eventtype
+
+					foreach($eventtypes as $eventtype)
+					{
+						echo '<div class="eventtype">';
+						echo '<p class="tab">';
+						echo $eventtype->eventtype . " ";
+						//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">today</a>) ';
+						//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=week">week</a>) ';
+						//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=month">month</a>)';
+						echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=alltime">all-time by hour</a>)<br>';
+						echo '</p>';
+						echo '</div>';
+					}
+				
+				?>
+			
 				<br>
+				Note: this list is dynamicly added too as new types are seen by the web scrapers.  For more information how how this data is created, check out the 
+				<a href="about.php">about</a> page and the <a href="developers.php">developers</a> page.<br>
 				<br>
 				
-				Don't know where to start?  Check out today's <a href="stats.php">stats</a> and <a href="incidents.php">incident feed</a> first!
-				<br>
-				<br>
+			
 			</div>
 
 		</div>
-		
+
 		<div class="footerwrapper">
 		
 			<div class="footer">
