@@ -3,9 +3,7 @@
 ?>
 
 
-				<br>
-				<br>
-				<center><h3>Welcome to the Monroe County, NY 911 Feed Collator!</h3></center>
+				<center><h1>Welcome to the Monroe County, NY 911 Feed Collator!</h1></center>
 
 				<br>
 				<br>
