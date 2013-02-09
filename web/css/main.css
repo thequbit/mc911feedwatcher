@@ -6,14 +6,14 @@
 }
 
 body {
-	/*background-image:url('/media/blackorchid.png');
-	background-repeat:repeat-y repeat-x;*/
-	background-color: #3366CC;
+	background-image:url('/media/shattered.png');
+	background-repeat:repeat-y repeat-x;
+	background-color: #fafafa;
 	font: 12px sans-serif;
 }
 
-div.g-plusone {
-	float: right;
+div.top{
+	margin-top: 15px;
 }
 
 div.event{
@@ -38,43 +38,61 @@ div.header {
 	text-align:center;
 }
 
+/*
+ * Nav Style
+ */
+
 div.navwrapper{
 	width: 900px;
+	height: 60px;
 	margin: auto;
-	background-color: white;
-	border-radius:3px;
+	background-color: #000;
+	border-style:solid;
+	border-width:1px;
+}
+
+#home{
+	border-left: 1px solid #fff;
+}
+
+#nav li{
+	display: inline;
+	padding: 0 20px;
+	border-right: 1px solid #fff;
+}
+
+#nav li:last-child{
+	border: none;
+}
+
+#nav a{
+	color: #fff;
+	text-decoration:none;
 }
 
 div.nav {
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	text-align:left;
+	padding-top: 20px;
+	font-size: 18px;
+	text-align: center;
 }
 
-div.navlink{
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	background-color: white;
-	border-radius: 3px;
-	display:inline;
-}
+/*
+ * Content Style
+ */
 
 div.contentwrapper {
+	border-style:solid;
+	border-width:1px;
 	background-color: white;
 	width: 900px;
 	margin: auto;
-	border-radius:3px;
 }
 
 div.content {
-	margin-top: 10px;
-	margin-left: 10px;
-	margin-right: 20px;
-	margin-bottom: 10px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	margin-left: 80px;
+	margin-right: 80px;
 }
 
 div.footerwrapper {

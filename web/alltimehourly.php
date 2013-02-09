@@ -1,16 +1,27 @@
 <?php
 	require_once("_header.php");
 ?>
+
+	<center><h3>Summation of All Time Hourly Data</h3></center>
+	<br>
+	<center><h2>
+		<?php
+			require_once("tools/BarGraphData.Class.php");
 			
-		<div>
-		
-			<br>
-			<h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2>
-			<br>
-		
-		</div>
-	
-		<div id="IncidentsDiv"></div>
+			$bgd = new BarGraphData();
+			
+			$eventtypeid = $_GET['eventtypeid'];
+			
+			$eventtext = $bgd->GetEventTextFromID($eventtypeid);
+			
+			echo '"' . strtoupper($eventtext) . '"';
+			
+		?>
+	</h2></center>
+
+	<br>
+
+	<div id="HourlyTodayDiv"></div>
 		
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<!--[if IE]><script src="js/excanvas.js"></script><![endif]-->
@@ -34,7 +45,7 @@
 				}
 				
 				// create the canvas object
-				var ctx = createCanvas("IncidentsDiv");
+				var ctx = createCanvas("HourlyTodayDiv");
 				
 				// setup the bargraph
 				var graph = new BarGraph(ctx);
@@ -42,7 +53,8 @@
 				graph.height = 400;
 				//graph.maxValue = 30;
 				graph.margin = 2;
-				graph.colors = [ "#49a0d8", "#d353a0", "#ffc527", "#df4c27"];
+				graph.colors = [ "#49a0d8"];
+				graph.rotateAxisText = true;
 				
 				
 				<?php
@@ -51,25 +63,26 @@
 				
 					$bargraph = new BarGraphData();
 				
-					$date = $_GET['date'];
-					
-					if( $date == "" )
-						$date = date("Y-m-d");
+					$eventtypeid = $_GET['eventtypeid'];
 				
-					$results = $bargraph->GetIncidentCounts($date);
+					// get the counts for the day
+					$results = $bargraph->GetAllTimeHourlyCountsByEventId($eventtypeid);
 
 					// set the maximum for the graph
 					echo "graph.maxValue = " . max($results) . ";\n";
 					
 					// set the x axis labels
-					$letter = "A";
+					$hour = 0;
 					echo "graph.xAxisLabelArr = [";
 					for($i = 0; $i < (count($results)-1); $i++)
 					{
-						echo '"' . $letter . '",';
-						$letter++;
+						if( $hour < 10 )
+							echo '"  ' . $hour . ':00",';
+						else
+							echo '"' . $hour . ':00",';
+						$hour++;
 					}
-					echo '"' . $letter . '"';
+					echo '"' . $hour . ':00"';
 					echo "];\n";
 
 					// graph bogus data
@@ -79,44 +92,18 @@
 					
 					echo "0]);\n";
 				
-					// graph the real data
+					// graph the real data (this causes the animation)
 					$jsonResults = json_encode($results);
 					echo 'graph.update(' . $jsonResults . ");\n";
-			
-			?>
-		});
+						
+				?>
+			});
 	
-	</script>
-				
-	<div class="decoder">
-
-		<?php
-		
-			require_once("./tools/Database.class.php");
-		
-			$db = new Database();
-			
-			$eventtypes = $db->GetEventTypes();
-		
-			$letter = "A";
-		
-			echo '<br><font size="2">';
-		
-			foreach($eventtypes as $eventtype)
-			{
-				echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
-				echo ' (<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">hourly</a>)<br>';
-				
-				$letter++;
-			}
-		
-			echo '</font>';
-		
-		?>
-
-		<br>
-
+		</script>
+	
 	</div>
+
+	
 
 <?php
 	require_once("_footer.php");
