@@ -12,6 +12,10 @@ body {
 	font: 12px sans-serif;
 }
 
+div.g-plusone {
+	float: right;
+}
+
 div.event{
 	margin: 5px;
 }

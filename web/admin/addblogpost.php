@@ -1,3 +1,5 @@
+
+
 <html>
 	<title>Monroe County, NY 911 Feed Collator</title>
 	
@@ -6,22 +8,7 @@
 	
 	<link rel="shortcut icon" href="media/favicon.png" type="image/x-icon" />
 	
-	<link href="css/main.css" rel="stylesheet" type="text/css">
-	
-	<script type="text/javascript">
-
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-38308300-1']);
-	  _gaq.push(['_setDomainName', 'mycodespace.net']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
+	<link href="../css/main.css" rel="stylesheet" type="text/css">
 	
 <head>
 </head>
@@ -56,9 +43,6 @@
 					<a href="incidents.php">incidents</a>
 				</div>
 				<div class="navlink">
-					<a href="groups.php">groups</a>
-				</div>
-				<div class="navlink">
 					<a href="events.php">events</a>
 				</div>
 				<div class="navlink">
@@ -76,7 +60,64 @@
 
 			<div class="content">
 			
+				<div>
 				
+					<br>
+			
+					<h3>Add a new Blog Post</h3>
+			
+					<br>
+			
+					<?php
+
+						require_once("../tools/Database.class.php");
+
+						//echo $_SERVER['REQUEST_METHOD'];
+
+						// test to see if it is a post back
+						if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST')
+						{
+							//echo "inside.<br>";
+						
+							//echo "title: " . $_POST['title'] . "<br>";
+							//echo "body: " . $_POST['body'] . "<br>";
+						
+							if( $_POST['title'] != "" && $_POST['body'] != "" )
+							{
+								//echo "inside<br>";
+							
+								$db = new Database();
+								
+								//echo "db obj created.<br>";
+								
+								$title = $_POST['title'];
+								$body =  $_POST['body'];
+								
+								$db->CreateBlogPost($title,$body);
+								
+								echo '<font color="Green">Blog post added successfully</font><h4>';
+								
+								//echo "done.<br>";
+							}
+						}
+						
+					?>
+			
+					<br>
+			
+					<form name="input" action="addblogpost.php" method="post">
+						Post: Title: <br>
+						<input type="text" name="title"><br>
+						<br>
+						Post Body:<br>
+						<textarea name="body" rows="8" cols="70"></textarea><br>
+						<br>
+						<input type="submit" value="Submit">
+					</form>
+				
+					<br>
+				
+				</div>
 			
 			</div>
 

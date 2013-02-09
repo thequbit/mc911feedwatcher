@@ -6,10 +6,104 @@
 	require_once("EventType.class.php");
 	require_once("Event.class.php");
 	require_once("Incident.class.php");
+	require_once("BlogPost.class.php");
+	require_once("Group.class.php");
 	
 	class Database
 	{
+	
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Blog Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+	
+		function CreateBlogPost($title, $body)
+		{
+			
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'INSERT INTO blogposts (title, body, creationdate) VALUES("' . $title . '", "' . $body . '", "' . date("Y-m-d") . '")';
+			
+			//echo "<br>" . $query;
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+		}
+	
+		function GetAllBlogPosts()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = "SELECT title,body,creationdate FROM blogposts";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// create a temp object to populate
+				$blogpost = new BlogPost();
+			
+				// assign the values 
+				$blogpost->event = $r['event'];
+				$blogpost->address = $r['body'];
+				$blogpost->pubdate = $r['creationdate'];
 		
+				// add the item to the array of items
+				$retVal[] = $blogpost;
+			}
+			
+			// return the count
+			return $retVal; 
+		}
+	
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Group Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+	
+		function GetAllGroups()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = "SELECT groupid,groupname,groupdescription FROM groups";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// create a temp object to populate
+				$group = new Group();
+			
+				// assign the values 
+				$group->id = $r['groupid'];
+				$group->name = $r['groupname'];
+				$group->description = $r['groupdescription'];
+		
+				// add the item to the array of items
+				$retVal[] = $group;
+			}
+			
+			// return the count
+			return $retVal; 
+		}
+	
 		////////////////////////////////////////////////////////////////////////
 		//
 		// API Functions
