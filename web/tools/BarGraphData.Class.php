@@ -85,24 +85,24 @@
 			return $r["eventtype"];
 		}
 	
-		function GetTodaysHourlyCountsByEventId($eventtypeid)
+		function GetHourlyCountsByEventId($eventtypeid, $date)
 		{
 			$eventtype = $this->GetEventTextFromID($eventtypeid);
 			
-			$results = $this->GetTodaysHourlyCountsByEventType($eventtype);
+			$results = $this->GetHourlyCountsByEventType($eventtype,$date);
 			
 			return $results;
 			
 			//return array();
 		}
 		
-		function GetTodaysHourlyCountsByEventType($eventtype)
+		function GetHourlyCountsByEventType($eventtype, $date)
 		{
 			// connect to the database
 			$dbt = new DatabaseTool();
 			$dbt->Connect();
 
-			$query = 'SELECT COUNT(DISTINCT itemid), pubtime FROM incidents WHERE LOWER(event)="' .$eventtype . '" AND pubdate="' . date("Y-m-d") . '" GROUP BY HOUR(pubtime)';
+			$query = 'SELECT COUNT(DISTINCT itemid), pubtime FROM incidents WHERE LOWER(event)="' .$eventtype . '" AND pubdate="' . $date . '" GROUP BY HOUR(pubtime)';
 			
 			// execute the query
 			$results = $dbt->Query($query);

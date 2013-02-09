@@ -33,16 +33,18 @@ function BarGraph(ctx) {
 	  // For each bar
 	  for (var i = 0; i < endArr.length; i += 1) {
 		// Change the current bar height toward its target height
-		delta = (endArr[i] - startArr[i]) / that.animationSteps;
+		delta = ((endArr[i] - startArr[i]) / that.animationSteps);
 		that.curArr[i] += delta;
 		// If any change is made then flip a switch
 		if (delta) {
 		  animationComplete = false;
 		}
 	  }
+	  
 	  // If no change was made to any bars then we are done
 	  if (animationComplete) {
 		looping = false;
+		//draw(that.endArr);
 	  } else {
 		// Draw and call loop again
 		draw(that.curArr);
@@ -142,12 +144,14 @@ function BarGraph(ctx) {
 		ctx.fillStyle = "#333";
 		ctx.font = "bold 12px sans-serif";
 		ctx.textAlign = "center";
+		
 		// Use try / catch to stop IE 8 from going to error town
 		try {
-		  ctx.fillText(parseInt(arr[i],10),
+		  ctx.fillText(parseInt(Math.ceil(arr[i]),10),
 			i * that.width / numOfBars + (that.width / numOfBars) / 2,
 			graphAreaHeight - barHeight - 10);
 		} catch (ex) {}
+		
 		// Draw bar label if it exists
 		if (that.xAxisLabelArr[i]) {					
 		  // Use try / catch to stop IE 8 from going to error town				

@@ -317,7 +317,7 @@
 			$this->Connect();
 			
 			// create the query
-			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE pubdate="' . $date . '" GROUP BY itemid ORDER BY pubtime ASC';
+			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE pubdate="' . $date . '" GROUP BY itemid ORDER BY pubtime DESC';
 			
 			// execute the query
 			$results = $this->Query($query);

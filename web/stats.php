@@ -105,7 +105,16 @@
 			foreach($eventtypes as $eventtype)
 			{
 				echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
-				echo ' (<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">hourly</a>)<br>';
+				echo ' (<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&date=';
+				
+				$date = $_GET["date"];
+				
+				if(  $date == "" )
+					$date = date("Y-m-d");
+					
+				$date = $_GET["date"];
+				
+				echo $date . '">hourly</a>)<br>';
 				
 				$letter++;
 			}

@@ -7,7 +7,7 @@
 				<h3>Different Event Types Used by Monroe County, NY Dispatch</h3>
 				<br>
 				
-				There are lots of different types of incidents used by Monroe Count, NY 911 dispatch.  The list below is the currently used types by dispatch.<br>
+				There are a lot of different types of incidents used by Monroe Count, NY 911 dispatch.  The list below is the currently used types by dispatch.<br>
 				<br>
 			
 				<?
@@ -37,7 +37,7 @@
 				?>
 			
 				<br>
-				Note: this list is dynamicly added too as new types are seen by the web scrapers.  For more information how how this data is created, check out the 
+				Note: this list is dynamically added to as new types are seen by the web scrapers.  For more information how how this data is created, check out the 
 				<a href="about.php">about</a> page and the <a href="developers.php">developers</a> page.<br>
 				<br>
 				

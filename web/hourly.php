@@ -2,7 +2,7 @@
 	require_once("_header.php");
 ?>
 
-	<center><h3>Hourly Data for <?php echo date("l F j, Y"); ?></h3></center>
+	<center><h3>Hourly Data for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?></h3></center>
 	<br>
 	<center><h2>
 		<?php
@@ -65,8 +65,13 @@
 				
 					$eventtypeid = $_GET['eventtypeid'];
 				
+					$date = $_GET["date"];
+					
+					if( $date == "" )
+						$date = date("Y-m-d");
+				
 					// get the counts for the day
-					$results = $bargraph->GetTodaysHourlyCountsByEventId($eventtypeid);
+					$results = $bargraph->GetHourlyCountsByEventId($eventtypeid,$date);
 
 					// set the maximum for the graph
 					echo "graph.maxValue = " . max($results) . ";\n";
@@ -74,6 +79,7 @@
 					// set the x axis labels
 					$hour = 0;
 					echo "graph.xAxisLabelArr = [";
+					
 					for($i = 0; $i < (count($results)-1); $i++)
 					{
 						if( $hour < 10 )
@@ -82,11 +88,13 @@
 							echo '"' . $hour . ':00",';
 						$hour++;
 					}
+					
 					echo '"' . $hour . ':00"';
 					echo "];\n";
 
 					// graph bogus data
 					echo 'graph.update([';
+					
 					for($i = 0; $i < (count($results)-1); $i++)
 						echo "0,";
 					

@@ -9,7 +9,7 @@
 				<br>
 				<br>
 				
-				Developer information comming soon.  For now checkout the GitHub repo <a href="https://github.com/thequbit/mc911feedwatcher">here</a>.  It has lots of information on how to use the API's on the site.
+				Developer information comming soon.  For now checkout the GitHub repo <a href="https://github.com/thequbit/mc911feedwatcher">here</a>.  It has a lot of information on how to use the API's on the site.
 			
 				<br>
 				<br>
