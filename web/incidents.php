@@ -57,7 +57,7 @@
 
 		echo '<center>';
 		echo '<br><br>';
-		echo '<a href="stats.php?date=' . $date . '">See Stats For ' . date("l F j, Y") . '</a>';
+		echo '<a href="stats.php?date=' . $date . '">See Stats For ' . date("l F j, Y",strtotime($date)) . '</a>';
 		echo '</center>';
 	
 		echo '</div>';
