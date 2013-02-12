@@ -36,21 +36,28 @@
 	
 		// display links to go to previous day and next day
 		
-		
-		
 		echo '<div class="yesterdaylink">';
-		echo '<a href="incidents.php?date=' . $yesterday . '">See Incidents for ' . $yesterday . '</a>';
+		echo '<a href="incidents.php?date=' . $yesterday . '">Incidents for ' . date("l F j, Y",strtotime($yesterday)) . '</a>';
 		echo '</div>';
 		
-		echo '<div class="tomorrowlink">';
-		echo '<a href="incidents.php?date=' . $tommorrow . '">See Incidents for ' . $tommorrow . '</a>';
-		echo '</div>';
+		if( $date != date("Y-m-d") )
+		{
+			echo '<div class="tomorrowlink">';
+			echo '<a href="incidents.php?date=' . $tommorrow . '">Incidents for ' . date("l F j, Y",strtotime($tommorrow)) . '</a>';
+			echo '</div>';				
+		}
+
+		echo '<br><br>';
 
 		echo '<div>';
 
+		echo '<br><br>';
+
+		echo '<center><h2>Incidents for ' . date("l F j, Y") . '</h2></center>';
+
 		echo '<center>';
 		echo '<br><br>';
-		echo '<a href="stats.php?date=' . $date . '">See Stats For ' . $date . '</a>';
+		echo '<a href="stats.php?date=' . $date . '">See Stats For ' . date("l F j, Y") . '</a>';
 		echo '</center>';
 	
 		echo '</div>';
@@ -67,9 +74,6 @@
 		}
 		else
 		{
-		
-			echo "<br>";
-			echo "Incidents for <b>" . $date . "</b>";
 			echo"<br><br>";
 			echo "Total number of incidents today:<b>" . count($incidents) . "</b><br><br>";
 		

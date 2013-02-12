@@ -23,6 +23,7 @@
 
 	<div id="HourlyTodayDiv"></div>
 		
+		
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<!--[if IE]><script src="js/excanvas.js"></script><![endif]-->
 		<script src="js/html5-canvas-bar-graph.js"></script>

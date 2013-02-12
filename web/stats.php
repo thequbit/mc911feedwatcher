@@ -1,11 +1,46 @@
 <?php
 	require_once("_header.php");
 ?>
+		
+		<?php
+		
+			// get the posted data variable
+			$date = $_GET['date'];
+
+			// see if we got a date passed in, or if we should be use todays date
+			if( $date == "" )
+			{
+				$date = date("Y-m-d");
+			}
 			
+			// calculate tomorrow
+			$tomorrowtime = strtotime ('+1 day', strtotime($date)) ;
+			$tommorrow = date('Y-m-d', $tomorrowtime);
+			
+			// calculate yesterday
+			$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
+			$yesterday = date('Y-m-d', $yesterdaytime);
+		
+			echo '<div class="yesterdaylink">';
+			echo '<a href="stats.php?date=' . $yesterday . '">Stats for ' . date("l F j, Y",strtotime($yesterday)) . '</a>';
+			echo '</div>';
+			
+			if( $date != date("Y-m-d") )
+			{
+				echo '<div class="tomorrowlink">';
+				echo '<a href="stats.php?date=' . $tommorrow . '">Stats for ' . date("l F j, Y",strtotime($tommorrow)) . '</a>';
+				echo '</div>';				
+			}
+			
+			echo '<br>';
+			echo '<br>';
+		
+		?>
+		
 		<div>
 		
 			<br>
-			<h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2>
+			<center><h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2></center>
 			<br>
 		
 		</div>
