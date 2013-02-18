@@ -1,121 +1,32 @@
-<html>
-	<title>Monroe County, NY 911 Feed API</title>
-	
-	<meta name="description" content="Monroe County, NY 911 Feed API">
-	<meta name="keywords" content="Monroe, Monroe County, 911, Public Safty, Rochester, Feed">
-	
-	<style>
-		<!--
-		div.topwrapper{
-			width: 900px;
-			margin: auto;
-		}
-		.tab { margin-left: 40px; }
-		.tab2 { margin-left: 80px; }
-		-->
-	</style>
-	
+<?php
+	require_once("_header.php");
+?>
 
-	
-<head>
-</head>
-<body>
 
-	<div class="top">
-	
-		<div class="topwrapper">
+				<center><h1>Welcome to the Monroe County, NY 911 Feed Collator!</h1></center>
 
-			<h3>Monroe County 911 Incident Feed API</h3>
+				<br>
+				<br>
 
-			<?php
-			
-				include_once("Database.class.php");
+				This site is intended to be used as a simple tool for visualizing Monroe County, NY 911 calls and incidents.  The following pages are available:<br>
+				<br>
 				
-				// create a database tool to use to pull information from the database
-				$db = new Database();
+				<p class="tab">
+					<a href="status.php">status</a> - This shows the current status of the website.<br>
+					<a href="stats.php">stats</a> - This is a series of statistics about the 911 incidents for today.<br>
+					<a href="incidents.php">incidents</a> - This displays all of the incidents for a particular day.<br>
+					<a href="events.php">events</a> - This is a list of different types of incidents seen by dispatch.<br>
+					<a href="developers.php">developers</a> - This is a resource for developers to get access to API's.<br>
+					<a href="about.php">about</a> - More about this site and it's developer/maintianer.<br>
+				</p>
 				
-				//
-				// System Stats
-				//
+				<br>
+				<br>
 				
-				// get the total number of times the scraper has run
-				$runCount = $db->GetNumberOfRuns();
-				// get the total number of API calls that have been made
-				$apicalls = $db->GetNumberOfAPICalls();
-				// get the number of unique api users today
-				$totalUniqueApiUsers = $db->GetTotalUniqueAPIUsers();
-				// get the number of unique api users today
-				$uniqueApiUsersToday = $db->GetUniqueAPIUsersToday();
-				// get the average querytime today
-				$averageQueryToday = $db->GetAverageQueryToday();
+				Don't know where to start?  Check out today's <a href="stats.php">stats</a> and <a href="incidents.php">incident feed</a> first!
+				<br>
+				<br>
 				
-				// display the results from the database
-				echo "<b><br>System Stats: </b><br>";
-				echo '<p class="tab">';
-				echo "Total scraper runs: " . $runCount . "<br>";
-				echo "Total number of API calls: " . $apicalls . "<br>";
-				echo "Total Unique API users: " . $totalUniqueApiUsers . "<br>";
-				echo "Unique API Users Today: " . $uniqueApiUsersToday . "<br>";
-				echo "Average Query Time Today: " . number_format($averageQueryToday,4) . " Seconds<br>";
-				echo '</p>';
-				
-				
-				//
-				// Data Stats
-				//
-				
-				// get the total number of unique entrees in the database
-				$uniqueIncidents = $db->GetTotalUniqueIncidents();
-				// get the total number of event types logged into the system
-				$totalEventTypes = $db->GetTotalEventTypes();
-				// get the total number of status types logged into the system
-				$totalStatusTypes = $db->GetTotalStatusTypes();
-					
-				echo "<b>Data Stats: </b><br>";
-				echo '<p class="tab">';
-				echo "Total Unique Incidents: " . $uniqueIncidents . "<br>";
-				echo "Total Incident Types: " . $totalEventTypes . "<br>";
-				echo "Total Status Types: " . $totalStatusTypes . "<br>";
-				echo '</p>';
-				
-			?>
-
-			<p class="tab">
-				<a href="stats.php">See Today's Stats</a><br>
-			</p>
-			
-			<h4>See day-by-day occurrence rates for each event type</h4>
-
-			<p class="tab">
-			
-				<?
-				
-					require_once("Database.class.php");
-					require_once("EventType.class.php");
-
-					$db = new Database();
-
-					$eventtypes = $db->GetEventTypes();
-
-					//$eventtype->eventtype
-
-					foreach($eventtypes as $eventtype)
-					{
-						echo '<a href="http://monroe911.mycodespace.net/visdata.php?eventtypeid=' . $eventtype->eventtypeid . '">' . $eventtype->eventtype . '</a><br>';
-					}
-				
-				?>
-			
-			</p>
-
-			<h4>Developers</h4>
-
-			Want access to the API?<br>
-			Check out the documentation and code on Github <a href="https://github.com/thequbit/mc911feedwatcher">here</a>!
-
-		</div>
-	
-	</div>
-
-</body>
-</html>
+<?php
+	require_once("_footer.php");
+?>

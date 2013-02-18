@@ -1,0 +1,172 @@
+/* reset the browser */
+*
+{
+	margin:0;
+	padding:0;
+}
+
+body {
+	background-image:url('/media/shattered.png');
+	background-repeat:repeat-y repeat-x;
+	background-color: #fafafa;
+	font: 12px sans-serif;
+}
+
+div.top{
+	margin-top: 15px;
+}
+
+div.event{
+	margin: 5px;
+}
+
+div.top {
+	margin: auto;
+}
+
+div.headerwrapper {
+	margin: auto;
+	width: 900px;
+	background-color: white;
+	border-radius:3px;
+}
+
+div.header {
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align:center;
+}
+
+/*
+ * Nav Style
+ */
+
+div.navwrapper{
+	width: 900px;
+	height: 60px;
+	margin: auto;
+	background-color: #000;
+	border-style:solid;
+	border-width:1px;
+}
+
+#home{
+	border-left: 1px solid #fff;
+}
+
+#nav li{
+	display: inline;
+	padding: 0 20px;
+	border-right: 1px solid #fff;
+}
+
+#nav li:last-child{
+	border: none;
+}
+
+#nav a{
+	color: #fff;
+	text-decoration:none;
+}
+
+div.nav {
+	padding-top: 20px;
+	font-size: 18px;
+	text-align: center;
+}
+
+/*
+ * Content Style
+ */
+
+div.contentwrapper {
+	border-style:solid;
+	border-width:1px;
+	background-color: white;
+	width: 900px;
+	margin: auto;
+}
+
+div.content {
+	margin-top: 40px;
+	margin-bottom: 40px;
+	margin-left: 80px;
+	margin-right: 80px;
+}
+
+div.footerwrapper {
+	margin: auto;
+	text-align:center;
+}
+
+div.footer {
+	
+	margin-top: 8px;
+}
+
+div.yesterdaylink{
+	margin-top: 10px;
+	float: left;
+}
+
+div.tomorrowlink{
+	margin-top: 10px;
+	float: right;
+}
+
+div.eventtype{
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+
+/*
+div.statslink {
+	float: center;
+}
+*/
+
+/* table stuff */
+
+tr{
+	font: bold 18px sans-serif;
+}
+
+td{
+	font: 10px sans-serif;
+}
+
+/* silly formatting stuff */
+
+.tab { 
+	margin-left: 40px; margin-top: 5px
+}
+
+.tab2 {
+	margin-left: 80px;
+}
+
+.tab3 {
+	margin-left: 80px;
+}
+
+/* Bar Graph */
+
+div.graph {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}

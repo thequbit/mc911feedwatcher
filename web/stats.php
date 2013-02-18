@@ -1,256 +1,167 @@
-<html>
-<head>
-	
-	<meta charset="utf-8">
-	<style>
-
-	div.top{
-	}
-	
-	div.topwrapper{
-		width: 900px;
-		margin: auto;
-	}
-
-	div.graph1 {
-	  font: 10px sans-serif;
-	}
-	
-	div.graph2 {
-	  font: 10px sans-serif;
-	}
-	
-	div.header {
-	  text-align:center;
-	}
-
-	.axis path,
-	.axis line {
-	  fill: none;
-	  stroke: #000;
-	  shape-rendering: crispEdges;
-	}
-
-	.bar {
-	  fill: steelblue;
-	}
-
-	.x.axis path {
-	  display: none;
-	}
-
-	</style>
-
-</head>
-<body>
-
-	<div class="top">
-	
-		<div class="topwrapper">
-
-			<div class="header">
-
-				<h2>Today's Statistics for  911 Calls for Monroe County, NY - <?php echo date("D M d, Y"); ?></h2>
-
-			</div>
-
-			<div class="graph1" id="graph1">
-
-				<script src="http://d3js.org/d3.v3.min.js"></script>
-				<script>
-
-				var margin = {top: 20, right: 20, bottom: 30, left: 40},
-					width = 800 - margin.left - margin.right,
-					height = 450 - margin.top - margin.bottom;
-
-				//var formatPercent = d3.format(".0%");
-
-				var x = d3.scale.ordinal()
-					.rangeRoundBands([0, width], .1);
-
-				var y = d3.scale.linear()
-					.range([height, 0]);
-
-				var xAxis = d3.svg.axis()
-					.scale(x)
-					.orient("bottom");
-
-				var yAxis = d3.svg.axis()
-					.scale(y)
-					.orient("left")
-					//.tickFormat(formatPercent);
-
-				var svg = d3.select("#graph1").append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				  .append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-					.attr("class", "chart");
-
-				var today = new Date();
-				var apiurl = "statsapi.php?startdate=" + today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
-
-				//alert(apiurl);
-
-				d3.tsv(apiurl, function(error, data) {
-
-				  data.forEach(function(d) {
-					d.frequency = +d.frequency;
-				  });
-
-				  x.domain(data.map(function(d) { return d.event; }));
-				  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-				  svg.append("g")
-					  .attr("class", "x axis")
-					  .attr("transform", "translate(0," + height + ")")
-					  .call(xAxis);
-
-				  svg.append("g")
-					  .attr("class", "y axis")
-					  .call(yAxis)
-					.append("text")
-					  .attr("transform", "rotate(-90)")
-					  .attr("y", 6)
-					  .attr("dy", ".71em")
-					  .style("text-anchor", "end")
-					  .text("Frequency");
-
-				  svg.selectAll(".bar")
-					  .data(data)
-					.enter().append("rect")
-					  .attr("class", "bar")
-					  .attr("x", function(d) { return x(d.event); })
-					  .attr("width", x.rangeBand())
-					  .attr("y", function(d) { return y(d.frequency); })
-					  .attr("height", function(d) { return height - y(d.frequency); });
-
-				});
-
-				</script>
-
-			</div>
-
-			<div class="header">
-				
-				<!--
-				<h1>Last 7 Days Statistics for  911 Calls for Monroe County, NY</h1>
-				-->
-
-			</div>
-
-			<div class="graph2" id="graph2">
-
-				<script src="http://d3js.org/d3.v3.min.js"></script>
-				<script>
-
-				/*
-
-				var margin = {top: 20, right: 20, bottom: 30, left: 40},
-					width = 800 - margin.left - margin.right,
-					height = 450 - margin.top - margin.bottom;
-
-				//var formatPercent = d3.format(".0%");
-
-				var x = d3.scale.ordinal()
-					.rangeRoundBands([0, width], .1);
-
-				var y = d3.scale.linear()
-					.range([height, 0]);
-
-				var xAxis = d3.svg.axis()
-					.scale(x)
-					.orient("bottom");
-
-				var yAxis = d3.svg.axis()
-					.scale(y)
-					.orient("left")
-					//.tickFormat(formatPercent);
-
-				var svg = d3.select("#graph2").append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				  .append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-					.attr("class", "chart");
-
-				var today = new Date();
-				var lastseven = new Date ( today.getFullYear(), today.getMonth(), (today.getDate()-7) )
-				var apiurl = "statsapi.php?startdate=" + lastseven.getFullYear() + "-" + (lastseven.getMonth()+1) + "-" + lastseven.getDate();
+<?php
+	require_once("_header.php");
+?>
 		
-				//alert(apiurl);
+		<?php
+		
+			// get the posted data variable
+			$date = $_GET['date'];
 
-				d3.tsv(apiurl, function(error, data) {
-
-				  data.forEach(function(d) {
-					d.frequency = +d.frequency;
-				  });
-
-				  x.domain(data.map(function(d) { return d.event; }));
-				  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-				  svg.append("g")
-					  .attr("class", "x axis")
-					  .attr("transform", "translate(0," + height + ")")
-					  .call(xAxis);
-
-				  svg.append("g")
-					  .attr("class", "y axis")
-					  .call(yAxis)
-					.append("text")
-					  .attr("transform", "rotate(-90)")
-					  .attr("y", 6)
-					  .attr("dy", ".71em")
-					  .style("text-anchor", "end")
-					  .text("Frequency");
-
-				  svg.selectAll(".bar")
-					  .data(data)
-					.enter().append("rect")
-					  .attr("class", "bar")
-					  .attr("x", function(d) { return x(d.event); })
-					  .attr("width", x.rangeBand())
-					  .attr("y", function(d) { return y(d.frequency); })
-					  .attr("height", function(d) { return height - y(d.frequency); });
-
-				});
-
-				*/
-
-				</script>
-
-			</div>
-
-			<div class="decoder">
-
-				<?php
-				
-					require_once("Database.class.php");
-				
-					$db = new Database();
+			// see if we got a date passed in, or if we should be use todays date
+			if( $date == "" )
+			{
+				$date = date("Y-m-d");
+			}
+			
+			// calculate tomorrow
+			$tomorrowtime = strtotime ('+1 day', strtotime($date)) ;
+			$tommorrow = date('Y-m-d', $tomorrowtime);
+			
+			// calculate yesterday
+			$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
+			$yesterday = date('Y-m-d', $yesterdaytime);
+		
+			echo '<div class="yesterdaylink">';
+			echo '<a href="stats.php?date=' . $yesterday . '">Stats for ' . date("l F j, Y",strtotime($yesterday)) . '</a>';
+			echo '</div>';
+			
+			if( $date != date("Y-m-d") )
+			{
+				echo '<div class="tomorrowlink">';
+				echo '<a href="stats.php?date=' . $tommorrow . '">Stats for ' . date("l F j, Y",strtotime($tommorrow)) . '</a>';
+				echo '</div>';				
+			}
+			
+			echo '<br>';
+			echo '<br>';
+		
+		?>
+		
+		<div>
+		
+			<br>
+			<center><h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2></center>
+			<br>
+		
+		</div>
+	
+		<div id="IncidentsDiv"></div>
+		
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<!--[if IE]><script src="js/excanvas.js"></script><![endif]-->
+		<script src="js/html5-canvas-bar-graph.js"></script>
+		
+		<script>
+	
+			$(document).ready(function() {
+			
+				// function to create the canvas that we are going to draw the bar graph in
+				function createCanvas(divName) {
 					
-					$eventtypes = $db->GetEventTypes();
+					var div = document.getElementById(divName);
+					var canvas = document.createElement('canvas');
+					div.appendChild(canvas);
+					if (typeof G_vmlCanvasManager != 'undefined') {
+						canvas = G_vmlCanvasManager.initElement(canvas);
+					}	
+					var ctx = canvas.getContext("2d");
+					return ctx;
+				}
 				
+				// create the canvas object
+				var ctx = createCanvas("IncidentsDiv");
+				
+				// setup the bargraph
+				var graph = new BarGraph(ctx);
+				graph.width = 740;
+				graph.height = 400;
+				//graph.maxValue = 30;
+				graph.margin = 2;
+				graph.colors = [ "#49a0d8", "#d353a0", "#ffc527", "#df4c27"];
+				
+				
+				<?php
+					
+					require_once("tools/BarGraphData.Class.php");
+				
+					$bargraph = new BarGraphData();
+				
+					$date = $_GET['date'];
+					
+					if( $date == "" )
+						$date = date("Y-m-d");
+				
+					$results = $bargraph->GetIncidentCounts($date);
+
+					// set the maximum for the graph
+					echo "graph.maxValue = " . max($results) . ";\n";
+					
+					// set the x axis labels
 					$letter = "A";
-				
-					echo '<br><font size="2">';
-				
-					foreach($eventtypes as $eventtype)
+					echo "graph.xAxisLabelArr = [";
+					for($i = 0; $i < (count($results)-1); $i++)
 					{
-						echo "<b>" . $letter . "</b>: " . $eventtype->eventtype . "<br>";
-						
+						echo '"' . $letter . '",';
 						$letter++;
 					}
-				
-					echo '</font>';
-				
-				?>
-			
-			</div>
+					echo '"' . $letter . '"';
+					echo "];\n";
 
-		</div>
+					// graph bogus data
+					echo 'graph.update([';
+					for($i = 0; $i < (count($results)-1); $i++)
+						echo "0,";
+					
+					echo "0]);\n";
+				
+					// graph the real data
+					$jsonResults = json_encode($results);
+					echo 'graph.update(' . $jsonResults . ");\n";
+			
+			?>
+		});
+	
+	</script>
+				
+	<div class="decoder">
+
+		<?php
+		
+			require_once("./tools/Database.class.php");
+		
+			$db = new Database();
+			
+			$eventtypes = $db->GetEventTypes();
+		
+			$letter = "A";
+		
+			echo '<br><font size="2">';
+		
+			foreach($eventtypes as $eventtype)
+			{
+				echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
+				echo ' (<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&date=';
+				
+				$date = $_GET["date"];
+				
+				if(  $date == "" )
+					$date = date("Y-m-d");
+					
+				$date = $_GET["date"];
+				
+				echo $date . '">hourly</a>)<br>';
+				
+				$letter++;
+			}
+		
+			echo '</font>';
+		
+		?>
+
+		<br>
 
 	</div>
 
-</body>
-</html>
+<?php
+	require_once("_footer.php");
+?>

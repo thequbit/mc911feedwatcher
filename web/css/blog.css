@@ -1,0 +1,21 @@
+
+/* */
+div.blogwrapper {
+	margin-left: 25px;
+	margin-right: 25px;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin: auto;
+}
+
+div.blogcreationdatetime {
+	text-align: left;
+}
+
+div.blogtitle {
+	text-align: left;
+}
+
+div.blogbody {
+	text-align: left;	
+}

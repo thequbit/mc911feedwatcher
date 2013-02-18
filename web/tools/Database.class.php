@@ -1,12 +1,109 @@
 <?php
 
 	require_once("sqlcredentials.php");
+	
 	require_once("Item.class.php");
 	require_once("EventType.class.php");
+	require_once("Event.class.php");
+	require_once("Incident.class.php");
+	require_once("BlogPost.class.php");
+	require_once("Group.class.php");
 	
 	class Database
 	{
+	
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Blog Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+	
+		function CreateBlogPost($title, $body)
+		{
+			
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'INSERT INTO blogposts (title, body, creationdate) VALUES("' . $title . '", "' . $body . '", "' . date("Y-m-d") . '")';
+			
+			//echo "<br>" . $query;
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+		}
+	
+		function GetAllBlogPosts()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = "SELECT title,body,creationdate FROM blogposts";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// create a temp object to populate
+				$blogpost = new BlogPost();
+			
+				// assign the values 
+				$blogpost->event = $r['event'];
+				$blogpost->address = $r['body'];
+				$blogpost->pubdate = $r['creationdate'];
 		
+				// add the item to the array of items
+				$retVal[] = $blogpost;
+			}
+			
+			// return the count
+			return $retVal; 
+		}
+	
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Group Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+	
+		function GetAllGroups()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = "SELECT groupid,groupname,groupdescription FROM groups";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				// create a temp object to populate
+				$group = new Group();
+			
+				// assign the values 
+				$group->id = $r['groupid'];
+				$group->name = $r['groupname'];
+				$group->description = $r['groupdescription'];
+		
+				// add the item to the array of items
+				$retVal[] = $group;
+			}
+			
+			// return the count
+			return $retVal; 
+		}
+	
 		////////////////////////////////////////////////////////////////////////
 		//
 		// API Functions
@@ -105,6 +202,81 @@
 			return $retVal; 
 		}
 		
+		function GetAllTimeItemsByEventTypeID($eventtypeid)
+		{
+			$eventtype = $this->GetEventTextFromID($eventtypeid);
+			
+			$results = $this->GetAllTimeItemsByEventType($eventtype);
+			
+			return $results;
+		}
+		
+		function GetAllTimeItemsByEventType($eventtype)
+		{
+			// connect to the database
+			$this->Connect();
+
+			$query = 'SELECT COUNT(DISTINCT itemid), pubtime FROM incidents WHERE LOWER(event)="' .$eventtype . '" GROUP BY HOUR(pubtime)';
+			
+			//echo $query . "<br>";
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$retVal = "thexval\ttheyval\n";
+			
+			$events = array();
+			
+			while($r = mysql_fetch_assoc($results)) {
+				$event = new Event();
+				
+				$event->pubtime = $r['pubtime'];
+				$event->count = $r['COUNT(DISTINCT itemid)'];
+				
+				//echo "Pubtime: " . $event->pubtime . ", Count = " . $event->count . "<br>";
+				
+				$events[] = $event;
+			}
+			
+			for($hour=0; $hour<24; $hour++)
+			{
+			
+				$count = 0;
+			
+				// decode the rows
+				foreach($events as $event)
+				{
+				
+					$pubhour = (int)substr($event->pubtime,0,2);
+				
+					//echo "comparing " . $pubhour . " and " . $hour . " ... ";
+				
+					if( $pubhour == $hour )
+					{
+						//echo "equals";
+						$count = $count + $event->count;
+					}
+					else
+					{
+						//echo "not equals";
+					}
+					
+					//echo "<br>";
+					
+				}
+				
+				//echo "<br>( " . $hour . " ) Count = " . $count . "<br><br>";
+				
+				$retVal = $retVal . $hour . ":00\t" . $count . "\n";
+			
+			}
+			
+			
+			// return the count
+			return $retVal;  
+		
+		}
+		
 		function GetTotalItemsByEventTypeID($eventtypeid, $startdate)
 		{
 			$eventtype = $this->GetEventTextFromID($eventtypeid);
@@ -126,7 +298,7 @@
 			// execute the query
 			$results = $this->Query($query);
 			
-			$retVal = "day\tquantity\n";
+			$retVal = "thexval\ttheyval\n";
 			
 			// decode the rows
 			while($r = mysql_fetch_assoc($results)) {
@@ -137,6 +309,39 @@
 			
 			// return the count
 			return $retVal; 
+		}
+		
+		function GetIncidentsByDay($date)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE pubdate="' . $date . '" GROUP BY itemid ORDER BY pubtime DESC';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$incidents = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				$incident = new Incident();
+			
+				// pull the information from the row
+				$incident->event = $r['event'];
+				$incident->address = $r['address'];
+				$incident->pubdate = $r['pubdate'];
+				$incident->pubtime = $r['pubtime'];
+				$incident->status = $r['status'];
+				$incident->itemid = $r['itemid'];
+				$incident->scrapedatetime = $r['scrapedatetime'];
+				
+				$incidents[] = $incident;
+			}
+			
+			return $incidents;
 		}
 		
 		////////////////////////////////////////////////////////////////////////
@@ -293,6 +498,54 @@
 			
 			// return the count
 			return $r["count(*)"];
+		}
+		
+		function GetStatsByDay($thedate)
+		{
+			//
+			// first we need to get the list of eventtypes
+			//
+			
+			// get the list of event types
+			$eventtypes = $this->GetEventTypes();
+		
+			//
+			// Now we need to get the count of each eventtype for the day
+			//
+			
+			$stats = "event\tfrequency\n";
+			
+			$letter = "A";
+			
+			foreach($eventtypes as $event)
+			{
+			
+				// query the count of the eventtype on this day
+				$query = 'SELECT count(DISTINCT itemid) FROM incidents WHERE LOWER(event)=LOWER("' . $event->eventtype . '") AND pubdate="' . $thedate . '"';
+			
+				//echo $query . "<br>";
+			
+				// execute the query
+				$results = $this->Query($query);
+			
+				// get the row
+				$r = mysql_fetch_assoc($results);
+				
+				// create entry
+				$stat = $letter . "\t" . $r["count(DISTINCT itemid)"] . "\n";
+				
+				// append entry to return string
+				$stats = $stats . $stat;
+			
+				// increment our letter
+				$letter++;
+			
+			}
+			
+			//$stats = $stats . "}";
+			
+			return $stats;
+		
 		}
 		
 		function GetStats($startdate, $enddate)
