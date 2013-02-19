@@ -51,12 +51,12 @@
 
 		echo '<div>';
 
-		echo '<br><br>';
+		echo '<br>';
 
 		echo '<center><h2>Incidents for ' . date("l F j, Y") . '</h2></center>';
 
 		echo '<center>';
-		echo '<br><br>';
+		echo '<br>';
 		echo '<a href="stats.php?date=' . $date . '">See Stats For ' . date("l F j, Y",strtotime($date)) . '</a>';
 		echo '</center>';
 	

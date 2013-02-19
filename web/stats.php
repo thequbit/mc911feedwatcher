@@ -43,6 +43,20 @@
 			<center><h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2></center>
 			<br>
 		
+			<?php
+			
+				if( $_GET["date"] == "" )
+					$date = date("Y-m-d");
+				else
+					$date = date("Y-m-d",strtotime($_GET["date"]));
+			
+				echo '<center>';
+				//echo '<br>';
+				echo '<a href="incidents.php?date=' . $date . '">See Incidents For ' . date("l F j, Y",strtotime($date)) . '</a>';
+				echo '<br>';
+				echo '</center>';
+				
+			?>
 		</div>
 	
 		<div id="IncidentsDiv"></div>
