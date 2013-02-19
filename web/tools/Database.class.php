@@ -8,6 +8,7 @@
 	require_once("Incident.class.php");
 	require_once("BlogPost.class.php");
 	require_once("Group.class.php");
+	require_once("Agency.class.php");
 	
 	class Database
 	{
@@ -78,7 +79,7 @@
 			$this->Connect();
 			
 			// create the query
-			$query = "SELECT groupid,groupname,groupdescription FROM groups";
+			$query = "SELECT * FROM groups";
 			
 			// execute the query
 			$results = $this->Query($query);
@@ -342,6 +343,132 @@
 			}
 			
 			return $incidents;
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		//
+		// Agency Functions
+		//
+		////////////////////////////////////////////////////////////////////////
+		
+		function GetIncidentsByAgencyShortName($agencyshortname, $count)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE itemid LIKE "%' . $agencyshortname . '%" GROUP BY itemid ORDER BY pubdate DESC LIMIT ' . $count;
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$incidents = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				$incident = new Incident();
+			
+				// pull the information from the row
+				$incident->event = $r['event'];
+				$incident->address = $r['address'];
+				$incident->pubdate = $r['pubdate'];
+				$incident->pubtime = $r['pubtime'];
+				$incident->status = $r['status'];
+				$incident->itemid = $r['itemid'];
+				$incident->scrapedatetime = $r['scrapedatetime'];
+				
+				$incidents[] = $incident;
+			}
+			
+			return $incidents;
+		}
+		
+		function GetAgencyFromShortName($shortname)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT * FROM agencies WHERE shortname="' . $shortname . '"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$agency = new Agency();
+			
+			$r = mysql_fetch_assoc($results);
+			
+			// pull the information from the row
+			$agency->shortname = $r['shortname'];
+			$agency->longname = $r['longname'];
+			$agency->type = $r['type'];
+			$agency->description = $r['description'];
+			$agency->websiteurl = $r['websiteurl'];
+			
+			// return our created object
+			return $agency;
+		}
+		
+		function GetTotalIncidentsByAgencyShortName($shortname, $year)
+		{
+			// connect to the database
+			$this->Connect();
+			
+			//echo "HERE!";
+			
+			// create the query
+			$query = 'SELECT COUNT(DISTINCT itemid)  FROM incidents WHERE itemid LIKE "%' . $shortname . '%" AND pubdate >= "' . $year . '-01-01"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// get the count
+			$count = $r['COUNT(DISTINCT itemid)'];
+			
+			//echo $count;
+			
+			// return our created object
+			return $count;
+		}
+		
+		function GetAllAgencies()
+		{
+			// connect to the database
+			$this->Connect();
+			
+			// create the query
+			$query = 'SELECT * FROM agencies ORDER BY shortname ASC';
+			
+			$date = date("Y");
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			$agencies = array();
+			
+			// decode the rows
+			while($r = mysql_fetch_assoc($results)) {
+			
+				$agency = new Agency();
+			
+				// pull the information from the row
+				$agency->shortname = $r['shortname'];
+				$agency->longname = $r['longname'];
+				$agency->type = $r['type'];
+				$agency->description = $r['description'];
+				$agency->websiteurl = $r['websiteurl'];
+				
+				$agency->callcount = $this->GetTotalIncidentsByAgencyShortName($agency->shortname, $date);
+				
+				$agencies[] = $agency;
+			}	
+			
+			// return our created object
+			return $agencies;
 		}
 		
 		////////////////////////////////////////////////////////////////////////

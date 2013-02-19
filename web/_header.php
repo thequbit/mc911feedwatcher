@@ -36,11 +36,11 @@
 				<ul>
 					<li class="home"><a href="index.php">home</a></li>
 					<li id="status"><a href="status.php">status</a></li>
-					<li id="status"><a href="stats.php">stats</a></li>
+					<li id="stats"><a href="stats.php">stats</a></li>
 					<li id="incidents"><a href="incidents.php">incidents</a></li>
-					<li id="groups"><a href="groups.php">groups</a></li>
+					<!--<li id="groups"><a href="groups.php">groups</a></li>-->
 					<li id="events"><a href="events.php">events</a></li>
-					<li id="developers"><a href="developers.php">developers</a></li>
+					<li id="agencies"><a href="agencies.php">agencies</a></li>
 					<li id="about"><a href="about.php">about</a></li>
 				</ul>
 				

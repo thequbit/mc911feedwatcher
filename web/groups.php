@@ -11,7 +11,7 @@
 				are several incident types that are similar to each other, such as Motor Vehicle Accidents.  Below are a list of different groups that incident types have been grouped into.
 				<br>
 				<br>
-				<p class="">
+				<p class="tab">
 				
 					<?php
 					
@@ -22,10 +22,12 @@
 						
 						$groups = $db->GetAllGroups();
 						
-						foreach($groups as $group);
+						//echo count($groups);
+						
+						foreach($groups as $group)
 						{
 							//echo '<a href="viewgroup.php?groupid=' . $group->id . '">' . $group->name . '</a> - ' . $group->description . '<br>';
-							echo $group->name . " - " . $group->description . "<br>";
+							echo "<b>" . $group->name . "</b> - " . $group->description . "<br>";
 						}
 						
 					?>
