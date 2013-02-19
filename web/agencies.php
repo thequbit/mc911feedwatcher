@@ -2,10 +2,6 @@
 	require_once("_header.php");
 ?>
 
-	<h2>An Incomplete List of Agencies Keeping Monroe County Safe</h2>
-	<br>
-	<br>
-
 	<?php
 	
 		require_once("./tools/Database.class.php");
@@ -15,19 +11,39 @@
 		
 		$agencies = $db->GetAllAgencies();
 
-		echo "<b>This list is generated based on the four letter code used by Monroe County, NY dispatch.  There are still codes that have not yet been decoded.";
-		echo "If you don't see an agency that you think should be on the list, please contact Tim at <a href=\"mailto:twofiftyfivelabs@gmail.com\">twofiftyfivelabs@gmail.com</a></b>";
+
+		echo '<h2>An Incomplete List of Agencies Keeping Monroe County Safe</h2>';
+		echo '<br>';
+		echo '<br>';
+
+		echo "This list is generated based on the four letter code used by Monroe County, NY dispatch.  There are still codes that have not yet been decoded.";
+		echo "In general, codes ending with <b>F are Fire</b>, codes ending in <b>P are Police</b>, and codes ending in <b>E are EMS/Ambulance.</b>";
 		echo "<br><br>";
+		
+		echo '<p class="tab">';
+		echo '<b>Thanks to John from Henrietta for helping to fill in some of the unknowns!</b>';
+		echo '</p>';
+	
+		echo "<br>";
+		echo "If you see an agency that you think you know what the code is, or don't see one that you think should be on the list, please contact Tim at <a href=\"mailto:twofiftyfivelabs@gmail.com\">twofiftyfivelabs@gmail.com</a><br><br>";
+
+		echo '<br>';
+		
 		
 		echo '<p class="tab">';
 		
 		echo '<table>';
 		echo '<tr>';
-		echo '<td><b><font size="3">911 Code</font></b></th>';
-		echo '<td><b><font size="3">' . date("Y") . ' Calls</font></b></th>';
-		echo '<td><b><font size="3">Agency</font></b></th>';
-		echo '<td><b><font size="3">Info</font></b></th>';
+		echo '<td><b><font size="2">911 Code</font></b></th>';
+		echo '<td><b><font size="2">' . date("Y") . ' Calls</font></b></th>';
+		echo '<td><b><font size="2">Agency</font></b></th>';
+		echo '<td><b><font size="2">Info</font></b></th>';
 		echo '</tr>';
+		
+		echo "<td width=\"100\"></td>\n";
+		echo "<td width=\"100\"></td>\n";
+		echo "<td width=\"400\"></td>\n";
+		echo "<td width=\"100\"></td>\n";
 		
 		foreach($agencies as $agency)
 		{
