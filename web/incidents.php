@@ -83,6 +83,7 @@
 			echo '<td><b><font size="4">Time</font></b></th>';
 			echo '<td><b><font size="4">Event</font></b></th>';
 			echo '<td><b><font size="4">Address</font></b></th>';
+			echo '<td><b><font size="4">Responding Agency</font></b></th>';
 			echo '<td><b><font size="4">Event ID</font></b></th>';
 			echo '</tr>';
 		
@@ -93,8 +94,14 @@
 				echo '<tr>';
 				echo '<td width="100">' . $incident->pubtime . '</td>';
 				echo '<td width="400">' . $incident->event . '</td>';
-				echo '<td width="250">' . $incident->address . '</td>';
-				echo '<td width="100"><a href="viewagency.php?agency=' . substr($incident->itemid,0,4) . '">' . substr($incident->itemid,0,4) . '</a>' . substr($incident->itemid,4) . '</td>';
+				echo '<td width="300">' . $incident->address . '</td>';
+				
+				$shortname = substr($incident->itemid,0,4);
+				$agency = $db->GetAgencyFromShortName($shortname);
+				
+				echo '<td width="250"><a href="viewagency.php?agency=' . substr($incident->itemid,0,4) . '">' . $agency->longname . '</a></td>';
+				
+				echo '<td width="100">' . $incident->itemid . '</td>';
 				echo '</tr>';
 			}
 		

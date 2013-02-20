@@ -87,7 +87,7 @@
 				
 				// setup the bargraph
 				var graph = new BarGraph(ctx);
-				graph.width = 740;
+				graph.width = 940;
 				graph.height = 400;
 				//graph.maxValue = 30;
 				graph.margin = 2;

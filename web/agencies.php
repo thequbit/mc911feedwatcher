@@ -35,13 +35,15 @@
 		echo '<table>';
 		echo '<tr>';
 		echo '<td><b><font size="2">911 Code</font></b></th>';
-		echo '<td><b><font size="2">' . date("Y") . ' Calls</font></b></th>';
-		echo '<td><b><font size="2">Agency</font></b></th>';
+		echo '<th><font size="2">' . date("Y") . ' Call Count</font></th>';
+		echo '<th><font size="2">Today Call Count</font></th>';
+		echo '<td><b><font size="2">Agency</font</th>';
 		echo '<td><b><font size="2">Info</font></b></th>';
 		echo '</tr>';
 		
-		echo "<td width=\"100\"></td>\n";
-		echo "<td width=\"100\"></td>\n";
+		echo "<td width=\"120\"></td>\n";
+		echo "<td width=\"120\"></td>\n";
+		echo "<td width=\"160\"></td>\n";
 		echo "<td width=\"400\"></td>\n";
 		echo "<td width=\"100\"></td>\n";
 		
@@ -56,9 +58,14 @@
 			echo '</div>';
 			*/
 			
+			$todaycallcount = $db->GetTodaysIncidentCountByAgencyShortName($agency->shortname);
+			
+			//$todaycallcount = 0;
+			
 			echo "<tr>\n";
-			echo "<td width=\"100\"><font size=\"2\">" . $agency->shortname . "</font></td>\n";
-			echo "<td width=\"100\"><font size=\"2\">" . $agency->callcount . "</font></td>\n";
+			echo '<td width="80"><font size="2">' . $agency->shortname . "</font></td>\n";
+			echo '<td class="centeredcell" width="120"><font size="2">' . $agency->callcount . "</font></th>\n";
+			echo '<td class="centeredcell" width="160"><font size="2">' . $todaycallcount . "</font></th>\n";
 			echo "<td width=\"400\"><font size=\"2\">" . $agency->longname . "</font></td>\n";
 			
 			// if we have the information about the agency, then display the info link

@@ -435,6 +435,34 @@
 			return $count;
 		}
 		
+		function GetTodaysIncidentCountByAgencyShortName($shortname)
+		{
+			
+			// connect to the database
+			$this->Connect();
+			
+			//echo "HERE!";
+			
+			$date = date("Y-m-d");
+			
+			// create the query
+			$query = 'SELECT COUNT(DISTINCT itemid) FROM incidents WHERE itemid LIKE "%' . $shortname . '%" AND pubdate = "' . $date . '"';
+			
+			// execute the query
+			$results = $this->Query($query);
+			
+			// get the row
+			$r = mysql_fetch_assoc($results);
+			
+			// get the count
+			$count = $r['COUNT(DISTINCT itemid)'];
+			
+			//echo $count;
+			
+			// return our created object
+			return $count;
+		}
+		
 		function GetAllAgencies()
 		{
 			// connect to the database
