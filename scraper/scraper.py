@@ -185,10 +185,21 @@ def push_to_database(event, address, pubdate, pubtime, status, itemid):
 	#
 	if count == "0":
 		
+		print "\t\tDecoding Agency ID from 4 leter code."
+
+		# pull off first four letters from itemid, this is the agency shortname
+		agencyShortName = itemid[0:4]
+
+		# decode the agency
+		query = 'SELECT agencyid FROM agencies WHERE shortname = "{0}"'.format(agencyShortName)
+		database.query(query)
+		dbresult=database.store_result()
+		(agencyID,), = dbresult.fetch_row()
+
 		print "\t\tInserting into database - item not yet in database."
 
 		# generate query
-		query = 'INSERT INTO incidents (event, address, pubdate, pubtime, status, itemid, scrapedatetime) VALUES("{0}","{1}","{2}","{3}","{4}","{5}","{6}")'.format(event, address, pubdate, pubtime, status, itemid, currenttime.strftime("%Y-%m-%d %H:%M"))
+		query = 'INSERT INTO incidents (event, address, pubdate, pubtime, status, itemid, scrapedatetime, agencyid) VALUES("{0}","{1}","{2}","{3}","{4}","{5}","{6}",{7})'.format(event, address, pubdate, pubtime, status, itemid, currenttime.strftime("%Y-%m-%d %H:%M"), agencyID)
 
 		# execute query
 		database.query(query)
