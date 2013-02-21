@@ -76,6 +76,81 @@ def get_mysql_credentials():
         #
         return lines
 
+def update_current_incidents(incidentids):
+
+	print "\tUpdating the list of currently open incidents ..."
+
+	# now we need to do two things:
+        # 1: if an incidentid in the passed in list isn't in the currentincidents table we need to add it
+        # 2: if an incidentid in the currentincidents table is not in the passed in list, then we need to remove it
+        #    and add an entree into the incidents table with status CLOSED
+
+	# get our db info from our local file
+        dbcreds = get_mysql_credentials()
+
+        # decode responce
+        host = dbcreds[0].rstrip()
+        dbname = dbcreds[1].rstrip()
+        username = dbcreds[2].rstrip()
+        password = dbcreds[3].rstrip()
+
+        # connect to our database
+        database = mysql.connect(host=host,user=username,passwd=password,db=dbname)
+
+	# get the list of current incidentid's
+	query = 'SELECT incidentid FROM currentincidents'
+	database.query(query)
+	dbresult=database.store_result()
+        #data=dbresult.fetchall()
+	
+	print "\t\tAdding any new incidentsid's to the current list ..."
+
+	# create a list of the currentids
+	curids = []
+	#while True:
+	#	row = dbresult.fetch_row()
+	#	curids.append(row[0])
+
+	for row in dbresult.fetch_row(maxrows=0):
+		curids.append(row[0])
+		#print "\t\t\tID = {0}".format(row[0])
+
+	# go through our scraped ids, and test to see if they are in the current id's table
+	for incidentid in incidentids:
+
+		# test to see if the scraped incidentid is in the currentid table
+		if any(incidentid in s for s in curids) == False:
+			print "\t\t\tNew ID! Adding id = {0}".format(incidentid)
+			
+			# we didn't find the id in the list, so we need to add it to the current list
+			query = 'INSERT INTO currentincidents (incidentid) VALUES("{0}")'.format(incidentid)
+			database.query(query)
+		else:
+			#nothing to do, it's already in the list
+			print "\t\t\tID = {0} already in current incident list.".format(incidentid)	
+
+	# go through our currentids and if there is one that doesn't exist within our scraped id's, we need to
+	# remove it, and then add a status in the table of incidents
+	#
+	# note: this list of currnet id's was grabed from the database before we inserted the
+	# new id's, so there is no concerns about stale data.
+	for cid in curids:
+		
+		if any(cid in s for s in incidentids) == False:
+			print "\t\t\tIncident not found, closing."
+
+			# removing the incidentid from the current table since it is no longer there
+			query = 'DELETE FROM currentincidents WHERE incidentid="{0}"'.format(cid)
+			database.query(query)
+
+			# add CLOSING status to the incidents table
+			query = 'INSERT INTO incidents (event, address, pubdate, pubtime, status, itemid, scrapedatetime) VALUES("","","","","CLOSED","{0}","{1}"'.format(cid,currenttime.strftime("%Y-%m-%d %H:%M"))
+			database.query(query)
+
+	print "\t\t... Done"
+
+	print "\t... Done"
+
 def push_to_database(event, address, pubdate, pubtime, status, itemid):
 
 	print "\tPushing Indident to Database ..."
@@ -110,18 +185,52 @@ def push_to_database(event, address, pubdate, pubtime, status, itemid):
 	#
 	if count == "0":
 		
-		print "\t\tInterting into database - item not yet in database."
+		print "\t\tInserting into database - item not yet in database."
 
 		# generate query
 		query = 'INSERT INTO incidents (event, address, pubdate, pubtime, status, itemid, scrapedatetime) VALUES("{0}","{1}","{2}","{3}","{4}","{5}","{6}")'.format(event, address, pubdate, pubtime, status, itemid, currenttime.strftime("%Y-%m-%d %H:%M"))
 
 		# execute query
 		database.query(query)
-	
-	else:
-		# nothing to do here
-
+	else:	
 		print "\t\tSkipping Item - item already in database."
+
+	#
+	# EVENT
+	#
+
+	# we need to see if the event type already exists in our list of event types
+	query = 'SELECT count(*) FROM eventtypes where eventtype="{0}"'.format(event.lower())
+	database.query(query)
+	dbresult=database.store_result()
+        (eventcount,),=dbresult.fetch_row()
+		
+	# test to see if we have already recorded this type
+	if eventcount == "0":
+		print '\t\tAdding new event to DB: "{0}"'.format(event.lower());
+			
+		# add the event type to the list of event types
+		query = 'INSERT INTO eventtypes (eventtype) VALUES("{0}")'.format(event.lower());
+		database.query(query)
+
+	#
+	# STATUS
+	#
+
+	# we need to see if the status type already exists in our list of event types
+        query = 'SELECT count(*) FROM statustypes where statustype="{0}"'.format(status)
+        database.query(query)
+        dbresult=database.store_result()
+        (statuscount,),=dbresult.fetch_row()
+
+        # test to see if we have already recorded this type
+        if statuscount == "0":
+                print '\t\tAdding new status to DB: "{0}"'.format(status);
+
+                # add the event type to the list of event types
+                query = 'INSERT INTO statustypes (statustype) VALUES("{0}")'.format(status);
+                database.query(query)
+
 
 	print "\t... Done"
 
@@ -171,6 +280,7 @@ def main(argv):
 	print "Scraper Launched."
 
 	success = True
+	successtext = "";
 
 	try:
 
@@ -182,6 +292,9 @@ def main(argv):
 
 		# pull the item array
 		items = xmldom.getElementsByTagName('item')
+
+		# create an array to place all of our incidentid's in
+		incidentids = []
 
 		# iterate through the items in the xml array
 		for item in items:
@@ -226,13 +339,19 @@ def main(argv):
 			# push results to database
 			push_to_database(event, address, pubdate, pubtime, status, itemid)
 		
-			success = True
-			successtext = ""
+			# add the itemid to the list of incidentids
+			incidentids.append(itemid)
+
 
 	except:
 		print "ERROR!"
 		success = False
 		sucesstext = ""
+
+	# TODO: fix this ... still not working correctly.
+
+	# update the list of current incidents
+	#update_current_incidents(incidentids) 
 
 	# push success to db
 	push_success(success,successtext)
@@ -240,5 +359,6 @@ def main(argv):
 	print "Scraper Finished."
 
 if __name__ == '__main__': sys.exit(main(sys.argv))
+
 
 
