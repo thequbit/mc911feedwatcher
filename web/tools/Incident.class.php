@@ -9,6 +9,7 @@
 		public $status;
 		public $itemid;
 		public $scrapedatetime;
+		public $agencyid;
 	}
 
 ?>
