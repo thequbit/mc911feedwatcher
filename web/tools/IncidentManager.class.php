@@ -149,15 +149,9 @@
 			$db = new DatabaseManager();
 			$db->Connect();
 			
-			//echo "HERE!";
-			
-			//$date = date("Y-m-d");
-			
 			// create the query
 			$query = 'SELECT COUNT(DISTINCT itemid) FROM incidents WHERE agencyid = ' . $agencyid . ' AND pubdate = "' . $date . '"';
-			
-			//print $query;
-			
+
 			// execute the query
 			$results = $db->Query($query);
 			
