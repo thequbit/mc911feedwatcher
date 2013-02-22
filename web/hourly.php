@@ -6,13 +6,18 @@
 	<br>
 	<center><h2>
 		<?php
-			require_once("tools/BarGraphData.Class.php");
+			require_once("./tools/EventManager.class.php");
 			
-			$bgd = new BarGraphData();
+			//$bgd = new BarGraphData();
 			
+			$eventManager = new EventManager();
+			
+			//
+			// TODO: Sanitize this
+			//
 			$eventtypeid = $_GET['eventtypeid'];
 			
-			$eventtext = $bgd->GetEventTextFromID($eventtypeid);
+			$eventtext = $eventManager->GetEventTextFromID($eventtypeid);
 			
 			echo '"' . strtoupper($eventtext) . '"';
 			
@@ -50,7 +55,7 @@
 				
 				// setup the bargraph
 				var graph = new BarGraph(ctx);
-				graph.width = 740;
+				graph.width = 940;
 				graph.height = 400;
 				//graph.maxValue = 30;
 				graph.margin = 2;
@@ -60,9 +65,13 @@
 				
 				<?php
 					
-					require_once("tools/BarGraphData.Class.php");
+					//require_once("./tools/BarGraphData.Class.php");
 				
-					$bargraph = new BarGraphData();
+					//$bargraph = new BarGraphData();
+				
+					require_once("./tools/EventManager.class.php");
+			
+					$eventManager = new EventManager();
 				
 					$eventtypeid = $_GET['eventtypeid'];
 				
@@ -72,16 +81,16 @@
 						$date = date("Y-m-d");
 				
 					// get the counts for the day
-					$results = $bargraph->GetHourlyCountsByEventId($eventtypeid,$date);
+					$counts = $eventManager->GetHourlyCountsByEventId($eventtypeid, $date);
 
 					// set the maximum for the graph
-					echo "graph.maxValue = " . max($results) . ";\n";
+					echo "graph.maxValue = " . max($counts) . ";\n";
 					
 					// set the x axis labels
 					$hour = 0;
 					echo "graph.xAxisLabelArr = [";
 					
-					for($i = 0; $i < (count($results)-1); $i++)
+					for($i = 0; $i < (count($counts)-1); $i++)
 					{
 						if( $hour < 10 )
 							echo '"  ' . $hour . ':00",';
@@ -96,13 +105,13 @@
 					// graph bogus data
 					echo 'graph.update([';
 					
-					for($i = 0; $i < (count($results)-1); $i++)
+					for($i = 0; $i < (count($counts)-1); $i++)
 						echo "0,";
 					
 					echo "0]);\n";
 				
 					// graph the real data (this causes the animation)
-					$jsonResults = json_encode($results);
+					$jsonResults = json_encode($counts);
 					echo 'graph.update(' . $jsonResults . ");\n";
 						
 				?>
