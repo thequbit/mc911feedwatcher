@@ -1,6 +1,31 @@
 <?php
 	require_once("_header.php");
 ?>
+	
+	<?php
+
+		//
+		// Sanity Check Inputs
+		//
+		
+		require_once("./tools/UtilityManager.class.php");
+		
+		$util = new UtilityManager();
+	
+		$shortname = $_GET["agency"];
+		
+		// check that the the short name is valid
+		if( $util->IsValidAgenyShortName($shortname) == False )
+		{
+			// not a valid short name
+
+			echo '<script>';
+			echo 'window.location = "./index.php"';
+			echo '</script>';
+		}
+		
+	?>
+
 
 	<?php
 	

@@ -2,6 +2,28 @@
 	require_once("_header.php");
 ?>
 
+	<?php
+
+		//
+		// Sanity Check Inputs
+		//
+		
+		require_once("./tools/UtilityManager.class.php");
+		
+		$eventtypeid = $_GET['eventtypeid'];
+		
+		$util = new UtilityManager();
+		
+		if( $util->IsNumber($eventtypeid) == False )
+		{
+			// not a valid number was passed in
+
+			echo '<script>';
+			echo 'window.location = "./index.php"';
+			echo '</script>';
+		}
+	?>
+
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<!--[if IE]><script src="js/excanvas.js"></script><![endif]-->
 	<script src="js/html5-canvas-bar-graph.js"></script>
@@ -44,10 +66,13 @@
 				//$bargraph = new BarGraphData();
 			
 				require_once("./tools/EventManager.class.php");
-			
-				$eventManager = new EventManager();
+
 			
 				$eventtypeid = $_GET['eventtypeid'];
+			
+				$eventManager = new EventManager();
+				
+
 			
 				// get the counts for the day
 				$counts = $eventManager->GetAllTimeHourlyCountsByEventId($eventtypeid);
@@ -79,7 +104,7 @@
 				// graph the real data (this causes the animation)
 				$jsonResults = json_encode($counts);
 				echo 'graph.update(' . $jsonResults . ");\n";
-					
+
 			?>
 		});
 

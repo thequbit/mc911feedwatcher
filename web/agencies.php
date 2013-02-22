@@ -37,11 +37,12 @@
 
 	<?php
 	
-		//require_once("./tools/Database.class.php");
+		require_once("./tools/IncidentManager.class.php");
 		require_once("./tools/AgencyManager.class.php");
 		require_once("./tools/Agency.class.php");
 
 		$agencyManager = new AgencyManager();
+		$incidentManager = new IncidentManager();
 
 		$agencies = $agencyManager->GetAllAgencies();
 
@@ -51,7 +52,7 @@
 			$todaysdate = date("Y-m-d");
 			
 			// get the total number of calls for today for the agency
-			$todaycallcount = $agencyManager->GetIncidentCountByAgencyIDAndDate($agency->agencyid, $todaysdate);
+			$todaycallcount = $incidentManager->GetIncidentCountByAgencyIDAndDate($agency->agencyid, $todaysdate);
 			
 			echo "<tr>\n";
 			echo '<td width="80"><font size="2">' . $agency->shortname . "</font></td>\n";

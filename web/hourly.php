@@ -2,6 +2,42 @@
 	require_once("_header.php");
 ?>
 
+	<?php
+
+		//
+		// Sanity Check Inputs
+		//
+		
+		require_once("./tools/UtilityManager.class.php");
+		
+		$util = new UtilityManager();
+		
+		$eventtypeid = $_GET['eventtypeid'];
+		
+		// check that the ID is valid
+		if( $util->IsNumber($eventtypeid) == False )
+		{
+			// not a valid number
+
+			echo '<script>';
+			echo 'window.location = "./index.php"';
+			echo '</script>';
+		}
+		
+		$date = $_GET["date"];
+		
+		// check that the date is valid
+		if( $util->IsValidDate($date) == 0 || $util->IsValidDate($date) == False )
+		{
+			// not a valid date
+
+			echo '<script>';
+			echo 'window.location = "./index.php"';
+			echo '</script>';
+		}
+		
+	?>
+
 	<center><h3>Hourly Data for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?></h3></center>
 	<br>
 	<center><h2>

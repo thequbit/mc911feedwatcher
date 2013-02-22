@@ -1,7 +1,37 @@
 <?php
 	require_once("_header.php");
 ?>
+	
+	<?php
+
+		//
+		// Sanity Check Inputs
+		//
 		
+		require_once("./tools/UtilityManager.class.php");
+		
+		$util = new UtilityManager();
+	
+		$date = $_GET["date"];
+		
+		// check for none-case ... we handle as the current date later in code
+		if( $date != "" )
+		{
+		
+			// check that the date is valid
+			if( $util->IsValidDate($date) == 0 || $util->IsValidDate($date) == False )
+			{
+				// not a valid date
+
+				echo '<script>';
+				echo 'window.location = "./index.php"';
+				echo '</script>';
+			}
+			
+		}
+		
+	?>
+	
 	<?php
 	
 		//require_once("./tools/Database.class.php");
