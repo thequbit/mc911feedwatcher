@@ -8,57 +8,64 @@
 			
 				<?
 			
-					include_once("tools/Database.class.php");
+					include_once("./tools/StatusManager.class.php");
 					
 					// create a database tool to use to pull information from the database
-					$db = new Database();
+					//$db = new Database();
+					
+					$statusManager = new StatusManager();
 					
 					//
 					// System Stats
 					//
 					
 					// get the total number of times the scraper has run
-					$runCount = $db->GetNumberOfRuns();
+					$runCount = $statusManager->GetNumberOfRuns();
+					// get the total number of unique entrees in the database
+					$uniqueIncidents = $statusManager->GetTotalUniqueIncidents();
+					// get the total number of event types logged into the system
+					$totalEventTypes = $statusManager->GetTotalEventTypes();
+					// get the total number of status types logged into the system
+					$totalStatusTypes = $statusManager->GetTotalStatusTypes();
+					
+					
 					// get the total number of API calls that have been made
-					$apicalls = $db->GetNumberOfAPICalls();
+					//$apicalls = $db->GetNumberOfAPICalls();
 					// get the number of unique api users today
-					$totalUniqueApiUsers = $db->GetTotalUniqueAPIUsers();
+					//$totalUniqueApiUsers = $db->GetTotalUniqueAPIUsers();
 					// get the number of unique api users today
-					$uniqueApiUsersToday = $db->GetUniqueAPIUsersToday();
+					//$uniqueApiUsersToday = $db->GetUniqueAPIUsersToday();
 					// get the average querytime today
-					$averageQueryToday = $db->GetAverageQueryToday();
+					//$averageQueryToday = $db->GetAverageQueryToday();
 					
 					// display the results from the database
-					echo '<p class="tab">';
-					echo "<b><br>System Stats: </b><br>";
-					echo '</p>';
-					echo '<p class="tab2">';
-					echo "Total scraper runs: " . $runCount . "<br>";
-					echo "Total number of API calls: " . $apicalls . "<br>";
-					echo "Total Unique API users: " . $totalUniqueApiUsers . "<br>";
-					echo "Unique API Users Today: " . $uniqueApiUsersToday . "<br>";
-					echo "Average Query Time Today: " . number_format($averageQueryToday,4) . " Seconds<br>";
-					echo '</p>';
+					//echo '<p class="tab">';
+					//echo "<b><br>System Stats: </b><br>";
+					//echo '</p>';
+					//echo '<p class="tab2">';
+					
+					//echo "Total number of API calls: " . $apicalls . "<br>";
+					//echo "Total Unique API users: " . $totalUniqueApiUsers . "<br>";
+					//echo "Unique API Users Today: " . $uniqueApiUsersToday . "<br>";
+					//echo "Average Query Time Today: " . number_format($averageQueryToday,4) . " Seconds<br>";
+					//echo '</p>';
 					
 					
 					//
 					// Data Stats
 					//
 					
-					// get the total number of unique entrees in the database
-					$uniqueIncidents = $db->GetTotalUniqueIncidents();
-					// get the total number of event types logged into the system
-					$totalEventTypes = $db->GetTotalEventTypes();
-					// get the total number of status types logged into the system
-					$totalStatusTypes = $db->GetTotalStatusTypes();
 					
+					
+					//echo '<p class="tab">';
+					//echo "<b>System Stats: </b><br>";
+					//echo '</p>';
+					echo '<br>';
 					echo '<p class="tab">';
-					echo "<b>Data Stats: </b><br>";
-					echo '</p>';
-					echo '<p class="tab2">';
-					echo "Total Unique Incidents: " . $uniqueIncidents . "<br>";
-					echo "Total Incident Types: " . $totalEventTypes . "<br>";
-					echo "Total Status Types: " . $totalStatusTypes . "<br>";
+					echo "Total scraper runs: <b>" . $runCount . "</b><br>";
+					echo "Total Unique Incidents: <b>" . $uniqueIncidents . "</b><br>";
+					echo "Total Incident Types: <b>" . $totalEventTypes . "</b><br>";
+					echo "Total Status Types: <b>" . $totalStatusTypes . "</b><br>";
 					echo '</p>';
 					
 				?>
@@ -86,51 +93,6 @@
 				this represents the total number of times the web scrapers have run.  The scrapers run every 60 seconds to ensure all of the information that the
 				dispatch center is providing is captured, and nothing is missed.
 				</p>
-				<br>
-				
-				<p class="tab">
-				<b>Total Number of API calls</b>
-				</p>
-				<p class="tab2">
-				API, in this context, stands for <a href="http://en.wikipedia.org/wiki/Application_programming_interface">Application Programming Interface</a>.  This site provides 
-				a number of free and open API's to allow for anyone to access the data that is being captured by the web scrapers.  For more information on how to take advantage of this
-				data, check out the <a href="developers.php">Developers</a> page.
-				</p>
-				<br>
-				<br>
-				
-				<p class="tab">
-				<b>Total Unique API users</b>
-				</p>
-				<p class="tab2">
-				This site keeps track of the number of unique users use its API's.  Since anonymity is an important part of why the Internet is so important, IP addresses are hashed 
-				and only the hash is saved.  This prevents any information that could identify an individual from being saved by this site.
-				</p>
-				<br>
-				<br>
-				
-				<p class="tab">
-				<b>Unique API Users Today</b>
-				</p>
-				<p class="tab2">
-				This is the total number of unique people that have used the sites API's today.
-				</p>
-				<br>
-				<br>
-				
-				<p class="tab">
-				<b>Average Query Time Today</b>
-				</p>
-				<p class="tab2">
-				All of the information this site serves up with respect to 911 incident information and data is stored within a database.  This value represents the average amount of time for
-				the current day it takes the website to pull the data from the database.  This metric is important to monitor because high query times (larger then half a second) means the
-				site is under heavy load, or there could be a technical problem with the server(s).
-				</p>
-				<br>
-				<br>
-				
-				<br>
-				<h3>Data Stats</h3>
 				<br>
 				
 				<p class="tab">

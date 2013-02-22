@@ -4,13 +4,19 @@
 		
 	<?php
 	
-		require_once("./tools/Database.class.php");
-		require_once("./tools/Time.class.php");
+		//require_once("./tools/Database.class.php");
+		
+		require_once("./tools/IncidentManager.class.php");
+		require_once("./tools/Incident.class.php");
+		require_once("./tools/AgencyManager.class.php");
+		require_once("./tools/Agency.class.php");
+		
+		//require_once("./tools/Time.class.php");
 	
-		$time = new Time();
+		//$time = new Time();
 
 		// record start time
-		$starttime = $time->StartTime();
+		//$starttime = $time->StartTime();
 	
 		// get the posted data variable
 		$date = $_GET['date'];
@@ -27,12 +33,19 @@
 		// calculate yesterday
 		$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
 		$yesterday = date('Y-m-d', $yesterdaytime);
-
+	
 		// create an instance of the database
-		$db = new Database();
+		//$db = new Database();
 
 		// get all of the incidents for the day
-		$incidents = $db->GetIncidentsByDay($date);
+		//$incidents = $db->GetIncidentsByDay($date);
+	
+		// get all of the incidents for the date passed in by the user
+		$incidentManager = new IncidentManager();
+		$incidents = $incidentManager->GetIncidentsByDay($date);
+	
+		// to handle all agency related querys
+		$agencyManager = new AgencyManager();
 	
 		// display links to go to previous day and next day
 		
@@ -91,16 +104,15 @@
 			foreach($incidents as $incident)
 			{
 				
+				// get the agency information needed to display the agency link
+				$agency = $agencyManager->GetAgencyFromID($incident->agencyid);
+				
+				// print out the row
 				echo '<tr>';
 				echo '<td width="100">' . $incident->pubtime . '</td>';
 				echo '<td width="400">' . $incident->event . '</td>';
 				echo '<td width="300">' . $incident->address . '</td>';
-				
-				$shortname = substr($incident->itemid,0,4);
-				$agency = $db->GetAgencyFromShortName($shortname);
-				
-				echo '<td width="250"><a href="viewagency.php?agency=' . substr($incident->itemid,0,4) . '">' . $agency->longname . '</a></td>';
-				
+				echo '<td width="250"><a href="viewagency.php?agency=' . $agency->shortname . '">' . $agency->longname . '</a></td>';
 				echo '<td width="100">' . $incident->itemid . '</td>';
 				echo '</tr>';
 			}
@@ -112,11 +124,11 @@
 		echo '</div>';
 		
 		// calculate time taken
-		$totaltime = $time->TotalTime($starttime);
+		//$totaltime = $time->TotalTime($starttime);
 		
 		// record the API call in the database as hash of IP
-		$ipaddress = md5($_SERVER['HTTP_X_FORWARDED_FOR']);
-		$db->AddAPICall($ipaddress, $todaysDate, $totaltime, "INCIDENTS");
+		//$ipaddress = md5($_SERVER['HTTP_X_FORWARDED_FOR']);
+		//$db->AddAPICall($ipaddress, $todaysDate, $totaltime, "INCIDENTS");
 		
 	?>	
 			

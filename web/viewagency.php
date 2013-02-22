@@ -3,39 +3,56 @@
 ?>
 
 	<?php
-		
-		require_once("./tools/Database.class.php");
-		require_once("./tools/Incident.class.php");
+	
+		require_once("./tools/AgencyManager.class.php");
 		require_once("./tools/Agency.class.php");
-	
-		// create an instance of our database helper class
-		$db = new Database();
-	
+		require_once("./tools/IncidentManager.class.php");
+		require_once("./tools/Incident.class.php");
+
 		// get the agency we are viewing
 		$agencyshortname = $_GET['agency']; // TODO: sanity check this
 	
+		// create an instance of our agency manager object
+		$agencyManager = new AgencyManager();
+	
+		// create an instance of our incident manager
+		$incidentManager = new IncidentManager();
+	
+		// get agency information using the shortname passed in by the user
+		$agency = $agencyManager->GetAgencyFromShortName($agencyshortname);
+	
 		// get the last 25 incidents this agency has seen
-		$incidents = $db->GetIncidentsByAgencyShortName($agencyshortname, 25); // note: 25 here is the number of incidents to return
+		$incidents = $incidentManager->GetIncidentsByAgencyID($agency->agencyid, 25); // note: 25 here is the number of incidents to return
 	
-		// pull all of the agency information based on the passed in short name
-		$agency = $db->GetAgencyFromShortName($agencyshortname);
+		// do some decode if we haven't decoded the 4 letter code yet
+		//if( $agency->longname == "" )
+		//	$agency->longname = "- unknown -";
 	
-		$date = date("Y");
+		// get the current year
+		$year = date("Y");
+	
+		// get todays date for later use
+		$todaysdate = date("Y-m-d");
+	
+		// get the total number of calls for todays date
+		$todaystotalcalls = $incidentManager->GetIncidentCountByAgencyIDAndDate($agency->agencyid, $todaysdate);
 	
 		// get the total number of calls for this year for this agency
-		$totalcalls = $db->GetTotalIncidentsByAgencyShortName($agencyshortname,$date);
+		//$totalcalls = $agencyManager->GetTotalIncidentsByAgencyID($agency->agencyid, $year);
 	
 		echo '<A HREF="javascript:history.back()">< Back</a><br><br>';
 	
 		echo '<h2>' . $agency->longname . '</h2>';
 		echo '<br><br>';
+		echo 'Calls for Today: <b>' . $todaystotalcalls . '</b><br>';
+		echo 'Calls for ' . $year . ': <b>' . $agency->callcount . '</b><br>';
+		echo 'Monroe County 911 Code: <b>' . $agency->shortname . '</b><br>';
 		echo 'Organization Name: <b>' . $agency->longname . '</b><br>';
 		echo 'Agency Website: <b><a href="' . $agency->websiteurl . '">' . $agency->websiteurl . '</a></b><br>';
-		echo 'Monroe County 911 Code: <b>' . $agency->shortname . '</b><br>';
-		echo 'Calls for ' . $date . ': <b>' . $totalcalls . '</b><br>';
+		
 		echo '<br>';
 		echo '<br>';
-		echo "The last " . count($incidents) . " incidents for this agency:<br>"; // use the count incase less than 25 come back
+		echo "The last " . count($incidents) . " incidents for this agency:<br>"; // use the count in case less than 25 come back
 		
 		echo '<div>';
 	
@@ -44,7 +61,7 @@
 		{
 			echo "<br>";
 			echo "<br>";
-			echo "<h3>No incidents were found for this agency: " . $date . "</h3>";
+			echo "<h3> - No incidents were found for this agency - " . $date . "</h3>";
 			echo "<br>";
 			echo "<br>";
 		}
