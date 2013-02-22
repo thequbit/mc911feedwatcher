@@ -15,6 +15,9 @@
 			$db = new DatabaseManager();
 			$db->Connect();
 			
+			// sanitize inputs
+			$date = $db->SanitizeInput($date);
+			
 			// create the query
 			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid FROM incidents WHERE pubdate="' . $date . '" GROUP BY itemid ORDER BY pubtime DESC';
 			
@@ -51,6 +54,10 @@
 			$db = new DatabaseManager();
 			$db->Connect();
 			
+			// sanitize inputs
+			$agencyshortname = $db->SanitizeInput($agencyshortname);
+			$count = $db->SanitizeInput($count);
+			
 			// create the query
 			$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE itemid LIKE "%' . $agencyshortname . '%" GROUP BY itemid ORDER BY pubdate DESC LIMIT ' . $count;
 			
@@ -85,6 +92,10 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+			
+			// sanitize inputs
+			$agencyid = $db->SanitizeInput($agencyid);
+			$count = $db->SanitizeInput($count);
 			
 			//
 			// note: I don't like how we are doing ORDER BY here, but we don't have enough information to do it differently.
@@ -125,6 +136,9 @@
 			$db = new DatabaseManager();
 			$db->Connect();
 			
+			// sanitize inputs
+			$agencyid = $db->SanitizeInput($agencyid);
+			
 			// create the query
 			$query = 'SELECT COUNT(DISTINCT itemid)  FROM incidents WHERE agencyid = ' . $agencyID . ' AND pubdate >= "' . date("Y") . '-01-01"';
 			
@@ -148,6 +162,10 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+			
+			// sanitize inputs
+			$agencyid = $db->SanitizeInput($agencyid);
+			$date = $db->SanitizeInput($date);
 			
 			// create the query
 			$query = 'SELECT COUNT(DISTINCT itemid) FROM incidents WHERE agencyid = ' . $agencyid . ' AND pubdate = "' . $date . '"';
@@ -173,6 +191,9 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+		
+			// sanitize inputs
+			$date = $db->SanitizeInput($date);
 		
 			// get the counts for all incidents seen today
 			$query = 'select count(distinct itemid) as count, event from incidents where pubdate="' . $date . '" group by event';

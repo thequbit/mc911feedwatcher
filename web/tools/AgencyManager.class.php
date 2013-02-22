@@ -11,6 +11,9 @@
 			$db = new DatabaseManager();
 			$db->Connect();
 			
+			// sanitize inputs
+			$agencyid = $db->SanitizeInput($agencyid);
+			
 			// create the query
 			$query = 'SELECT * FROM agencies WHERE agencyid = ' . $agencyid;
 			
@@ -46,6 +49,9 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+			
+			// sanitize inputs
+			$agencyshortname = $db->SanitizeInput($agencyshortname);
 			
 			// create the query
 			$query = 'SELECT * FROM agencies WHERE shortname = "' . $agencyshortname . '"';
@@ -181,6 +187,9 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+			
+			// sanitize inputs
+			$agencyshortname = $db->SanitizeInput($agencyshortname);
 			
 			// create the query
 			$query = 'SELECT COUNT(*) as count FROM agencies WHERE shortname = "' . $agencyshortname . '"';

@@ -45,7 +45,10 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
-			
+		
+			// sanitize inputs
+			$id = $db->SanitizeInput($id);
+	
 			// create the query
 			$query = 'SELECT eventtype FROM eventtypes WHERE eventtypeid=' . $id;
 			
@@ -64,6 +67,9 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+
+			// sanitize inputs
+			$eventtypeid = $db->SanitizeInput($eventtypeid);
 
 			// get the eventtype via the id
 			$eventtype = $this->GetEventTextFromID($eventtypeid);
@@ -124,6 +130,10 @@
 			// connect to the database
 			$db = new DatabaseManager();
 			$db->Connect();
+
+			// sanitize inputs
+			$eventtypeid = $db->SanitizeInput($eventtypeid);
+			$date = $db->SanitizeInput($date);
 
 			// get the eventtype via the id
 			$eventtype = $this->GetEventTextFromID($eventtypeid);
