@@ -175,6 +175,31 @@
 			
 			return $dict;
 		}
+		
+		function ValidAgencyByShortName($agencyshortname)
+		{
+			// connect to the database
+			$db = new DatabaseManager();
+			$db->Connect();
+			
+			// create the query
+			$query = 'SELECT COUNT(*) as count FROM agencies WHERE shortname = "' . $agencyshortname . '"';
+			
+			// execute the query
+			$results = $db->Query($query);
+			
+			// get the row from the result
+			$r = mysql_fetch_assoc($results);
+			
+			// see if the shortname exists
+			if( $r['count'] == "0" )
+				$valid = false;
+			else
+				$valid = true;
+			
+			// return our created object
+			return $valid;
+		}
 	}
 
 ?>
