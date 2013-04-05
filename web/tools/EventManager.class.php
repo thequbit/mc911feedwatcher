@@ -174,7 +174,7 @@
 		
 		function GetHourlyCountsByEventId($eventtypeid, $date)
 		{
-			dprint( "GetAllTimeHourlyCountsByEventId() Start." );
+			dprint( "GetHourlyCountsByEventId() Start." );
 			
 			try
 			{
@@ -247,7 +247,7 @@
 				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
-			dprint("GetAllTimeHourlyCountsByEventId() Done.");
+			dprint("GetHourlyCountsByEventId() Done.");
 
 			return $counts;
 		}
