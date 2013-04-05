@@ -6,78 +6,134 @@
 	{
 		function GetNumberOfRuns()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetNumberOfRuns() Start." );
 			
-			// create the query
-			$query = "SELECT COUNT(*) AS count FROM runs";
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// execute the query
-			$results = $db->Query($query);
+				// create the query
+				$query = "SELECT COUNT(*) AS count FROM runs";
 			
-			// get the row
-			$r = mysql_fetch_assoc($results);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+			
+				$count = $results[0]["count"];
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetNumberOfRuns() Done.");
 			
 			// return the count
-			return $r["count"]; 
+			return $count;
 		}
 		
 		function GetTotalUniqueIncidents()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetTotalUniqueIncidents() Start." );
 			
-			// create the query
-			$query = "SELECT COUNT(*) AS count FROM incidents";
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// execute the query
-			$results = $db->Query($query);
+				// create the query
+				$query = "SELECT COUNT(*) AS count FROM incidents";
 			
-			// get the row
-			$r = mysql_fetch_assoc($results);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+			
+				$count = $results[0]["count"];
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetTotalUniqueIncidents() Done.");
 			
 			// return the count
-			return $r["count"];
+			return $count;
 		}
-		
+
 		function GetTotalEventTypes()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetTotalEventTypes() Start." );
 			
-			// create the query
-			$query = "SELECT COUNT(*) AS count FROM eventtypes";
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// execute the query
-			$results = $db->Query($query);
+				// create the query
+				$query = "SELECT COUNT(*) AS count FROM eventtypes";
 			
-			// get the row
-			$r = mysql_fetch_assoc($results);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+			
+				$count = $results[0]["count"];
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetTotalEventTypes() Done.");
 			
 			// return the count
-			return $r["count"];
+			return $count;
 		}
 		
 		function GetTotalStatusTypes()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetTotalStatusTypes() Start." );
 			
-			// create the query
-			$query = "SELECT COUNT(*) AS count FROM statustypes";
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// execute the query
-			$results = $db->Query($query);
+				// create the query
+				$query = "SELECT COUNT(*) AS count FROM statustypes";
 			
-			// get the row
-			$r = mysql_fetch_assoc($results);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+			
+				$count = $results[0]["count"];
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetTotalStatusTypes() Done.");
 			
 			// return the count
-			return $r["count"];
+			return $count;
 		}
 	}
 	
