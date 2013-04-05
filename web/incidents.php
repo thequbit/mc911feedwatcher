@@ -130,19 +130,20 @@
 			echo '<td><b><font size="4">Event ID</font></b></th>';
 			echo '</tr>';
 		
+			// generate dictionaries so we don't have to query the DB every time.
+			$longNameDict = $agencyManager->GetAgencyLongNameDictionary();
+			$shortNameDict = $agencyManager->GetAgencyShortNameDictionary();
+		
 			// print the events to the page
 			foreach($incidents as $incident)
 			{
-				
-				// get the agency information needed to display the agency link
-				$agency = $agencyManager->GetAgencyFromID($incident->agencyid);
 				
 				// print out the row
 				echo '<tr>';
 				echo '<td width="100">' . $incident->pubtime . '</td>';
 				echo '<td width="400">' . $incident->event . '</td>';
 				echo '<td width="300">' . $incident->address . '</td>';
-				echo '<td width="250"><a href="viewagency.php?agency=' . $agency->shortname . '">' . $agency->longname . '</a></td>';
+				echo '<td width="250"><a href="viewagency.php?agency=' . $shortNameDict[$incident->agencyid] . '">' . $longNameDict[$incident->agencyid] . '</a></td>';
 				echo '<td width="100">' . $incident->itemid . '</td>';
 				echo '</tr>';
 			}

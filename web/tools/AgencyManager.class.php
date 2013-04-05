@@ -5,6 +5,90 @@
 
 	class AgencyManager
 	{
+		function GetAgencyLongNameDictionary()
+		{
+			dprint( "GetAgencyLongNameDictionary() Start." );
+			
+			try
+			{
+		
+				$db = new DatabaseTool();
+				
+				// create the query
+				$query = 'SELECT agencyid, longname FROM agencies';
+			
+				$firstofyear = date("Y") . "-01-01";
+			
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+			
+				$dict = array();
+			
+				foreach($results as $result)
+				{
+					// insert value into dictionary
+					$dict[$result['agencyid']] = $result['longname'];
+				}
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetAgencyLongNameDictionary() Done.");
+			
+			// return our created object
+			return $dict;
+		}
+		
+		function GetAgencyShortNameDictionary()
+		{
+			dprint( "GetAgencyShortNameDictionary() Start." );
+			
+			try
+			{
+		
+				$db = new DatabaseTool();
+				
+				// create the query
+				$query = 'SELECT agencyid, shortname FROM agencies';
+			
+				$firstofyear = date("Y") . "-01-01";
+			
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+			
+				$dict = array();
+			
+				foreach($results as $result)
+				{
+					// insert value into dictionary
+					$dict[$result['agencyid']] = $result['short'];
+				}
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetAgencyShortNameDictionary() Done.");
+			
+			// return our created object
+			return $dict;
+		}
+	
 		function GetAgencyFromID($agencyid)
 		{
 			dprint( "GetAgencyFromID() Start." );
