@@ -56,7 +56,7 @@
 			break;
 	}
 
-	exec("python " .  $scriptName, $svgImage);
+	exec("python ./scripts/" .  $scriptName, $svgImage);
 	echo $svgImage[1];
 
 ?>
