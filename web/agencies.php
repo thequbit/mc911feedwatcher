@@ -11,7 +11,8 @@
 	<br><br>
 	
 	<p class="tab">
-	<b>Thanks to John from Henrietta for helping to fill in some of the unknowns!</b>
+	<b>Thanks to John from Henrietta for helping to fill in some of the unknowns!</b><br>
+	<b>Thanks to Andy from DOT Traffic Operations center for helping to fill in last of the unknowns!</b>
 	</p>
 
 	<br>
