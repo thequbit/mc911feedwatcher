@@ -1,6 +1,6 @@
 <?php
 
-	require_once("DatabaseManager2.class.php");
+	require_once("DatabaseTool.class.php");
 
 	//
 	// API Manager Helper Objects

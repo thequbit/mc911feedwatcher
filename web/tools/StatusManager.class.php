@@ -1,6 +1,6 @@
 <?php
 	
-	require_once("DatabaseManager.class.php");
+	require_once("DatabaseTool.class.php");
 	
 	class StatusManager
 	{

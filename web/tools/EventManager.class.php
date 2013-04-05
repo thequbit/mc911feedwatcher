@@ -1,7 +1,6 @@
 <?php
 
-	require_once("DatabaseManager2.class.php");
-	require_once("DatabaseManager.class.php");
+	require_once("DatabaseTool.class.php");
 	require_once("Event.class.php");
 	require_once("EventType.class.php");
 
