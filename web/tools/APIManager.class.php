@@ -1,6 +1,6 @@
 <?php
 
-	require_once("DatabaseManager.class.php");
+	require_once("DatabaseManager2.class.php");
 
 	//
 	// API Manager Helper Objects
@@ -26,48 +26,60 @@
 	class APIManager
 	{
 	
-	
 		//
 		// Dailing counts by incident API function
 		//
 		function GetCountsByDay($date)
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetCountsByDay() Start." );
 			
-			// sanitize inputs
-			$date = $db->SanitizeInput($date);
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// create the query
-			$query = 'select tmp.event as incidentname, count(tmp.zeecount) as count from (select DISTINCT itemid, event, count(incidentid) as zeecount from incidents where pubdate = "' . $date . '" group by itemid order by event) as tmp group by tmp.event;';
+				// generate our query
+				$query = 'select tmp.event as incidentname, count(tmp.zeecount) as count from (select DISTINCT itemid, event, count(incidentid) as zeecount from incidents where pubdate = ? group by itemid order by event) as tmp group by tmp.event';
 			
-			// execute the query
-			$results = $db->Query($query);
-			
-			// create an array to put our results into
-			$items = array();
-			
-			$letter = 'A';
-			
-			// decode the rows
-			while($r = mysql_fetch_assoc($results)) {
-			
-				$item = new IncidentCount();
-			
-				// pull the information from the row
-				$item->incidentname = $r['incidentname'];
-				$item->count = $r['count'];
-				$item->letter = $letter;
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $date); // bind the varibale
+				$results = $db->Execute($stmt);
 				
-				$letter++;
+				dprint( "Processing " . count($results) . " Results ..." );
 				
-				$items[] = $item;
+				// create an array to put our results into
+				$items = array();
+				$letter = 'A';
+				
+				// iterate through the returned rows and decode them into a php class
+				foreach( $results as $row )
+				{
+					$item = new IncidentCount();
+			
+					// pull the information from the row
+					$item->incidentname = $row['incidentname'];
+					$item->count = $row['count'];
+					$item->letter = $letter;
+					
+					$letter++;
+					
+					$items[] = $item;
+				}
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
 			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetCountsByDay() Done.");
 			
 			return $items;
 		}
-	
 	
 		//
 		// Specific Incident Types API Functions
@@ -76,73 +88,98 @@
 		function GetMVACounts()
 		{
 			
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetMVACounts() Start." );
 			
-			// sanitize inputs
-			$date = $db->SanitizeInput($date);
-			
-			// create the query
-			$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, event, pubdate, count(incidentid) as zeecount from incidents where (lower(event) like "%mva%" or lower(event) like "%vehicle%" or lower(event) like "%hit and run%") group by itemid order by event) as tmp group by pubdate';
-			
-			// execute the query
-			$results = $db->Query($query);
-			
-			// create an array to put our results into
-			$items = array();
-			
-			// decode the rows
-			while($r = mysql_fetch_assoc($results)) {
-			
-				$item = new Item();
-			
-				// pull the information from the row
-				$item->date = $r['date'];
-				$item->count = $r['count'];
+			try
+			{
+		
+				$db = new DatabaseTool();
 				
-				$letter++;
+				// create the query
+				$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, event, pubdate, count(incidentid) as zeecount from incidents where (lower(event) like "%mva%" or lower(event) like "%vehicle%" or lower(event) like "%hit and run%") group by itemid order by event) as tmp group by pubdate';
 				
-				$items[] = $item;
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+				
+				// create an array to put our results into
+				$items = array();
+				
+				// iterate through the returned rows and decode them into a php class
+				foreach( $results as $row )
+				{
+					$item = new Item();
+			
+					// pull the information from the row
+					$item->date = $row['date'];
+					$item->count = $row['count'];
+					
+					$items[] = $item;
+				}
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
 			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetMVACounts() Done.");
 			
 			return $items;
 		}
 	
 		function GetAllDogCounts()
 		{
-			//echo "here";
+			dprint( "GetAllDogCounts() Start." );
+			
+			try
+			{
 		
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
-			
-			// sanitize inputs
-			$date = $db->SanitizeInput($date);
-			
-			// create the query
-			$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, pubdate, count(incidentid) as zeecount from incidents where lower(event) = "barking dogs" group by itemid order by pubdate) as tmp group by pubdate;';
-			
-			// execute the query
-			$results = $db->Query($query);
-			
-			// create an array to put our results into
-			$items = array();
-			
-			// decode the rows
-			while($r = mysql_fetch_assoc($results)) {
-			
-				$item = new Item();
-			
-				// pull the information from the row
-				$item->date = $r['date'];
-				$item->count = $r['count'];
+				$db = new DatabaseTool();
 				
-				$items[] = $item;
+				// create the query
+				$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, pubdate, count(incidentid) as zeecount from incidents where lower(event) = "barking dogs" group by itemid order by pubdate) as tmp group by pubdate;';
+				
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+				
+				// create an array to put our results into
+				$items = array();
+				
+				// iterate through the returned rows and decode them into a php class
+				foreach( $results as $row )
+				{
+					$item = new Item();
+			
+					// pull the information from the row
+					$item->date = $row['date'];
+					$item->count = $row['count'];
+					
+					$items[] = $item;
+				}
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
 			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetAllDogCounts() Done.");
 			
 			return $items;
 		}
+
 
 		//
 		// All-Time summations by day
@@ -150,39 +187,51 @@
 
 		function GetAllTimeSum()
 		{
-			//echo "ZOMG";
+			dprint( "GetAllDogCounts() Start." );
+			
+			try
+			{
 		
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
-			
-			// sanitize inputs
-			$date = $db->SanitizeInput($date);
-			
-			// create the query
-			$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, pubdate, count(incidentid) as zeecount from incidents group by itemid order by pubdate) as tmp group by pubdate;';
-			
-			// execute the query
-			$results = $db->Query($query);
-			
-			// create an array to put our results into
-			$items = array();
-			
-			// decode the rows
-			while($r = mysql_fetch_assoc($results)) {
-			
-				$item = new Item();
-			
-				// pull the information from the row
-				$item->date = $r['date'];
-				$item->count = $r['count'];
+				$db = new DatabaseTool();
 				
-				$items[] = $item;
+				// create the query
+				$query = 'select tmp.pubdate as date, count(tmp.zeecount) as count from (select DISTINCT itemid, pubdate, count(incidentid) as zeecount from incidents group by itemid order by pubdate) as tmp group by pubdate;';
+			
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+				
+				// create an array to put our results into
+				$items = array();
+				
+				// iterate through the returned rows and decode them into a php class
+				foreach( $results as $row )
+				{
+					$item = new Item();
+			
+					// pull the information from the row
+					$item->date = $row['date'];
+					$item->count = $row['count'];
+					
+					$items[] = $item;
+				}
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			
 			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetAllDogCounts() Done.");
 			
 			return $items;
 		}
-	
+		
 	}
 
 ?>
