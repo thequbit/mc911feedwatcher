@@ -26,10 +26,7 @@
 			echo '<div class="eventtype">';
 			echo '<p class="tab">';
 			echo $eventtype->eventtype . " ";
-			//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=today">today</a>) ';
-			//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=week">week</a>) ';
-			//echo '(<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&period=month">month</a>)';
-			echo '(<a href="http://monroe911.mycodespace.net/alltimehourly.php?eventtypeid=' . $eventtype->eventtypeid . '">all-time by hour</a>)<br>';
+			echo '(<a href="alltimehourly.php?eventtypeid=' . $eventtype->eventtypeid . '">all-time by hour</a>)<br>';
 			echo '</p>';
 			echo '</div>';
 		}
