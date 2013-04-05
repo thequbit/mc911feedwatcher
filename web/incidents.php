@@ -96,7 +96,7 @@
 
 		echo '<br>';
 
-		echo '<center><h2>Incidents for ' . date("l F j, Y") . '</h2></center>';
+		echo '<center><h2>Incidents for ' . date("l F j, Y",strtotime($date)) . '</h2></center>';
 
 		echo '<center>';
 		echo '<br>';
