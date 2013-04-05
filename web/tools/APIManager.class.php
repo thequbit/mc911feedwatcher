@@ -103,22 +103,7 @@
 				$results = $db->Execute($stmt);
 				
 				dprint( "Processing " . count($results) . " Results ..." );
-				
-				// create an array to put our results into
-				$items = array();
-				
-				// iterate through the returned rows and decode them into a php class
-				foreach( $results as $row )
-				{
-					$item = new Item();
-			
-					// pull the information from the row
-					$item->date = $row['date'];
-					$item->count = $row['count'];
-					
-					$items[] = $item;
-				}
-				
+
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
 			
@@ -130,7 +115,7 @@
 			
 			dprint("GetMVACounts() Done.");
 			
-			return $items;
+			return $results;
 		}
 	
 		function GetAllDogCounts()
@@ -151,21 +136,6 @@
 				
 				dprint( "Processing " . count($results) . " Results ..." );
 				
-				// create an array to put our results into
-				$items = array();
-				
-				// iterate through the returned rows and decode them into a php class
-				foreach( $results as $row )
-				{
-					$item = new Item();
-			
-					// pull the information from the row
-					$item->date = $row['date'];
-					$item->count = $row['count'];
-					
-					$items[] = $item;
-				}
-				
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
 			
@@ -177,7 +147,7 @@
 			
 			dprint("GetAllDogCounts() Done.");
 			
-			return $items;
+			return $results;
 		}
 
 
@@ -187,7 +157,7 @@
 
 		function GetAllTimeSum()
 		{
-			dprint( "GetAllDogCounts() Start." );
+			dprint( "GetAllTimeSum() Start." );
 			
 			try
 			{
@@ -203,21 +173,6 @@
 				
 				dprint( "Processing " . count($results) . " Results ..." );
 				
-				// create an array to put our results into
-				$items = array();
-				
-				// iterate through the returned rows and decode them into a php class
-				foreach( $results as $row )
-				{
-					$item = new Item();
-			
-					// pull the information from the row
-					$item->date = $row['date'];
-					$item->count = $row['count'];
-					
-					$items[] = $item;
-				}
-				
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
 			
@@ -227,9 +182,9 @@
 				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
-			dprint("GetAllDogCounts() Done.");
+			dprint("GetAllTimeSum() Done.");
 			
-			return $items;
+			return $results;
 		}
 		
 	}
