@@ -20,7 +20,8 @@
 				<div class="tab">
 					<a href="http://mycodespace.net/projects/mcsafetyfeed/api/counts.php?type=mva">Daily Counts of Motor Vehicle Accodents</a><br>
 					<a href="http://mycodespace.net/projects/mcsafetyfeed/api/counts.php?type=barkingdogs">Daily Counts of Backing Dog Complaints</a><br>
-					<a href="http://mycodespace.net/projects/mcsafetyfeed/api/counts.php?type=dailycounts">Today's COunts for all Incident Types</a><br>
+					<a href="http://mycodespace.net/projects/mcsafetyfeed/api/counts.php?type=dailycounts">Today's Counts for all Incident Types</a><br>
+					<a href="http://mycodespace.net/projects/mcsafetyfeed/api/counts.php?type=alltimesum">All-Time Summation by Incident Type</a><br>
 				</div>
 				<br>
 				
@@ -29,7 +30,24 @@
 				
 				Note: API access is not currently restricted since the demand is not high.  If the demand increases, there may be API limitations put in place.  If you would like a data drop of the data just contact me and I will be happy to shoot it over to you :D.
 				<br>
-
+				<br>
+				<br>
+				
+				<h3>Quick and Dirty example of PyGal Outputs</h3>
+				<br>
+				<br>
+				
+				<center>
+					<iframe src="api/getsvg.php?type=mva" width="800" height="600"></iframe><br>
+					<br>
+					
+					<iframe src="api/getsvg.php?type=barkingdogs" width="800" height="600"></iframe><br>
+					<br>
+					
+					<iframe src="api/getsvg.php?type=alltimesum" width="800" height="600"></iframe><br>
+					<br>
+				</center>
+		
 <?php
 	require_once("_footer.php");
 ?>
