@@ -9,6 +9,10 @@
 	class IncidentManager
 	{
 	
+		//
+		// Page Functions
+		//
+	
 		function GetIncidentsByDay($date)
 		{
 			// connect to the database
