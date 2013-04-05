@@ -1,5 +1,6 @@
 <?php
 
+	require_once("DatabaseManager2.class.php");
 	require_once("DatabaseManager.class.php");
 	require_once("Agency.class.php");
 
@@ -7,77 +8,94 @@
 	{
 		function GetAgencyFromID($agencyid)
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetAgencyFromID() Start." );
 			
-			// sanitize inputs
-			$agencyid = $db->SanitizeInput($agencyid);
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// create the query
-			$query = 'SELECT * FROM agencies WHERE agencyid = ' . $agencyid;
+				// create the query
+				$query = 'SELECT * FROM agencies WHERE agencyid = ?';
 			
-			// execute the query
-			$results = $db->Query($query);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $agencyid); // bind the varibale
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+				
+				// get all agencies
+				$dict = $this->GetYearAllAgencyCounts();
 			
-			// get all agencies
-			$dict = $this->GetYearAllAgencyCounts();
+				// pull the information from the row into the agency object
+				$agency = new Agency();
+				
+				$agency->agencyid = $results[0]['agencyid'];
+				$agency->shortname = $results[0]['shortname'];
+				$agency->longname = $results[0]['longname'];
+				$agency->type = $results[0]['type'];
+				$agency->description = $results[0]['description'];
+				$agency->websiteurl = $results[0]['websiteurl'];
+				$id = $agency->agencyid;
+				$agency->callcount = $dict[$id];
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
 			
-			// get the row from the result
-			$r = mysql_fetch_assoc($results);
+			dprint("GetAgencyFromID() Done.");
 			
-			// create a new agency object to return
-			$agency = new Agency();
-			
-			// pull the information from the row into the agency object
-			$agency->agencyid = $r['agencyid'];
-			$agency->shortname = $r['shortname'];
-			$agency->longname = $r['longname'];
-			$agency->type = $r['type'];
-			$agency->description = $r['description'];
-			$agency->websiteurl = $r['websiteurl'];
-			
-			$id = $agency->agencyid;
-			$agency->callcount = $dict[$id];
-			
-			// return our created object
 			return $agency;
 		}
 		
 		function GetAgencyFromShortName($agencyshortname)
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetAgencyFromShortName() Start." );
 			
-			// sanitize inputs
-			$agencyshortname = $db->SanitizeInput($agencyshortname);
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// create the query
-			$query = 'SELECT * FROM agencies WHERE shortname = "' . $agencyshortname . '"';
+				// create the query
+				$query = 'SELECT * FROM agencies WHERE shortname = ?';
 			
-			// execute the query
-			$results = $db->Query($query);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $agencyshortname); // bind the varibale
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+		
+				// get all agencies
+				$dict = $this->GetYearAllAgencyCounts();
 			
-			// get all agencies
-			$dict = $this->GetYearAllAgencyCounts();
+				// pull the information from the row into the agency object
+				$agency = new Agency();
+				
+				$agency->agencyid = $results[0]['agencyid'];
+				$agency->shortname = $results[0]['shortname'];
+				$agency->longname = $results[0]['longname'];
+				$agency->type = $results[0]['type'];
+				$agency->description = $results[0]['description'];
+				$agency->websiteurl = $results[0]['websiteurl'];
+				$id = $agency->agencyid;
+				$agency->callcount = $dict[$id];
+				
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
 			
-			// get the row from the result
-			$r = mysql_fetch_assoc($results);
-			
-			// create a new agency object to return
-			$agency = new Agency();
-			
-			// pull the information from the row into the agency object
-			$agency->agencyid = $r['agencyid'];
-			$agency->shortname = $r['shortname'];
-			$agency->longname = $r['longname'];
-			$agency->type = $r['type'];
-			$agency->description = $r['description'];
-			$agency->websiteurl = $r['websiteurl'];
-			
-			$id = $agency->agencyid;
-			$agency->callcount = $dict[$id];
+			dprint("GetAgencyFromShortName() Done.");
 			
 			// return our created object
 			return $agency;
@@ -85,40 +103,55 @@
 		
 		function GetAllAgencies()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetAllAgencies() Start." );
 			
-			// create the query
-			$query = 'SELECT * FROM agencies ORDER BY shortname ASC';
-			
-			// execute the query
-			$results = $db->Query($query);
-			
-			// get all agencies
-			$dict = $this->GetYearAllAgencyCounts();
-			
-			// create an array to place our agency objects into
-			$agencies = array();
-			
-			// decode the rows
-			while($r = mysql_fetch_assoc($results)) {
-			
-				$agency = new Agency();
-			
-				// pull the information from the row
-				$agency->agencyid = $r['agencyid'];
-				$agency->shortname = $r['shortname'];
-				$agency->longname = $r['longname'];
-				$agency->type = $r['type'];
-				$agency->description = $r['description'];
-				$agency->websiteurl = $r['websiteurl'];
+			try
+			{
+		
+				$db = new DatabaseTool();
 				
-				$id = $agency->agencyid;
-				$agency->callcount = $dict[$id];
+				// create the query
+				$query = 'SELECT * FROM agencies ORDER BY shortname ASC';
+			
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$results = $db->Execute($stmt);
 				
-				$agencies[] = $agency;
-			}	
+				dprint( "Processing " . count($results) . " Results ..." );
+			
+				// get all agencies
+				$dict = $this->GetYearAllAgencyCounts();
+			
+				$agencies = array();
+				
+				foreach($results as $result)
+				{
+				
+					// pull the information from the row into the agency object
+					$agency = new Agency();
+					
+					$agency->agencyid = $result['agencyid'];
+					$agency->shortname = $result['shortname'];
+					$agency->longname = $result['longname'];
+					$agency->type = $result['type'];
+					$agency->description = $result['description'];
+					$agency->websiteurl = $result['websiteurl'];
+					
+					$id = $agency->agencyid;
+					$agency->callcount = $dict[$id];
+					
+					$agencies[] = $agency;
+				}
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
+			
+			dprint("GetAllAgencies() Done.");
 			
 			// return our created object
 			return $agencies;
@@ -126,85 +159,124 @@
 		
 		function GetYearAllAgencyCounts()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetYearAllAgencyCounts() Start." );
+			
+			try
+			{
 		
-			// create the query
-			$query = 'SELECT agencyid, COUNT(DISTINCT itemid) AS count FROM incidents WHERE pubdate >= "2013-01-01" GROUP BY agencyid';
-			
-			// execute the query
-			$results = $db->Query($query);
-			
-			$dict = array();
-			
-			// create dictionary
-			while($r = mysql_fetch_assoc($results)) {
-			
-				// decode row
-				$id = $r['agencyid'];
-				$count = $r['count'];
+				$db = new DatabaseTool();
 				
-				// insert value into dictionary
-				$dict[$id] = $count;
+				// create the query
+				$query = 'SELECT agencyid, COUNT(DISTINCT itemid) AS count FROM incidents WHERE pubdate >= ? GROUP BY agencyid';
 			
+				$firstofyear = date("Y") . "-01-01";
+			
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $firstofyear); // bind the varibale
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+			
+				$dict = array();
+			
+				foreach($results as $result)
+				{
+					// insert value into dictionary
+					$dict[$result['agencyid']] = $result['count'];
+				}
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
+			dprint("GetYearAllAgencyCounts() Done.");
+			
+			// return our created object
 			return $dict;
 		}
 		
 		function GetTodayAllAgencyCounts()
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetTodayAllAgencyCounts() Start." );
+			
+			try
+			{
 		
-			// create the query
-			$query = 'SELECT agencyid, COUNT(DISTINCT itemid) AS count FROM incidents WHERE pubdate >= "' . date("Y-m-d") . '" GROUP BY agencyid';
+				$db = new DatabaseTool();
 			
-			// execute the query
-			$results = $db->Query($query);
+				// create the query
+				$query = 'SELECT agencyid, COUNT(DISTINCT itemid) AS count FROM incidents WHERE pubdate = ? GROUP BY agencyid';
 			
-			$dict = array();
+				$today = date("Y-m-d");
 			
-			// create dictionary
-			while($r = mysql_fetch_assoc($results)) {
-			
-				// decode row
-				$id = $r['agencyid'];
-				$count = $r['count'];
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $today); // bind the varibale
+				$results = $db->Execute($stmt);
 				
-				// insert value into dictionary
-				$dict[$id] = $count;
+				dprint( "Processing " . count($results) . " Results ..." );
 			
+				$dict = array();
+			
+				foreach($results as $result)
+				{
+					// insert value into dictionary
+					$dict[$result['agencyid']] = $result['count'];
+				}
+			
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
+			dprint("GetTodayAllAgencyCounts() Done.");
+			
+			// return our created object
 			return $dict;
 		}
 		
 		function ValidAgencyByShortName($agencyshortname)
 		{
-			// connect to the database
-			$db = new DatabaseManager();
-			$db->Connect();
+			dprint( "GetTodayAllAgencyCounts() Start." );
 			
-			// sanitize inputs
-			$agencyshortname = $db->SanitizeInput($agencyshortname);
+			try
+			{
+		
+				$db = new DatabaseTool();
 			
-			// create the query
-			$query = 'SELECT COUNT(*) as count FROM agencies WHERE shortname = "' . $agencyshortname . '"';
+				// create the query
+				$query = 'SELECT COUNT(*) as count FROM agencies WHERE shortname = ?';
 			
-			// execute the query
-			$results = $db->Query($query);
+				$mysqli = $db->Connect();
+				$stmt = $mysqli->prepare($query);
+				$stmt->bind_param("s", $agencyshortname); // bind the varibale
+				$results = $db->Execute($stmt);
+				
+				dprint( "Processing " . count($results) . " Results ..." );
+		
+				// see if the shortname exists
+				if( $results[0]['count'] == "0" )
+					$valid = false;
+				else
+					$valid = true;
 			
-			// get the row from the result
-			$r = mysql_fetch_assoc($results);
+				// close our DB connection
+				$db->Close($mysqli, $stmt);
+			}
+			catch (Exception $e)
+			{
+				dprint( "Caught exception: " . $e->getMessage() );
+			}
 			
-			// see if the shortname exists
-			if( $r['count'] == "0" )
-				$valid = false;
-			else
-				$valid = true;
+			dprint("GetTodayAllAgencyCounts() Done.");
 			
 			// return our created object
 			return $valid;
