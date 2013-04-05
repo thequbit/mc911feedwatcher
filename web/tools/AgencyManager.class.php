@@ -245,7 +245,7 @@
 		
 		function ValidAgencyByShortName($agencyshortname)
 		{
-			dprint( "GetTodayAllAgencyCounts() Start." );
+			dprint( "ValidAgencyByShortName() Start." );
 			
 			try
 			{
@@ -276,7 +276,7 @@
 				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
-			dprint("GetTodayAllAgencyCounts() Done.");
+			dprint("ValidAgencyByShortName() Done.");
 			
 			// return our created object
 			return $valid;
