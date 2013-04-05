@@ -203,7 +203,7 @@
 			foreach($eventtypes as $eventtype)
 			{
 				echo "<b>" . $letter . "</b>: " . $eventtype->eventtype;
-				echo ' (<a href="http://monroe911.mycodespace.net/hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&date=' . $date . '">hourly</a>)<br>';
+				echo ' (<a href="hourly.php?eventtypeid=' . $eventtype->eventtypeid . '&date=' . $date . '">hourly</a>)<br>';
 				
 				$letter++;
 			}
