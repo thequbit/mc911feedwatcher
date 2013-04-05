@@ -17,7 +17,7 @@
 					<a href="incidents.php">incidents</a> - This displays all of the incidents for a particular day.<br>
 					<a href="events.php">events</a> - This is a list of different types of incidents seen by dispatch.<br>
 					<a href="agencies.php">agencies</a> - This is an incomplete list of all of the agencies in Monroe County, NY reporting to incidents.<br>
-					<a href="about.php">about</a> - More about this site and it's developer/maintianer.<br>
+					<a href="about.php">about</a> - More about this site and its developer/maintainer.<br>
 				</p>
 				
 				<br>
