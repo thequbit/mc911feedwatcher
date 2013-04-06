@@ -17,8 +17,6 @@
 				// create the query
 				$query = 'SELECT agencyid, longname FROM agencies';
 			
-				$firstofyear = date("Y") . "-01-01";
-			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
 				$results = $db->Execute($stmt);
@@ -58,8 +56,6 @@
 				
 				// create the query
 				$query = 'SELECT agencyid, shortname FROM agencies';
-			
-				$firstofyear = date("Y") . "-01-01";
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
