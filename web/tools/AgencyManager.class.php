@@ -68,7 +68,7 @@
 				foreach($results as $result)
 				{
 					// insert value into dictionary
-					$dict[$result['agencyid']] = $result['short'];
+					$dict[$result['agencyid']] = $result['shortname'];
 				}
 			
 				// close our DB connection
