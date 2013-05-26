@@ -6,7 +6,7 @@ import MySQLdb as mdb
 import _mysql as mysql
 
 #
-# code via threebean (github.com/threebean) from:
+# code via Ralph Bean (github.com/ralphbean) from:
 #   https://github.com/ralphbean/monroe/blob/master/wsgi/tg2app/tg2app/scrapers/propertyinfo.py 
 #
 def geocode(address):
