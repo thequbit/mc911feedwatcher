@@ -10,6 +10,10 @@
 		public $itemid;
 		public $scrapedatetime;
 		public $agencyid;
+		public $fulladdress;
+		public $lat;
+		public $lng;
+		public $izipcode;
 	}
 
 ?>

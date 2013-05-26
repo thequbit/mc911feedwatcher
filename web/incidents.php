@@ -142,7 +142,10 @@
 				echo '<tr>';
 				echo '<td width="100">' . $incident->pubtime . '</td>';
 				echo '<td width="400">' . $incident->event . '</td>';
-				echo '<td width="300">' . $incident->address . '</td>';
+				if( $incident->lat == "" || $incident->lng == "" )
+					echo '<td width="300">' . $incident->address . '</td>';
+				else
+					echo '<td width="300"><a href="https://maps.google.com/maps?z=16&t=m&q=loc:' . $incident->lat . "+" . $incident->lng . '">' . $incident->address . '</a></td>';
 				echo '<td width="250"><a href="viewagency.php?agency=' . $shortNameDict[$incident->agencyid] . '">' . $longNameDict[$incident->agencyid] . '</a></td>';
 				echo '<td width="100">' . $incident->itemid . '</td>';
 				echo '</tr>';

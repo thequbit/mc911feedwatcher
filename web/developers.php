@@ -38,6 +38,7 @@
 				<br>
 				
 				<center>
+				
 					<iframe src="api/getsvg.php?type=mva" width="800" height="600"></iframe><br>
 					<br>
 					
@@ -46,6 +47,7 @@
 					
 					<iframe src="api/getsvg.php?type=alltimesum" width="800" height="600"></iframe><br>
 					<br>
+
 				</center>
 		
 <?php

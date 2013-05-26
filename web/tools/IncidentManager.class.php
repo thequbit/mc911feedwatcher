@@ -26,7 +26,7 @@
 					$date = date("Y-m-d");
 			
 				// create the query
-				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid FROM incidents WHERE pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
+				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
@@ -50,6 +50,11 @@
 					$incident->itemid = $result['itemid'];
 					$incident->scrapedatetime = $result['scrapedatetime'];
 					$incident->agencyid = $result['agencyid'];
+					$incident->fulladdress = $result['fulladdress'];
+					$incident->lat = $result['lat'];
+					$incident->lng = $result['lng'];
+					$incident->zipcode = $result['zipcode'];
+					
 					
 					$incidents[] = $incident;
 				}
@@ -81,7 +86,7 @@
 					$count = 25; // default value
 			
 				// create the query
-				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime FROM incidents WHERE agencyid = ? GROUP BY itemid ORDER BY pubdate DESC LIMIT ?';
+				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? GROUP BY itemid ORDER BY pubdate DESC LIMIT ?';
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
@@ -105,6 +110,10 @@
 					$incident->itemid = $result['itemid'];
 					$incident->scrapedatetime = $result['scrapedatetime'];
 					$incident->agencyid = $result['agencyid'];
+					$incident->fulladdress = $result['fulladdress'];
+					$incident->lat = $result['lat'];
+					$incident->lng = $result['lng'];
+					$incident->zipcode = $result['zipcode'];
 					
 					$incidents[] = $incident;
 				}
