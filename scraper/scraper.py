@@ -1,7 +1,12 @@
 import sys
+import time
+
 import _mysql as mysql
 
+import simplejson
+
 import urllib2
+import urllib
 from xml.dom.minidom import parseString
 
 import datetime
@@ -9,6 +14,34 @@ import datetime
 _xmlsourceurl = "http://www.monroecounty.gov/etc/911/rss.php"
 _geoheader = '<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:atom="http://www.w3.org/2005/Atom">'
 _geofooter = '</rss>'
+
+#
+# code via Ralph Bean (github.com/ralphbean) from:
+#   https://github.com/ralphbean/monroe/blob/master/wsgi/tg2app/tg2app/scrapers/propertyinfo.py
+#
+def geocode(address):
+    # TODO -- a more open way of doing this.
+    # Here we have to sleep 1 second to make sure google doesn't scold us.
+    time.sleep(2)
+    vals = {'address': address, 'sensor': 'false'}
+    qstr = urllib.urlencode(vals)
+    reqstr = "http://maps.google.com/maps/api/geocode/json?%s" % qstr
+    return simplejson.loads(urllib.urlopen(reqstr).read())
+
+def pulldata(_json):
+    fulladdress = _json['results'][0]['formatted_address']
+    lat = _json['results'][0]['geometry']['location']['lat']
+    lng = _json['results'][0]['geometry']['location']['lng']
+
+    for comp in _json['results'][0]['address_components']:
+        if comp['types'][0] == "postal_code":
+            zipcode = comp['long_name']
+            break
+
+    print "Address decoded: '{0}'".format(fulladdress)
+
+    retval = (fulladdress,lat,lng,zipcode)
+    return retval
 
 def decode_month(month):
 
@@ -151,6 +184,27 @@ def update_current_incidents(incidentids):
 
 	print "\t... Done"
 
+def update_address(fulladdress,lat,lng,zipcode,itemid):
+        print "\tPushing Decoded Address to Database ..."
+
+	# get our db info from our local file
+        dbcreds = get_mysql_credentials()
+
+        # decode responce
+        host = dbcreds[0].rstrip()
+        dbname = dbcreds[1].rstrip()
+        username = dbcreds[2].rstrip()
+        password = dbcreds[3].rstrip()
+
+        # connect to our database
+        database = mysql.connect(host=host,user=username,passwd=password,db=dbname)
+	
+        # update all entries with the itemid with the address information
+        query = 'UPDATE incidents SET fulladdress = "{0}", lat = "{1}", lng = "{2}", zipcode = "{3}" WHERE itemid = "{4}"'.format(fulladdress,lat,lng,zipcode,itemid)
+        database.query(query)
+
+	print "\tDone."
+
 def push_to_database(event, address, pubdate, pubtime, status, itemid):
 
 	print "\tPushing Indident to Database ..."
@@ -203,6 +257,17 @@ def push_to_database(event, address, pubdate, pubtime, status, itemid):
 
 		# execute query
 		database.query(query)
+
+		# see if we can decode our address
+		_json = geocode(address)
+
+		# see if we were successful
+		if _json['status'] == 'OK':
+			fulladdress,lat,lng,zipcode = pulldata(_json)
+			update_address(fulladdress,lat,lng,zipcode,itemid)
+		else:
+			print "[WARNING] Address could not be decoded!" 
+
 	else:	
 		print "\t\tSkipping Item - item already in database."
 
@@ -349,7 +414,17 @@ def main(argv):
 	
 			# push results to database
 			push_to_database(event, address, pubdate, pubtime, status, itemid)
-		
+	
+			# see if we can decode our address
+			#_json = geocode(address)
+	
+			# see if we were successful
+			#if _json['status'] == 'OK':
+			#	fulladdress,lat,lng,zipcode = pulldata(_json)
+			#	update_address(fulladdress,lat,lng,zipcode,itemid)
+			#else:
+			#	print "[WARNING] Address could not decoded!"
+
 			# add the itemid to the list of incidentids
 			incidentids.append(itemid)
 
@@ -362,7 +437,8 @@ def main(argv):
 	# TODO: fix this ... still not working correctly.
 
 	# update the list of current incidents
-	#update_current_incidents(incidentids) 
+	
+#update_current_incidents(incidentids) 
 
 	# push success to db
 	push_success(success,successtext)
