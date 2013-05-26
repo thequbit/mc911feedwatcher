@@ -47,7 +47,7 @@
 				$db = new DatabaseTool();
 			
 				// create the query
-				$query = "SELECT COUNT(*) AS count FROM incidents";
+				$query = "SELECT COUNT(DISTINCT itemid) AS count FROM incidents";
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
