@@ -242,14 +242,6 @@
 			
 			$(".checkbox").change(function() {
 			
-				// clear map
-				if (markerArray) {
-					for (i in markerArray) {
-						markerArray[i].setMap(null);
-					}
-					markerArray.length = 0;
-				}
-			
 				if(this.checked) {
 					$(":checked").each(
 						function(i,data){
@@ -277,6 +269,21 @@
 							});
 						}
 					);
+				}
+				else
+				{
+					// clear map of check box type
+					if (markerArray) {
+						for (i in markerArray) {
+							if( markerArray[i].title == this.name )
+							{
+								markerArray[i].setMap(null);
+								
+								// TODO: remove item from the array ... becaues this is an empic memory leak
+							}
+						}
+						//markerArray.length = 0;
+					}
 				}
 			});
 		});
