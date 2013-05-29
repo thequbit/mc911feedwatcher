@@ -17,6 +17,7 @@
 		public $incidentname;
 		public $count;
 		public $letter;
+		public $id;
 	}
 	
 	//
@@ -39,7 +40,7 @@
 				$db = new DatabaseTool();
 			
 				// generate our query
-				$query = 'select tmp.event as incidentname, count(tmp.zeecount) as count from (select DISTINCT itemid, event, count(incidentid) as zeecount from incidents where pubdate = ? group by itemid order by event) as tmp group by tmp.event';
+				$query = 'SELECT tmp.event AS incidentname, count(tmp.zeecount) AS count, tmp.id AS id FROM (select DISTINCT itemid, event, count(incidentid) as zeecount, eventtypes.eventtypeid AS id FROM incidents JOIN eventtypes ON incidents.event = eventtypes.eventtype WHERE pubdate = ? GROUP BY itemid ORDER BY event) AS tmp GROUP BY tmp.id;';
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
@@ -61,6 +62,7 @@
 					$item->incidentname = $row['incidentname'];
 					$item->count = $row['count'];
 					$item->letter = $letter;
+					$item->id = $row['id'];
 					
 					$letter++;
 					
