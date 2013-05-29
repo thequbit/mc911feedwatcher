@@ -7,30 +7,10 @@
 </head> 
 <body>
   </br></br>
-  <center>
-  <div id="map" style="width: 800px; height: 600px;"></div>
-  </center>
+  <center><div id="map" style="width: 1024px; height: 768px;"></div></center>
 
-  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript">
-
-    var image = {
-    url: 'https://mcsafetyfeed.org/media/arrow.png',
-    // This marker is 20 pixels wide by 32 pixels tall.
-    size: new google.maps.Size(20, 32),
-    // The origin for this image is 0,0.
-    origin: new google.maps.Point(0,0),
-    // The anchor for this image is the base of the flagpole at 0,32.
-    anchor: new google.maps.Point(0, 32)
-  };
-  var shadow = {
-    url: 'https://developers.google.com/maps/documentation/javascript/examples/images/beachflag_shadow.png',
-    // The shadow image is larger in the horizontal dimension
-    // while the position and offset are the same as for the main image.
-    size: new google.maps.Size(37, 32),
-    origin: new google.maps.Point(0,0),
-    anchor: new google.maps.Point(0, 32)
-  };
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript">
 
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10,
