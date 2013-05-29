@@ -13,7 +13,7 @@
 		public $fulladdress;
 		public $lat;
 		public $lng;
-		public $izipcode;
+		public $zipcode;
 	}
 
 ?>
