@@ -125,6 +125,19 @@ div.agencytype{
 	margin-bottom: 1px;
 }
 
+div.map {
+	float: left;
+}
+
+div.mapwrapper {
+	
+}
+
+div.mapsettings {
+	float: right;
+	/*display: inline;*/
+}
+
 /*
 div.statslink {
 	float: center;
@@ -147,6 +160,16 @@ td{
 }
 
 /* silly formatting stuff */
+
+div.slightbuffer {
+	/*padding-bottom: 1px;*/
+}
+
+.clear { clear: both;}
+
+div.left {
+	text-align: left;
+}
 
 .tab { 
 	margin-left: 40px; margin-top: 5px

@@ -27,10 +27,15 @@
 				echo 'window.location = "./index.php"';
 				echo '</script>';
 			}
+			else
+			{
+			
+			}
 			
 		}
 		
 	?>
+
 	
 	<?php
 	
@@ -105,10 +110,20 @@
 	
 		echo '</div>';
 	
+		//
+		// MAP
+		// 
+		echo '</br>';
+		
+		echo '<div id="mapwrapper" class="mapwrapper">';
+		
+		echo '<div id="map" class="map" style="width: 500px; height: 400px;"></div>';
+		echo '<div id="mapsettings" class="mapsettings"></div>';
+		echo '<div class="clear"></div>';
+		echo '</div>';
+	
+	
 		echo '<div>';
-	
-		//echo '';
-	
 		if( count($incidents) == 0 )
 		{
 			echo "<br>";
@@ -165,6 +180,133 @@
 		//$db->AddAPICall($ipaddress, $todaysDate, $totaltime, "INCIDENTS");
 		
 	?>	
+
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+	<script type="text/javascript">
+
+	var mapdiv = document.getElementById('map');
+
+	var markerArray = [];
+
+    var map = new google.maps.Map(mapdiv, {
+        zoom: 10,
+        center: new google.maps.LatLng(43.1547, -77.6158),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+	/*
+    setTimeout(function () {
+        loadData(); 
+    },500);
+	*/
+	
+	createcheckboxes();
+
+	function handleData(response)
+    {
+        var n;
+        for(n=0; n<response.length; n++)
+        {
+            //name = response.drivers[n].name;
+            //alert(name);
+            lat = response[n].lat;
+            lng = response[n].lng;
+			event = response[n].event;
+            var myLatLng = new google.maps.LatLng(lat,lng);
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                //shadow: shadow,
+                //icon:image,
+                map: map,
+                title: event,
+                zIndex: 1
+            });
+        }   
+    }
+
+	function createcheckboxes()
+	{
+		var html = '<div class="left">';
+	
+		url = "http://mcsafetyfeed.org/api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
+		$.getJSON(url, function (response) {
+			for(n=0; n<response.length; n++)
+			{
+				html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].id + '">' + response[n].incidentname + '</br>';
+			}
+			html += '</div>';
+			$("#mapsettings").html(html);
+			
+			$(".checkbox").change(function() {
+			
+				// clear map
+				if (markerArray) {
+					for (i in markerArray) {
+						markerArray[i].setMap(null);
+					}
+					markerArray.length = 0;
+				}
+			
+				if(this.checked) {
+					$(":checked").each(
+						function(i,data){
+							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
+							$.getJSON(url, function (response) { 
+								var n;
+								for(n=0; n<response.length; n++)
+								{
+									//name = response.drivers[n].name;
+									//alert(name);
+									lat = response[n].lat;
+									lng = response[n].lng;
+									event = response[n].event;
+									var myLatLng = new google.maps.LatLng(lat,lng);
+									var marker = new google.maps.Marker({
+										position: myLatLng,
+										//shadow: shadow,
+										//icon:image,
+										map: map,
+										title: event,
+										zIndex: 1
+									});
+									markerArray.push(marker);
+								}   
+							});
+						}
+					);
+				}
+			});
+		});
+		
+	}
+
+    /*
+	function loadData()
+    {
+        //alert("Loading"); 
+        var marker, i;
+
+		var type = 1;
+
+		for(type=5; type<49; type++)
+		{
+			var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + type;
+			
+			var name;
+			var lat;
+			var lon;
+			var locations;
+			
+
+			$.getJSON(url, function (response) {handleData(response)});
+		}
+    }
+	*/
+	
+	</script>
 			
 <?php
 	require_once("_footer.php");
