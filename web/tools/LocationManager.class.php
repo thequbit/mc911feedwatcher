@@ -32,7 +32,7 @@
 				foreach( $results as $result )
 				{
 					$incident = (object) array(
-													//'itemid' => $result['itemid'],
+													'itemid' => $result['itemid'],
 													'event' => $result['event'],
 													//'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
@@ -83,7 +83,7 @@
 				foreach( $results as $result )
 				{
 					$incident = (object) array(
-													//'itemid' => $result['itemid'],
+													'itemid' => $result['itemid'],
 													'event' => $result['event'],
 													//'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
