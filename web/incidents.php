@@ -155,6 +155,7 @@
 				
 				// print out the row
 				echo '<tr>';
+				//echo '<a name="' . $incident->itemid . '"></a>';
 				echo '<td width="100">' . $incident->pubtime . '</td>';
 				echo '<td width="400">' . $incident->event . '</td>';
 				if( $incident->lat == "" || $incident->lng == "" )
@@ -262,8 +263,14 @@
 										//icon:image,
 										map: map,
 										title: event,
-										zIndex: 1
+										zIndex: 1//,
+										//itemid: response[n].itemid
 									});
+									
+									google.maps.event.addListener(marker, 'click', function() {
+										//window.location = "#" + marker.itemid;
+									});
+									
 									markerArray.push(marker);
 								}   
 							});
