@@ -84,7 +84,7 @@
 				{
 					$incident = (object) array(
 													'itemid' => $result['itemid'],
-													'event' => $result['event'],
+													'incident' => $result['event'], // renamed for consistancy in web interface
 													'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
 													'lng' => $result['lng']
