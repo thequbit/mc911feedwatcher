@@ -46,15 +46,24 @@
 		$incidentManager = new IncidentManager();
 
 		$agencies = $agencyManager->GetAllAgencies();
+		$dailycountsdict = $agencyManager->GetTodayAllAgencyCounts();
 
 		foreach($agencies as $agency)
 		{
 			// get todays date
-			$todaysdate = date("Y-m-d");
+			//$todaysdate = date("Y-m-d");
 			
 			// get the total number of calls for today for the agency
-			$todaycallcount = $incidentManager->GetIncidentCountByAgencyIDAndDate($agency->agencyid, $todaysdate);
-			
+			//$todaycallcount = $incidentManager->GetIncidentCountByAgencyIDAndDate($agency->agencyid, $todaysdate);
+			if( isset($dailycountsdict[$agency->agencyid]) )
+			{
+				$todaycallcount = $dailycountsdict[$agency->agencyid];
+			}
+			else
+			{
+				$todaycallcount = 0;
+			}
+
 			echo "<tr>\n";
 			echo '<td width="80"><font size="2">' . $agency->shortname . "</font></td>\n";
 			echo '<td class="centeredcell" width="120"><font size="2">' . $agency->callcount . "</font></th>\n";
