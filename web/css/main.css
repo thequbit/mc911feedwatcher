@@ -6,7 +6,7 @@
 }
 
 body {
-	background-image:url('/media/shattered.png');
+	background-image:url('media/shattered.png');
 	background-repeat:repeat-y repeat-x;
 	background-color: #fafafa;
 	font: 12px sans-serif;
@@ -127,6 +127,7 @@ div.agencytype{
 
 div.map {
 	float: left;
+	height: 500px; 
 }
 
 div.mapwrapper {

@@ -163,172 +163,138 @@
 	?>	
 
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-	<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+	<!-- <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script> -->
+	
+	
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+	<![endif]-->
+	<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+	
 	<script type="text/javascript">
 
-	//
-	//
-	// create all global vars
+		// create our map
+		var map = L.map('map').setView([43.1547, -77.6158], 10);
 
-	var mapdiv = document.getElementById('map');
+		// place some tiles on it
+		L.tileLayer('http://{s}.tile.cloudmade.com/a2152c679f334e08942fcf64d85decc1/997/256/{z}/{x}/{y}.png', {
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+			maxZoom: 18
+		}).addTo(map);
 
-	var markerArray = [];
+		// array of markers
+		var markers = [];
 
-    var map = new google.maps.Map(mapdiv, {
-        zoom: 10,
-        center: new google.maps.LatLng(43.1547, -77.6158),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-
-    var infowindow = new google.maps.InfoWindow();
-
-	//
-	// page js functions
-	// 
-
-	function handleData(response)
-    {
-        var n;
-        for(n=0; n<response.length; n++)
-        {
-            //name = response.drivers[n].name;
-            //alert(name);
-            lat = response[n].lat;
-            lng = response[n].lng;
-			event = response[n].event;
-            var myLatLng = new google.maps.LatLng(lat,lng);
-            var marker = new google.maps.Marker({
-                position: myLatLng,
-                //shadow: shadow,
-                //icon:image,
-                map: map,
-                title: event,
-                zIndex: 1
-            });
-        }   
-    }
-
-	function createcheckboxes()
-	{
-		var html = '<div class="left">';
-	
-		url = "http://mcsafetyfeed.org/api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
-		$.getJSON(url, function (response) {
-			
-			// create check boxes
-			for(n=0; n<response.length; n++)
-			{
-				html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].id + '">' + response[n].incidentname + '</br>';
-			}
-			
-			// add clear button
-			html += '</br><button type="button" id="btnclearmap" name="btnclearmap">Clear Map</button>';
-			
-			html += '</div>';
-			$("#mapsettings").html(html);
-			
-			$("#btnclearmap").click( function()
-			{
-				// clear the map
-				clearmarkers();
+		// create checkboxes, and setup 'checked' events to add markers to map
+		function createcheckboxes()
+		{
+			var html = '<div class="left">';
+		
+			url = "api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
+			$.getJSON(url, function (response) {
 				
-				// clear the check boxes
-				$(":checked").each( function() {
-					this.checked = false;
+				// create check boxes
+				for(n=0; n<response.length; n++)
+				{
+					html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].id + '">' + response[n].incidentname + '</br>';
+				}
+				
+				// add clear button
+				html += '</br><button type="button" id="btnclearmap" name="btnclearmap">Clear Map</button>';
+				
+				html += '</div>';
+				$("#mapsettings").html(html);
+				
+				$("#btnclearmap").click( function()
+				{
+					// clear the map
+					clearmarkers();
+					
+					// clear the check boxes
+					$(":checked").each( function() {
+						this.checked = false;
+					});
+				});
+				
+				$(".checkbox").change(function() {
+
+					if(this.checked == true) {
+						$(":checked").each(
+							function(i,data){
+								var url = "api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
+								$.getJSON(url, function (response) { 
+									var n;
+									for(n=0; n<response.length; n++)
+									{
+										//name = response.drivers[n].name;
+										//alert(name);
+										lat = response[n].lat;
+										lng = response[n].lng;
+										event = response[n].event;
+										/*
+										var myLatLng = new google.maps.LatLng(lat,lng);
+										var marker = new google.maps.Marker({
+											position: myLatLng,
+											//shadow: shadow,
+											//icon:image,
+											map: map,
+											title: event,
+											zIndex: 1//,
+											//itemid: response[n].itemid
+										});
+										
+										google.maps.event.addListener(marker, 'click', function() {
+											//window.location = "#" + marker.itemid;
+										});
+										*/
+										
+										var marker = L.marker([lat, lng]).addTo(map);
+										marker.event = event;
+										
+										markers.push(marker);
+									}   
+								});
+							}
+						);
+					}
+					else
+					{
+						// clear map of check box type
+						if (markers) {
+							for (i in markers) {
+								if( markers[i].event == this.name )
+								{
+									map.removeLayer(markers[i])
+								}
+							}
+						}
+					}
+				});
+				
+				// check all check boxes
+				$(".checkbox").each( function()
+				{
+					$(this).attr('checked', true);
+					$(this).trigger('change');
 				});
 			});
 			
-			$(".checkbox").change(function() {
-
-				if(this.checked == true) {
-					$(":checked").each(
-						function(i,data){
-							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
-							$.getJSON(url, function (response) { 
-								var n;
-								for(n=0; n<response.length; n++)
-								{
-									//name = response.drivers[n].name;
-									//alert(name);
-									lat = response[n].lat;
-									lng = response[n].lng;
-									event = response[n].event;
-									var myLatLng = new google.maps.LatLng(lat,lng);
-									var marker = new google.maps.Marker({
-										position: myLatLng,
-										//shadow: shadow,
-										//icon:image,
-										map: map,
-										title: event,
-										zIndex: 1//,
-										//itemid: response[n].itemid
-									});
-									
-									google.maps.event.addListener(marker, 'click', function() {
-										//window.location = "#" + marker.itemid;
-									});
-									
-									markerArray.push(marker);
-								}   
-							});
-						}
-					);
-				}
-				else
-				{
-					// clear map of check box type
-					if (markerArray) {
-						for (i in markerArray) {
-							if( markerArray[i].title == this.name )
-							{
-								markerArray[i].setMap(null);
-								
-								// TODO: remove item from the array ... becaues this is an empic memory leak
-							}
-						}
-						//markerArray.length = 0;
-					}
-				}
-			});
-			
-			// check all check boxes
-			$(".checkbox").each( function()
-			{
-				$(this).attr('checked', true);
-				$(this).trigger('change');
-			});
-		});
-		
-	}
-
-	function clearmarkers()
-	{
-		// clear map of check box type
-		if (markerArray) {
-			for (i in markerArray) {				
-				markerArray[i].setMap(null);
-				
-				//
-				// TODO: remove item from the array ... becaues this is an empic memory leak
-				//
-			}
-			//markerArray.length = 0;
 		}
-	}
-
-	function checkallboxes()
-	{
-		// check all of the check boxes
 		
-	}
-
-    //
-	// page primary function
-	//
+		function clearmarkers()
+		{
+			// clear map of check box type
+			if (markers) {
+				for (i in markers) {
+					map.removeLayer(markers[i])
+				}
+				markers.length = 0;
+			}
+		}
 		
-	// create all the map settings html
-	createcheckboxes();
-	
+		createcheckboxes();
+
 	</script>
 			
 <?php
