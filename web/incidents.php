@@ -29,7 +29,7 @@
 			}
 			else
 			{
-			
+				// move on to rest of page, no need to do anything
 			}
 			
 		}
@@ -45,13 +45,6 @@
 		require_once("./tools/Incident.class.php");
 		require_once("./tools/AgencyManager.class.php");
 		require_once("./tools/Agency.class.php");
-		
-		//require_once("./tools/Time.class.php");
-	
-		//$time = new Time();
-
-		// record start time
-		//$starttime = $time->StartTime();
 	
 		// get the posted data variable
 		$date = $_GET['date'];
@@ -68,12 +61,6 @@
 		// calculate yesterday
 		$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
 		$yesterday = date('Y-m-d', $yesterdaytime);
-	
-		// create an instance of the database
-		//$db = new Database();
-
-		// get all of the incidents for the day
-		//$incidents = $db->GetIncidentsByDay($date);
 	
 		// get all of the incidents for the date passed in by the user
 		$incidentManager = new IncidentManager();
@@ -173,18 +160,15 @@
 		
 		echo '</div>';
 		
-		// calculate time taken
-		//$totaltime = $time->TotalTime($starttime);
-		
-		// record the API call in the database as hash of IP
-		//$ipaddress = md5($_SERVER['HTTP_X_FORWARDED_FOR']);
-		//$db->AddAPICall($ipaddress, $todaysDate, $totaltime, "INCIDENTS");
-		
 	?>	
 
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 	<script type="text/javascript">
+
+	//
+	//
+	// create all global vars
 
 	var mapdiv = document.getElementById('map');
 
@@ -198,13 +182,9 @@
 
     var infowindow = new google.maps.InfoWindow();
 
-	/*
-    setTimeout(function () {
-        loadData(); 
-    },500);
-	*/
-	
-	createcheckboxes();
+	//
+	// page js functions
+	// 
 
 	function handleData(response)
     {
@@ -234,16 +214,33 @@
 	
 		url = "http://mcsafetyfeed.org/api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
 		$.getJSON(url, function (response) {
+			
+			// create check boxes
 			for(n=0; n<response.length; n++)
 			{
 				html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].id + '">' + response[n].incidentname + '</br>';
 			}
+			
+			// add clear button
+			html += '</br><button type="button" id="btnclearmap" name="btnclearmap">Clear Map</button>';
+			
 			html += '</div>';
 			$("#mapsettings").html(html);
 			
-			$(".checkbox").change(function() {
+			$("#btnclearmap").click( function()
+			{
+				// clear the map
+				clearmarkers();
+				
+				// clear the check boxes
+				$(":checked").each( function() {
+					this.checked = false;
+				});
+			});
 			
-				if(this.checked) {
+			$(".checkbox").change(function() {
+
+				if(this.checked == true) {
 					$(":checked").each(
 						function(i,data){
 							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
@@ -293,32 +290,44 @@
 					}
 				}
 			});
+			
+			// check all check boxes
+			$(".checkbox").each( function()
+			{
+				$(this).attr('checked', true);
+				$(this).trigger('change');
+			});
 		});
 		
 	}
 
-    /*
-	function loadData()
-    {
-        //alert("Loading"); 
-        var marker, i;
-
-		var type = 1;
-
-		for(type=5; type<49; type++)
-		{
-			var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + type;
-			
-			var name;
-			var lat;
-			var lon;
-			var locations;
-			
-
-			$.getJSON(url, function (response) {handleData(response)});
+	function clearmarkers()
+	{
+		// clear map of check box type
+		if (markerArray) {
+			for (i in markerArray) {				
+				markerArray[i].setMap(null);
+				
+				//
+				// TODO: remove item from the array ... becaues this is an empic memory leak
+				//
+			}
+			//markerArray.length = 0;
 		}
-    }
-	*/
+	}
+
+	function checkallboxes()
+	{
+		// check all of the check boxes
+		
+	}
+
+    //
+	// page primary function
+	//
+		
+	// create all the map settings html
+	createcheckboxes();
 	
 	</script>
 			
