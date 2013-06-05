@@ -180,7 +180,7 @@
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    var infowindow = new google.maps.InfoWindow();
+    var currentinfowindow = new google.maps.InfoWindow();
 
 	//
 	// page js functions
@@ -250,10 +250,12 @@
 									marker.fulladdress = fulladdress;
 									
 									google.maps.event.addListener(marker, 'click', function() {
-										var infowindow = new google.maps.InfoWindow({
+										if( currentinfowindow )
+											currentinfowindow.close();
+										currentinfowindow = new google.maps.InfoWindow({
 											content:  '<b>' + marker.incident + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
 										});
-										infowindow.open(map, this);
+										currentinfowindow.open(map, this);
 									});
 									
 									markerArray.push(marker);
