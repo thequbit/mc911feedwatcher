@@ -252,20 +252,30 @@
 									//alert(name);
 									lat = response[n].lat;
 									lng = response[n].lng;
-									event = response[n].event;
+									eventname = response[n].event;
+									itemid = response[n].itemid;
+									fulladdress = response[n].fulladdress;
 									var myLatLng = new google.maps.LatLng(lat,lng);
 									var marker = new google.maps.Marker({
 										position: myLatLng,
 										//shadow: shadow,
 										//icon:image,
 										map: map,
-										title: event,
-										zIndex: 1//,
-										//itemid: response[n].itemid
+										title: eventname,
+										zIndex: 1
 									});
 									
+									marker.itemid = itemid;
+									marker.lat = lat;
+									marker.lng = lng;
+									marker.eventname = eventname;
+									marker.fulladdress = fulladdress;
+									
 									google.maps.event.addListener(marker, 'click', function() {
-										//window.location = "#" + marker.itemid;
+										var infowindow = new google.maps.InfoWindow({
+											content:  '<b>' + marker.eventname + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
+										});
+										infowindow.open(map, this);
 									});
 									
 									markerArray.push(marker);

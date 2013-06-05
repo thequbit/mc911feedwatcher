@@ -34,7 +34,7 @@
 					$incident = (object) array(
 													'itemid' => $result['itemid'],
 													'event' => $result['event'],
-													//'fulladdress' => $result['fulladdress'],
+													'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
 													'lng' => $result['lng']
 												  );
@@ -85,7 +85,7 @@
 					$incident = (object) array(
 													'itemid' => $result['itemid'],
 													'event' => $result['event'],
-													//'fulladdress' => $result['fulladdress'],
+													'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
 													'lng' => $result['lng']
 												  );
