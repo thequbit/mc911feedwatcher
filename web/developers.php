@@ -20,21 +20,25 @@
 				
 				<div class="tab">
 					<h4>Incident Count API's</h4>
-					<a href="api/counts.php?type=mva">Daily Counts of Motor Vehicle Accodents</a><br>
-					<a href="api/counts.php?type=barkingdogs">Daily Counts of Backing Dog Complaints</a><br>
-					<a href="api/counts.php?type=dailycounts">Today's Counts for all Incident Types</a><br>
-					<a href="api/counts.php?type=alltimesum">All-Time Summation by Incident Type</a><br>
+					<a href="api/counts.php?type=mva">Daily Counts of Motor Vehicle Accodents</a></br>
+					<a href="api/counts.php?type=barkingdogs">Daily Counts of Backing Dog Complaints</a></br>
+					<a href="api/counts.php?type=dailycounts">Today's Counts for all Incident Types</a></br>
+					<a href="api/counts.php?type=alltimesum">All-Time Summation by Incident Type</a></br>
+					</br>
+					For additional information on using these API's, please visit the <a href="https://github.com/thequbit/mc911feedwatcher/wiki/Web-API---Incident-Counts">Incident Counts API Wiki Page</a>
 				</div>
 				</br>
 				
 				<div class="tab">
 					<h4>Geo Location API's</h4>
-					<a href="api/getgeo.php">All of Today's incidents with Geo Location data</a><br>
-					<a href="api/getgeo.php?typeid=10">All of Today's 'human life endangered by animal' incidents with Geo Location data</a><br>
+					<a href="api/getgeo.php">All of Today's incidents with Geo Location data</a></br>
+					<a href="api/getgeo.php?typeid=10">All of Today's 'human life endangered by animal' incidents with Geo Location data</a></br>
+					</br>
+					For additional information on using these API's, please visit the <a href="https://github.com/thequbit/mc911feedwatcher/wiki/Web-API---Geo-Location">Incident Geo Location API Wiki Page</a>
 				</div>
 				</br>
 				
-				If you would like additional API's added, please use the contact information found on the <a href="about.php">about</a> page.<br>
+				If you would like additional API's added, please use the contact information found on the <a href="about.php">about</a> page.</br>
 				<br>
 				
 				Note: API access is not currently restricted since the demand is not high.  If the demand increases, there may be API limitations put in place.  If you would like a data drop of the data just contact me and I will be happy to shoot it over to you :D.
