@@ -135,6 +135,7 @@ div.mapwrapper {
 
 div.mapsettings {
 	float: right;
+	width: 400px;
 	/*display: inline;*/
 }
 
