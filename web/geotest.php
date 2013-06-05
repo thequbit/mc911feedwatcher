@@ -7,7 +7,7 @@
 </head> 
 <body>
   </br></br>
-  <center><div id="map" style="width: 1024px; height: 768px;"></div></center>
+  <div id="map" style="margin: auto; width: 640px; height: 480px;"></div>
 
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript">
@@ -18,30 +18,16 @@
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    var infowindow = new google.maps.InfoWindow();
-
-    setTimeout(function () {
-        loadData(); 
-    },500);
-
-
+	loadData();
+		
     function loadData()
     {
-        //alert("Loading"); 
-        var marker, i;
-
         var url = "http://mcsafetyfeed.org/api/getgeo.php";
-        var name;
-        var lat;
-        var lon;
-        var locations;
-
         $.getJSON(url, function (response) {handleData(response)});
     }
 
     function handleData(response)
     {
-        //alert(response);
         var n;
         for(n=0; n<response.length; n++)
         {
