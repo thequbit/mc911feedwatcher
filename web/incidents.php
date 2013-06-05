@@ -186,28 +186,6 @@
 	// page js functions
 	// 
 
-	function handleData(response)
-    {
-        var n;
-        for(n=0; n<response.length; n++)
-        {
-            //name = response.drivers[n].name;
-            //alert(name);
-            lat = response[n].lat;
-            lng = response[n].lng;
-			event = response[n].event;
-            var myLatLng = new google.maps.LatLng(lat,lng);
-            var marker = new google.maps.Marker({
-                position: myLatLng,
-                //shadow: shadow,
-                //icon:image,
-                map: map,
-                title: event,
-                zIndex: 1
-            });
-        }   
-    }
-
 	function createcheckboxes()
 	{
 		var html = '<div class="left">';
@@ -243,7 +221,7 @@
 				if(this.checked == true) {
 					$(":checked").each(
 						function(i,data){
-							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
+							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&typeid=" + $(data).val();
 							$.getJSON(url, function (response) { 
 								var n;
 								for(n=0; n<response.length; n++)
@@ -252,7 +230,7 @@
 									//alert(name);
 									lat = response[n].lat;
 									lng = response[n].lng;
-									eventname = response[n].event;
+									incident = response[n].incident;
 									itemid = response[n].itemid;
 									fulladdress = response[n].fulladdress;
 									var myLatLng = new google.maps.LatLng(lat,lng);
@@ -261,19 +239,19 @@
 										//shadow: shadow,
 										//icon:image,
 										map: map,
-										title: eventname,
+										title: incident,
 										zIndex: 1
 									});
 									
 									marker.itemid = itemid;
 									marker.lat = lat;
 									marker.lng = lng;
-									marker.eventname = eventname;
+									marker.incident = incident;
 									marker.fulladdress = fulladdress;
 									
 									google.maps.event.addListener(marker, 'click', function() {
 										var infowindow = new google.maps.InfoWindow({
-											content:  '<b>' + marker.eventname + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
+											content:  '<b>' + marker.incident + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
 										});
 										infowindow.open(map, this);
 									});
