@@ -189,6 +189,7 @@
 		// create checkboxes, and setup 'checked' events to add markers to map
 		function createcheckboxes()
 		{
+		
 			var html = '<div class="left">';
 		
 			url = "api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
@@ -280,6 +281,7 @@
 				});
 			});
 			
+			createcheckboxes = Function("");
 		}
 		
 		function clearmarkers()
