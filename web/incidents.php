@@ -239,7 +239,7 @@
 										//shadow: shadow,
 										//icon:image,
 										map: map,
-										title: incident,
+										title: incident + "(" + lat ", " + lng + ")",
 										zIndex: 1
 									});
 									
@@ -255,7 +255,7 @@
 										currentinfowindow = new google.maps.InfoWindow({
 											content:  '<b>' + marker.incident + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
 										});
-										currentinfowindow.open(map, this);
+										currentinfowindow.open(map, marker);
 									});
 									
 									markerArray.push(marker);
