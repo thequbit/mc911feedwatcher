@@ -226,39 +226,31 @@
 								var n;
 								for(n=0; n<response.length; n++)
 								{
-									//name = response.drivers[n].name;
-									//alert(name);
-									lat = response[n].lat;
-									lng = response[n].lng;
-									incident = response[n].incident;
-									itemid = response[n].itemid;
-									fulladdress = response[n].fulladdress;
+									
+									// decode json data
+									var lat = response[n].lat;
+									var lng = response[n].lng;
+									var incident = response[n].incident;
+									var itemid = response[n].itemid;
+									var fulladdress = response[n].fulladdress;
+									
+									// create marker from json data
 									var myLatLng = new google.maps.LatLng(lat,lng);
 									var marker = new google.maps.Marker({
 										position: myLatLng,
 										//shadow: shadow,
 										//icon:image,
 										map: map,
-										title: incident + "(" + lat ", " + lng + ")",
+										title: incident + ' (' + lat + ', ' + lng + ')',
 										zIndex: 1
 									});
 									
-									marker.itemid = itemid;
-									marker.lat = lat;
-									marker.lng = lng;
-									marker.incident = incident;
-									marker.fulladdress = fulladdress;
+									createpopup(marker,'<b>' + incident + '</b></br>' + itemid + '</br>' + fulladdress + '</br>' + lat + ', ' + lng + '</br>');
 									
-									google.maps.event.addListener(marker, 'click', function() {
-										if( currentinfowindow )
-											currentinfowindow.close();
-										currentinfowindow = new google.maps.InfoWindow({
-											content:  '<b>' + marker.incident + '</b></br>' + marker.itemid + '</br>' + marker.fulladdress + '</br>' + marker.lat + ', ' + marker.lng + '</br>'
-										});
-										currentinfowindow.open(map, marker);
-									});
-									
+									// push the marker to the array of markers on the map
 									markerArray.push(marker);
+									
+									//marker = "";
 								}   
 							});
 						}
@@ -289,6 +281,21 @@
 			});
 		});
 		
+	}
+
+	function createpopup(marker, contentstring)
+	{
+		// add pop-up listener to marker
+		google.maps.event.addListener(marker, 'click', function() {
+			if( currentinfowindow )
+			{
+				currentinfowindow.close();
+				currentinfowindow = new google.maps.InfoWindow({
+					content: contentstring
+				});
+				currentinfowindow.open(map, marker);
+			}
+		});
 	}
 
 	function clearmarkers()
