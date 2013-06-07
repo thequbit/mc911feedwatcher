@@ -256,7 +256,10 @@
 					$id = strtolower($eventtype->eventtype);
 				
 					// add the count for the event type to the counts array.  If it doesn't exist, it will be zero
-					$counts[] = $dict[$id];
+					if( isset($dict[$id]) )
+						$counts[] = $dict[$id];
+					else
+						$counts[] = 0;
 				}
 				
 				// close our DB connection

@@ -12,7 +12,17 @@
 		
 		$util = new UtilityManager();
 	
-		$date = $_GET["date"];
+		// get the posted data variable
+		if( isset($_GET['date']) )
+			$date = $_GET['date'];
+		else
+			$date = date("Y-m-d");
+
+		// see if we got a date passed in, or if we should be use todays date
+		if( $date == "" )
+		{
+			$date = date("Y-m-d");
+		}
 		
 		// check for none-case ... we handle as the current date later in code
 		if( $date != "" )
@@ -71,12 +81,7 @@
 				require_once("./tools/IncidentManager.class.php");
 			
 				$incidentManager = new IncidentManager();
-			
-				$date = $_GET['date'];
-				
-				if( $date == "" )
-					$date = date("Y-m-d");
-			
+
 				$counts = $incidentManager->GetIncidentCountsByDate($date);
 
 				// set the maximum for the graph
@@ -115,14 +120,7 @@
 		// Top links for moving between dates
 		//
 	
-		// get the posted data variable
-		$date = $_GET['date'];
-
-		// see if we got a date passed in, or if we should be use todays date
-		if( $date == "" )
-		{
-			$date = date("Y-m-d");
-		}
+		
 		
 		// calculate tomorrow
 		$tomorrowtime = strtotime ('+1 day', strtotime($date)) ;
@@ -151,16 +149,11 @@
 	<div>
 	
 		<br>
-		<center><h2>Monroe Count, NY 911 Calls Statistics for <?php if( $_GET["date"] == "" ) echo date("l F j, Y"); else echo date("l F j, Y",strtotime($_GET["date"])); ?> </h2></center>
+		<center><h2>Monroe Count, NY 911 Calls Statistics for <?php echo date("l F j, Y",strtotime($date)); ?> </h2></center>
 		<br>
 	
 		<?php
-		
-			if( $_GET["date"] == "" )
-				$date = date("Y-m-d");
-			else
-				$date = date("Y-m-d",strtotime($_GET["date"]));
-		
+
 			echo '<center>';
 			//echo '<br>';
 			echo '<a href="incidents.php?date=' . $date . '">See Incidents For ' . date("l F j, Y",strtotime($date)) . '</a>';
@@ -186,14 +179,6 @@
 			$eventManager = new EventManager();
 			
 			$eventtypes = $eventManager->GetEventTypes();
-		
-			//
-			// TODO: Sanity Check This!
-			//
-			$date = $_GET["date"];
-				
-			if(  $date == "" )
-				$date = date("Y-m-d");
 		
 			$letter = "A";
 		
