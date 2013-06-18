@@ -12,7 +12,7 @@
 
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-38308300-1']);
-	  _gaq.push(['_setDomainName', 'mycodespace.net']);
+	  _gaq.push(['_setDomainName', 'mcsafetyfeed.net']);
 	  _gaq.push(['_trackPageview']);
 
 	  (function() {

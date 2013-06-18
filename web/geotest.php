@@ -22,7 +22,7 @@
 			
 		function loadData()
 		{
-			var url = "http://mcsafetyfeed.org/api/getgeo.php";
+			var url = "./api/getgeo.php";
 			$.getJSON(url, function (response) {handleData(response)});
 		}
 
