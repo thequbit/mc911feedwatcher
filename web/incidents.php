@@ -59,7 +59,6 @@
 		// calculate tomorrow
 		$tomorrowtime = strtotime ('+1 day', strtotime($date)) ;
 		$tommorrow = date('Y-m-d', $tomorrowtime);
-		
 		// calculate yesterday
 		$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
 		$yesterday = date('Y-m-d', $yesterdaytime);
