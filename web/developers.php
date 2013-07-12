@@ -12,7 +12,8 @@
 				All code for the site as well as the scrapers can be found in the GitHub repo <a href="https://github.com/thequbit/mc911feedwatcher">here</a>.<br>
 				<br>
 				
-				For information on how to use the JSON API's, check out the GitHub WiKi <a href="https://github.com/thequbit/mc911feedwatcher/wiki">here</a>.  It includes definitions of the API calls that return JSON objects, as well as example Python code that uses PyGal to render SVG images with the data the API's return.<br>
+				For information on how to use the JSON API's, check out the GitHub WiKi <a href="https://github.com/thequbit/mc911feedwatcher/wiki">here</a>.  It includes 
+				definitions of the API calls that return JSON objects, as well as example Python code that uses PyGal to render SVG images with the data the API's return.<br>
 				<br>
 				
 				<h4>Incident Count API's</h4>
@@ -43,7 +44,8 @@
 				</br>
 				</br>
 				
-				Note: API access is not currently restricted since the demand is not high.  If the demand increases, there may be API limitations put in place.  If you would like a data drop of the data just contact me and I will be happy to shoot it over to you :D.
+				Note: API access is not currently restricted since the demand is not high.  If the demand increases, there may be API limitations put in place.  If you would 
+				like a data drop of the data just contact me and I will be happy to shoot it over to you :D.
 				<br>
 				<br>
 				<br>
@@ -69,7 +71,7 @@
 						
 					function loadData()
 					{
-						var url = "http://mcsafetyfeed.org/api/getgeo.php";
+						var url = "./api/getgeo.php";
 						$.getJSON(url, function (response) {handleData(response)});
 					}
 

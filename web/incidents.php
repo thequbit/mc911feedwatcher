@@ -191,7 +191,7 @@
 	{
 		var html = '<div class="left">';
 	
-		url = "http://mcsafetyfeed.org/api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
+		url = "./api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
 		$.getJSON(url, function (response) {
 			
 			// create check boxes
@@ -222,7 +222,7 @@
 				if(this.checked == true) {
 					$(":checked").each(
 						function(i,data){
-							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&typeid=" + $(data).val();
+							var url = "./api/getgeo.php?date=<?php echo $date; ?>&typeid=" + $(data).val();
 							$.getJSON(url, function (response) { 
 								var n;
 								for(n=0; n<response.length; n++)
@@ -242,7 +242,7 @@
 										//shadow: shadow,
 										//icon:image,
 										map: map,
-										title: incident + ' (' + lat + ', ' + lng + ')',
+										title: incident,
 										zIndex: 1
 									});
 									
