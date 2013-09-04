@@ -12,7 +12,17 @@
 		
 		$util = new UtilityManager();
 	
-		$date = $_GET["date"];
+		// get the posted data variable
+		if( isset($_GET['date']) )
+			$date = $_GET['date'];
+		else
+			$date = date("Y-m-d");
+
+		// see if we got a date passed in, or if we should be use todays date
+		if( $date == "" )
+		{
+			$date = date("Y-m-d");
+		}
 		
 		// check for none-case ... we handle as the current date later in code
 		if( $date != "" )
@@ -45,19 +55,10 @@
 		require_once("./tools/Incident.class.php");
 		require_once("./tools/AgencyManager.class.php");
 		require_once("./tools/Agency.class.php");
-	
-		// get the posted data variable
-		$date = $_GET['date'];
-
-		if( $date == "" )
-		{
-			$date = date("Y-m-d");
-		}
 		
 		// calculate tomorrow
 		$tomorrowtime = strtotime ('+1 day', strtotime($date)) ;
 		$tommorrow = date('Y-m-d', $tomorrowtime);
-		
 		// calculate yesterday
 		$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
 		$yesterday = date('Y-m-d', $yesterdaytime);
@@ -180,40 +181,20 @@
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    var infowindow = new google.maps.InfoWindow();
+    var currentinfowindow = new google.maps.InfoWindow();
 
 	//
 	// page js functions
 	// 
 
-	function handleData(response)
-    {
-        var n;
-        for(n=0; n<response.length; n++)
-        {
-            //name = response.drivers[n].name;
-            //alert(name);
-            lat = response[n].lat;
-            lng = response[n].lng;
-			event = response[n].event;
-            var myLatLng = new google.maps.LatLng(lat,lng);
-            var marker = new google.maps.Marker({
-                position: myLatLng,
-                //shadow: shadow,
-                //icon:image,
-                map: map,
-                title: event,
-                zIndex: 1
-            });
-        }   
-    }
-
 	function createcheckboxes()
 	{
 		var html = '<div class="left">';
 	
-		url = "http://mcsafetyfeed.org/api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
+		url = "./api/counts.php?date=<?php echo $date; ?>&type=dailycounts";
 		$.getJSON(url, function (response) {
+			
+			html += '</br><button type="button" id="btnselectall" name="btnselectall">Select All</button><br><br>';
 			
 			// create check boxes
 			for(n=0; n<response.length; n++)
@@ -227,13 +208,32 @@
 			html += '</div>';
 			$("#mapsettings").html(html);
 			
+			$("#btnselectall").click( function() 
+			{
+				var inputs = document.getElementsByTagName("input");
+				for (var i = 0; i < inputs.length; i++) {  
+					if (inputs[i].type == "checkbox") {
+						inputs[i].checked = true;
+						popmarkers(inputs[i].value);
+						//alert(inputs[i].value);
+					}
+				}
+				/*	
+				// clear the check boxes
+				$(":checked").each( function(i,data) {
+					this.checked = true;
+					popmarker(data);
+				});
+				*/
+			});
+			
 			$("#btnclearmap").click( function()
 			{
 				// clear the map
 				clearmarkers();
 				
 				// clear the check boxes
-				$(":checked").each( function() {
+				$(":checked").each( function(i,data) {
 					this.checked = false;
 				});
 			});
@@ -243,34 +243,7 @@
 				if(this.checked == true) {
 					$(":checked").each(
 						function(i,data){
-							var url = "http://mcsafetyfeed.org/api/getgeo.php?date=<?php echo $date; ?>&type=" + $(data).val();
-							$.getJSON(url, function (response) { 
-								var n;
-								for(n=0; n<response.length; n++)
-								{
-									//name = response.drivers[n].name;
-									//alert(name);
-									lat = response[n].lat;
-									lng = response[n].lng;
-									event = response[n].event;
-									var myLatLng = new google.maps.LatLng(lat,lng);
-									var marker = new google.maps.Marker({
-										position: myLatLng,
-										//shadow: shadow,
-										//icon:image,
-										map: map,
-										title: event,
-										zIndex: 1//,
-										//itemid: response[n].itemid
-									});
-									
-									google.maps.event.addListener(marker, 'click', function() {
-										//window.location = "#" + marker.itemid;
-									});
-									
-									markerArray.push(marker);
-								}   
-							});
+							popmarkers(data);
 						}
 					);
 				}
@@ -299,6 +272,57 @@
 			});
 		});
 		
+	}
+
+	function popmarkers(data)
+	{
+		var url = "./api/getgeo.php?date=<?php echo $date; ?>&typeid=" + $(data).val();
+		$.getJSON(url, function (response) { 
+			var n;
+			for(n=0; n<response.length; n++)
+			{
+				
+				// decode json data
+				var lat = response[n].lat;
+				var lng = response[n].lng;
+				var incident = response[n].incident;
+				var itemid = response[n].itemid;
+				var fulladdress = response[n].fulladdress;
+				
+				// create marker from json data
+				var myLatLng = new google.maps.LatLng(lat,lng);
+				var marker = new google.maps.Marker({
+					position: myLatLng,
+					//shadow: shadow,
+					//icon:image,
+					map: map,
+					title: incident,
+					zIndex: 1
+				});
+				
+				createpopup(marker,'<b>' + incident + '</b></br>' + itemid + '</br>' + fulladdress + '</br>' + lat + ', ' + lng + '</br>');
+				
+				// push the marker to the array of markers on the map
+				markerArray.push(marker);
+				
+				//marker = "";
+			}   
+		});
+	}
+
+	function createpopup(marker, contentstring)
+	{
+		// add pop-up listener to marker
+		google.maps.event.addListener(marker, 'click', function() {
+			if( currentinfowindow )
+			{
+				currentinfowindow.close();
+				currentinfowindow = new google.maps.InfoWindow({
+					content: contentstring
+				});
+				currentinfowindow.open(map, marker);
+			}
+		});
 	}
 
 	function clearmarkers()

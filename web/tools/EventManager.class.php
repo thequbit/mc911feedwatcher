@@ -186,7 +186,7 @@
 					$date = date("Y-m-d");
 
 				// genrate the query
-				$query = 'SELECT COUNT(DISTINCT itemid) as count, pubtime FROM incidents WHERE LOWER(event)="' . $eventtype . '" AND pubdate="' . $date . '" GROUP BY HOUR(pubtime)';
+				$query = 'SELECT COUNT(DISTINCT itemid) as count, pubtime FROM incidents WHERE LOWER(event)= ? AND pubdate = ? GROUP BY HOUR(pubtime)';
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);

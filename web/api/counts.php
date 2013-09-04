@@ -3,9 +3,15 @@
 	require_once("../tools/UtilityManager.class.php");
 	require_once("../tools/APIManager.class.php");
 	
-	// get passed in params
-	$type = $_GET['type'];
-	$date = $_GET['date'];
+	
+	$type = "";
+	$date = "";
+	
+	if( isset($_GET['type']) )
+		$type = $_GET['type'];
+	
+	if( isset($_GET['date']) )
+		$date = $_GET['date'];
 	
 	// do some sanity checking
 	$util = new UtilityManager();

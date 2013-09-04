@@ -7,4 +7,4 @@ http://mcsafetyfeed.org/
 
 Scraper runs every 60 seconds and pushes only unique Incident ID's and Incident Status's to the DB.
 
-API documentation can be found on the [WiKi](https://github.com/thequbit/mc911feedwatcher/wiki/Web-API---Incident-Counts)
+API documentation can be found on the [WiKi](https://github.com/thequbit/mc911feedwatcher/wiki)

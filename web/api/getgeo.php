@@ -4,7 +4,7 @@
 	require_once("../tools/LocationManager.class.php");
 
 	$date = $_GET["date"];
-	$type = $_GET["type"];
+	$typeid = $_GET["typeid"];
 	
 	// do some sanity checking
 	$util = new UtilityManager();
@@ -14,17 +14,17 @@
 		$date = date("Y-m-d");
 	}
 	
-	if( $util->IsNumber($type) == false )
+	if( $util->IsNumber($typeid) == false )
 	{
-		$type = "";
+		$typeid = "";
 	}
 	
 	$mgr = new LocationManager();
 	
-	if( $type == "" )
+	if( $typeid == "" )
 		$locations = $mgr->GetLocationsByDay($date);
 	else
-		$locations = $mgr->GetLocationsByDayByType($date,$type);
+		$locations = $mgr->GetLocationsByDayByType($date,$typeid);
 	
 	echo json_encode($locations);
 	
