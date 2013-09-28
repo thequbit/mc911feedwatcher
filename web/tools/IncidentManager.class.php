@@ -86,11 +86,13 @@
 					$count = 25; // default value
 			
 				// create the query
-				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? GROUP BY itemid ORDER BY pubdate DESC LIMIT ?';
+				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? and pubdate = ? GROUP BY itemid ORDER BY pubtime DESC LIMIT ?';
+			
+				$today = date("Y-m-d");
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
-				$stmt->bind_param("ii", $agencyid, $count); // bind the variable
+				$stmt->bind_param("isi", $agencyid, $today, $count); // bind the variable
 				$results = $db->Execute($stmt);
 			
 				// create an array to put our results into
@@ -102,12 +104,12 @@
 					$incident = new Incident();
 				
 					// pull the information from the row
+					$incident->itemid = $result['itemid'];
 					$incident->event = $result['event'];
 					$incident->address = $result['address'];
 					$incident->pubdate = $result['pubdate'];
 					$incident->pubtime = $result['pubtime'];
 					$incident->status = $result['status'];
-					$incident->itemid = $result['itemid'];
 					$incident->scrapedatetime = $result['scrapedatetime'];
 					$incident->agencyid = $result['agencyid'];
 					$incident->fulladdress = $result['fulladdress'];
