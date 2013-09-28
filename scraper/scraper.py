@@ -11,7 +11,7 @@ from xml.dom.minidom import parseString
 
 import datetime
 
-_xmlsourceurl = "http://www.monroecounty.gov/etc/911/rss.php"
+_xmlsourceurl = "http://www2.monroecounty.gov/etc/911/rss.php"
 _geoheader = '<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:atom="http://www.w3.org/2005/Atom">'
 _geofooter = '</rss>'
 
@@ -32,6 +32,7 @@ def pulldata(_json):
     fulladdress = _json['results'][0]['formatted_address']
     lat = _json['results'][0]['geometry']['location']['lat']
     lng = _json['results'][0]['geometry']['location']['lng']
+    zipcode = ""
 
     for comp in _json['results'][0]['address_components']:
         if comp['types'][0] == "postal_code":
@@ -54,7 +55,7 @@ def decode_month(month):
 		"jun": 6,
 		"jul": 7,
 		"aug": 8,
-		"spt": 9,
+		"sep": 9,
 		"oct": 10,
 		"nov": 11,
 		"dec": 12,
@@ -87,6 +88,8 @@ def get_xml_file():
 	
 	# read the file contents
 	data = file.read()
+
+        print data
 	
 	# close the stream
 	file.close()
@@ -229,6 +232,7 @@ def push_to_database(event, address, pubdate, pubtime, status, itemid):
 	#
 
 	# generate query, and get the number of rows returned
+        print "\t\tChecking for item '{0}' ...".format(itemid)
 	query = 'SELECT count(*) FROM incidents WHERE itemid="{0}" and status="{1}"'.format(itemid,status)
 	database.query(query)
 	dbresult=database.store_result()
