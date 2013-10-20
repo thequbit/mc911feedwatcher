@@ -1,0 +1,716 @@
+[
+    {
+        "event": "mva vehicle off bridge/height",
+        "avgs": [
+            0,
+            0,
+            0,
+            0,
+            "4",
+            0,
+            "2",
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva minor injuries",
+        "avgs": [
+            "1",
+            "8",
+            "2",
+            "8",
+            "4",
+            "3",
+            "7",
+            "2",
+            "2",
+            "2",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva atv",
+        "avgs": [
+            "4",
+            0,
+            "4",
+            "2",
+            0,
+            0,
+            0,
+            "4",
+            0,
+            "2",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "potentially hazardous material",
+        "avgs": [
+            0,
+            0,
+            "1",
+            "3",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "hit and run, no injury and no blocking",
+        "avgs": [
+            "1057",
+            "1557",
+            "1408",
+            "1379",
+            "1389",
+            "1533",
+            "1468",
+            "1386",
+            "1317",
+            "885",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "wires down, wires arcing, wires blocking roadway",
+        "avgs": [
+            "225",
+            "131",
+            "50",
+            "123",
+            "131",
+            "321",
+            "424",
+            "134",
+            "101",
+            "46",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "school crossings",
+        "avgs": [
+            "11",
+            "3",
+            "6",
+            "7",
+            "11",
+            "2",
+            0,
+            0,
+            "12",
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva with injuries",
+        "avgs": [
+            "386",
+            "488",
+            "459",
+            "413",
+            "487",
+            "555",
+            "438",
+            "463",
+            "453",
+            "284",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "accident of motor vehicles involving unknown injury",
+        "avgs": [
+            "1481",
+            "2100",
+            "1456",
+            "1250",
+            "1355",
+            "1453",
+            "1299",
+            "1300",
+            "1330",
+            "964",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "wires burning in a tree, object on wire",
+        "avgs": [
+            "74",
+            "58",
+            "30",
+            "46",
+            "61",
+            "93",
+            "145",
+            "40",
+            "36",
+            "19",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "small aircraft operational defect",
+        "avgs": [
+            "5",
+            "7",
+            "4",
+            "4",
+            0,
+            "4",
+            "4",
+            "4",
+            "12",
+            "4",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "accident of motor vehicles with people trapped",
+        "avgs": [
+            "13",
+            "18",
+            "16",
+            "14",
+            "14",
+            "17",
+            "15",
+            "15",
+            "13",
+            "9",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva hazmat",
+        "avgs": [
+            0,
+            "2",
+            "2",
+            "2",
+            0,
+            0,
+            "2",
+            0,
+            "4",
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "airplane crash",
+        "avgs": [
+            0,
+            0,
+            0,
+            0,
+            "3",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "airport emergency alert",
+        "avgs": [
+            0,
+            0,
+            "1",
+            0,
+            "2",
+            "1",
+            "2",
+            "1",
+            0,
+            "1",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva person ejected",
+        "avgs": [
+            "9",
+            "2",
+            "4",
+            "6",
+            "2",
+            "3",
+            0,
+            "1",
+            0,
+            "2",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva person not alert",
+        "avgs": [
+            "17",
+            "4",
+            "10",
+            "15",
+            "18",
+            "10",
+            "7",
+            "8",
+            "12",
+            "5",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "accident of motor vehicles involving known injury",
+        "avgs": [
+            "226",
+            "292",
+            "282",
+            "290",
+            "385",
+            "379",
+            "355",
+            "360",
+            "337",
+            "224",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "barking dogs",
+        "avgs": [
+            "598",
+            "757",
+            "830",
+            "1022",
+            "1271",
+            "1379",
+            "1455",
+            "1532",
+            "1228",
+            "786",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva auto - pedestrian",
+        "avgs": [
+            "33",
+            "51",
+            "75",
+            "83",
+            "111",
+            "116",
+            "108",
+            "115",
+            "110",
+            "58",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "dangerous condition",
+        "avgs": [
+            "1939",
+            "2681",
+            "2637",
+            "3096",
+            "3219",
+            "3922",
+            "4069",
+            "3225",
+            "2803",
+            "1058",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "a large or small aircraft landing or taking off, experiencing any mechanical emergency",
+        "avgs": [
+            "6",
+            "18",
+            0,
+            "13",
+            0,
+            "6",
+            "12",
+            "13",
+            "7",
+            "16",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva serious injuries",
+        "avgs": [
+            0,
+            0,
+            0,
+            0,
+            "1",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva rollover",
+        "avgs": [
+            "50",
+            "64",
+            "54",
+            "28",
+            "72",
+            "23",
+            "62",
+            "44",
+            "42",
+            "25",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva veh into water",
+        "avgs": [
+            0,
+            "2",
+            "3",
+            0,
+            0,
+            0,
+            "1",
+            "2",
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva train",
+        "avgs": [
+            0,
+            0,
+            "2",
+            0,
+            0,
+            0,
+            0,
+            "1",
+            "2",
+            "2",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "person trapped other than in a motor vehicle",
+        "avgs": [
+            "4",
+            "2",
+            "8",
+            "7",
+            "2",
+            "8",
+            "12",
+            "15",
+            "6",
+            "6",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva auto - bicycle/motorcycle",
+        "avgs": [
+            "12",
+            "10",
+            "21",
+            "92",
+            "116",
+            "135",
+            "127",
+            "177",
+            "109",
+            "86",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "report of  a structure fire",
+        "avgs": [
+            "110",
+            "128",
+            "129",
+            "147",
+            "138",
+            "128",
+            "163",
+            "119",
+            "108",
+            "68",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "odor of smoke",
+        "avgs": [
+            "269",
+            "266",
+            "326",
+            "364",
+            "384",
+            "401",
+            "424",
+            "363",
+            "338",
+            "227",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "report of something burning inside not involving the structure",
+        "avgs": [
+            "160",
+            "223",
+            "222",
+            "201",
+            "188",
+            "149",
+            "165",
+            "133",
+            "145",
+            "89",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "parking complaint",
+        "avgs": [
+            "981",
+            "1544",
+            "1408",
+            "1255",
+            "1189",
+            "1289",
+            "1273",
+            "1340",
+            "1264",
+            "828",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva bus",
+        "avgs": [
+            0,
+            "2",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "4",
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "any dumpster, grass or rubbish fire not posing an exposure problem",
+        "avgs": [
+            "344",
+            "374",
+            "392",
+            "515",
+            "557",
+            "574",
+            "671",
+            "563",
+            "514",
+            "329",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "boating accidents, boats in distress, sinkings, all boat fires, flare sightings",
+        "avgs": [
+            0,
+            0,
+            "1",
+            "9",
+            "23",
+            "27",
+            "56",
+            "26",
+            "10",
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva personal watercraft",
+        "avgs": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "1",
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "traffic light problems",
+        "avgs": [
+            "84",
+            "69",
+            "70",
+            "93",
+            "115",
+            "164",
+            "194",
+            "110",
+            "84",
+            "68",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "dangerous condition - no immediate danger to life or property",
+        "avgs": [
+            "165",
+            "251",
+            "182",
+            "208",
+            "215",
+            "203",
+            "250",
+            "207",
+            "164",
+            "96",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "construction road closing information",
+        "avgs": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "3",
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "event": "train wreck or derailment",
+        "avgs": [
+            0,
+            0,
+            "1",
+            0,
+            0,
+            "2",
+            0,
+            "2",
+            "1",
+            "3",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "human life endangered by animal",
+        "avgs": [
+            "480",
+            "531",
+            "615",
+            "752",
+            "922",
+            "1098",
+            "1175",
+            "973",
+            "831",
+            "543",
+            0,
+            0
+        ]
+    },
+    {
+        "event": "mva pinned/trapped victim",
+        "avgs": [
+            "32",
+            "49",
+            "38",
+            "41",
+            "33",
+            "46",
+            "40",
+            "39",
+            "33",
+            "22",
+            0,
+            0
+        ]
+    }
+]
