@@ -1,23 +1,20 @@
 import os
-import uuid
 import datetime
-from time import strftime
 
-#import transaction
-
-from sqlalchemy import MetaData
+import transaction
 
 from sqlalchemy import (
     Column,
     Index,
     Integer,
     Text,
-    DateTime,
     Boolean,
     Float,
-)
+    DateTime,
+    ForeignKey,
+    )
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import update
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -28,23 +25,22 @@ from sqlalchemy.orm import (
 
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sqlalchemy import create_engine
-
-engine = create_engine('sqlite:///mcsafetyfeed.sqlite')
-
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),expire_on_commit=False))
-DBSession.configure(bind=engine)
-
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(), expire_on_commit=False))
 Base = declarative_base()
-Base.metadata.create_all(engine)
 
-#metadata = MetaData()
-#metadata.create_all(engine)
+
+#class MyModel(Base):
+#    __tablename__ = 'models'
+#    id = Column(Integer, primary_key=True)
+#    name = Column(Text)
+#    value = Column(Integer)
+#
+#Index('my_index', MyModel.name, unique=True, mysql_length=255)
 
 class Users(Base):
 
     """
-    Holds users.  This is simply to allow for registering for an API key.
+    Holds users. This is simply to allow for registering for an API key.
     """
 
     __tablename__ = 'users'
@@ -66,6 +62,27 @@ class AgencyTypes(Base):
     id = Column(Integer, primary_key=True)
     code = Column(Text)
     description = Column(Text)
+
+    @classmethod
+    def get_from_code(cls, session, code):
+        with transaction.manager:
+            agency_type = session.query(
+                AgencyTypes,
+            ).filter(
+                code == code,
+            ).first()
+            if agency_type == None:
+                agency_type = AgencyTypes.create_new_agency_type(session, code, '')
+        return agency_type
+
+    @classmethod
+    def create_new_agency_type(cls, session, code, description):
+        with transaction.manager:
+            agency_type = cls(
+                code = code,
+                description = description,
+            )
+        return agency_type
 
 class Agencies(Base):
 
@@ -89,6 +106,22 @@ class Agencies(Base):
             ).filter(
                 Agencies.agency_code == guid[:4], #first four leters are agency code
             ).first()
+            if agency == None:
+                agency_type = AgencyTypes.get_from_code(session, guid[3])
+                agency = Agencies.create_new_agency(session, guid[:4], '', agency_type.id, '', '')
+        return agency
+
+    @classmethod
+    def create_new_agency(cls, session, agency_code, agency_name,
+            type_id, description, website):
+        with transaction.manager:
+            agency = cls(
+                agency_code = agency_code,
+                agency_name = agency_name,
+                type_id = type_id,
+                description = description,
+                website = website,
+            )
         return agency
 
 class IncidentTypes(Base):
@@ -104,18 +137,31 @@ class IncidentTypes(Base):
 
     @classmethod
     def get_from_incident_text(cls, session, incident_text):
-        with transactions.manager:
+        with transaction.manager:
             incident_type = session.query(
                 IncidentTypes,
             ).filter(
                 IncidentTypes.incident_text == incident_text,
             ).first()
+            if incident_type == None:
+                incident_type = IncidentTypes.create_new_incident_type(session, incident_text, '')
+        return incident_type
+
+    @classmethod
+    def create_new_incident_type(cls, session, incident_text, description):
+        with transaction.manager:
+            incident_type = cls(
+                incident_text = incident_text,
+                description = description,
+            )
+            session.add(incident_type)
+            transaction.commit()
         return incident_type
 
 class Groups(Base):
 
     """
-    Holds the definition of a group, which has multiple incident types within it.  This is
+    Holds the definition of a group, which has multiple incident types within it. This is
     to group like incidents together such as car accidents or animal disruptance.
     """
   
@@ -166,7 +212,7 @@ class Statuses(Base):
                 Statuses.status_text == status_text,
             ).first()
             if status == None:
-                status = Statuses.create_new_status(status_text)
+                status = Statuses.create_new_status(session, status_text, '')
         return status
 
 class Incidents(Base):
@@ -189,28 +235,29 @@ class Incidents(Base):
     geocode_lat = Column(Float)
     geocode_lng = Column(Float)
     full_address = Column(Text)
-    geocode_success = Column(Boolean)
+    geocode_successful = Column(Boolean)
 
     @classmethod
     def check_exists(cls, session, guid, status_text):
         with transaction.manager:
             status = Statuses.get_from_status_text(session, status_text)
-            incident_exists = session.query(
-                exists().where(
-                    Incidents.guid == guid,
-                    Incidents.status_id == status.id,
-                )
-            ).scalar()
+            q = session.query(
+                Incidents,
+            ).filter(
+                Incidents.guid == guid,
+                Incidents.status_id == status.id,
+            )
+            incident_exists = session.query(q.exists()).scalar()
         return incident_exists
 
     @classmethod
     def add_incident(cls, session, run_id, status_text, short_address,
             guid, incident_text, incident_datetime, source_lat, source_lng,
-            geocode_lat, geocode_lng, full_address, geocode_success):
+            geocode_lat, geocode_lng, full_address, geocode_successful):
         with transaction.manager:
-            status = Statuses.get_from_status_text(status_text)
-            agency = Agencies.get_from_guid(guid)
-            incident_type = IncidentType.get_from_incident_text(incident_text)
+            status = Statuses.get_from_status_text(session, status_text)
+            agency = Agencies.get_from_guid(session, guid)
+            incident_type = IncidentTypes.get_from_incident_text(session, incident_text)
             incident = cls(
                 run_id = run_id,
                 status_id = status.id,
@@ -222,12 +269,12 @@ class Incidents(Base):
                 source_lat = source_lat,
                 source_lng = source_lng,
                 geocode_lat = geocode_lat,
-                geocode_lng = geocode_lng, 
+                geocode_lng = geocode_lng,
                 full_address = full_address,
                 geocode_successful = geocode_successful,
             )
             session.add(incident)
-            transacction.commit()
+            transaction.commit()
         return incident
 
 class APICalls(Base):
@@ -262,7 +309,7 @@ class APICalls(Base):
 class CurrentIncidents(Base):
 
     """
-    This holds a list of the current incidents that are active.  This is used to deturmine
+    This holds a list of the current incidents that are active. This is used to deturmine
     how long it takes different call types to be serviced by the calling agencies.
     """
 
@@ -285,7 +332,7 @@ class Runs(Base):
 
     @classmethod
     def new_run(cls, session):
-        #with transaction.manager:
+        with transaction.manager:
             run = cls(
                 successful = False, #successful,
                 error_text = None, #error_text,
@@ -293,21 +340,21 @@ class Runs(Base):
                 new_incidents = False, #new_incidents,
             )
             session.add(run)
-            #transaction.commit()
-            session.commit()
-            return run
+            transaction.commit()
+        return run
 
     @classmethod
     def update_run(cls, session, run, successful, error_text, new_incidents):
         with transaction.manager:
-            run = session.update().where(
+            run = update(Runs).where(
                 Runs.id == run.id
             ).values(
-                successful == successful,
-                error_text == error_text,
-                new_incidents == new_incidents,
+                successful = successful,
+                error_text = error_text,
+                new_incidents = new_incidents,
             )
             transaction.commit()
         return run
+
 
 
