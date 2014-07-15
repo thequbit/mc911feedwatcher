@@ -3,6 +3,7 @@ from time import strftime
 import datetime
 import urllib
 from time import sleep
+import time
 
 from xml.dom.minidom import parseString as parse_xml
 
@@ -37,6 +38,13 @@ Base.metadata.bind = engine
 _geoheader = '<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:atom="http://www.w3.org/2005/Atom">'
 _geofooter = '</rss>'
 
+_geofence = {
+  'latmax': 43.5,
+  'latmin': 42.5,
+  'lngmax': -77.0,
+  'lngmin': -78.5,
+}
+
 def text_from_tag(tag, dom):
     try:
     #if True:
@@ -50,11 +58,11 @@ def geocode_address(short_address):
 
     # https://pypi.python.org/pypi/python-omgeo
 
-    print "Geocoding '{0}' ...".format(short_address)
-
     g = Geocoder()
 
-    formed_address = "{0}, NY, USA".format(short_address)
+    formed_address = "{0}, NY, USA".format(short_address.lower())
+
+    print "Geocoding '{0}' ...".format(formed_address)
 
     result = g.geocode(formed_address)
     canidates = [c.__dict__ for c in result["candidates"]]
@@ -62,8 +70,8 @@ def geocode_address(short_address):
     lat = lng = full_address = None
     success = False
     if len(canidates) != 0:
-        lat = canidates[0]['x']
-        lng = canidates[0]['y']
+        lat = canidates[0]['y']
+        lng = canidates[0]['x']
         full_address = canidates[0]['match_addr']
         success = True    
 
@@ -116,8 +124,20 @@ def process_rss_feed(run_id,url):
         exists = Dispatches.check_exists(DBSession, guid, status_text)
         if not exists:
 
-            # geocode_lat,geocode_lng,full_address,geocode_success = geocode_address(short_address)
-            geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False;
+            geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
+ 
+            print "lat/lng: {0}, {1}  success = {2}".format(geocode_lat, geocode_lng, geocode_successful)
+            print "comparing 42.5 < lat < 43.5, and -77.0 > lng > -78.5"
+
+            # need to check to make sure that we geo-coded correctly.  This is a sanity check
+            # to make sure we are within monroe county.
+            if geocode_successful == True \
+                    and (geocode_lat > _geofence['latmax'] \
+                    or geocode_lat < _geofence['latmin'] \
+                    or geocode_lat < _geofence['lngmin'] \
+                    or geocode_lng > _geofence['lngmax']):
+                #geocode_lat = 0; geocode_lng = 0; full_address = '';
+                geocode_successful = False;
 
             # create the dispatch in the database
             Dispatches.add_dispatch(
@@ -143,17 +163,7 @@ def process_rss_feed(run_id,url):
 
 if __name__ == '__main__':
 
-    print "Downloading RSS feed and parsing ..."
-
-    success = True
     error_text = ''
-
-    # configure sql alchemy engine/connection
-    #print os.getcwd()
-    #engine = create_engine('sqlite:///mcsafetyfeed.sqlite')
-    #DBSession.configure(bind=engine)
-    #Base.metadata.bind = engine
-
     url = "http://www2.monroecounty.gov/etc/911/rss.php"
 
     while(True):
@@ -161,8 +171,10 @@ if __name__ == '__main__':
         print "Attempting to process RSS feed ..."
 
         run = Runs.new_run(DBSession)
-
+ 
+        start_time = time.time()
         new_dispatch_count, successful = process_rss_feed(run.id,url)
+        time_taken = time.time() - start_time
 
         print "Successfull processed {0} new dispatches.".format(new_dispatch_count)
 
@@ -171,6 +183,8 @@ if __name__ == '__main__':
             new_dispatches = True
         Runs.update_run(DBSession, run, successful, error_text, new_dispatches)
 
-        print "Waiting for 60 seconds."
-
-        sleep(60)
+        # see if we need to wait
+        wait_time = 60 - time_taken
+        if wait_time > 0:
+            print "Waiting {0} seconds ...".format(wait_time)
+            sleep(wait_time)
