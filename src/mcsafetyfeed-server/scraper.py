@@ -2,6 +2,7 @@ import os
 from time import strftime
 import datetime
 import urllib
+from time import sleep
 
 from xml.dom.minidom import parseString as parse_xml
 
@@ -17,13 +18,15 @@ from mcsafetyfeedserver.models import (
     Users,
     AgencyTypes,
     Agencies,
-    IncidentTypes,
+    DispatchTypes,
     Groups,
-    GroupIncidentTypes,
+    GroupDispatchTypes,
     Statuses,
     Incidents,
+    IncidentsDispatches,
+    Dispatches,
     APICalls,
-    CurrentIncidents,
+    CurrentDispatches,
     Runs,
 )
 
@@ -39,7 +42,7 @@ def text_from_tag(tag, dom):
     #if True:
         string = dom.getElementsByTagName(tag)[0].toxml()
         string = string.replace('<{0}>'.format(tag),'').replace('</{0}>'.format(tag),'').strip()
-    except:
+    except Exception, ex:
         string = None
     return string
 
@@ -56,8 +59,6 @@ def geocode_address(short_address):
     result = g.geocode(formed_address)
     canidates = [c.__dict__ for c in result["candidates"]]
 
-    #print canidates
-
     lat = lng = full_address = None
     success = False
     if len(canidates) != 0:
@@ -68,7 +69,7 @@ def geocode_address(short_address):
 
     return lat,lng,full_address,success
 
-def get_rss_feed_as_dict(url):
+def process_rss_feed(run_id,url):
 
     """
     Get the RSS feed from the web, and return a dict of it's contents.
@@ -84,7 +85,7 @@ def get_rss_feed_as_dict(url):
     print "Parsing {0} items ...".format(len(items))
 
     # process each item
-    items_dict_list = []
+    new_dispatch_count = 0
     for item in items:
         
         # pre-process xml 
@@ -102,81 +103,43 @@ def get_rss_feed_as_dict(url):
         pub_date_time = text_from_tag('pubDate',item_dom) # .replace('-','-0') 
         description = text_from_tag('description',item_dom)
         source_lat = text_from_tag('geo:lat',item_dom)
-        source_lng = text_from_tag('geo:lng',item_dom)
+        source_lng = text_from_tag('geo:long',item_dom)
       
         # parse fields
-        incident_text = title.split(' at ')[0].strip()
+        dispatch_text = title.split(' at ')[0].strip()
         short_address =  title.split(' at ')[1].strip()
-        incident_datetime = datetime.datetime.strptime(pub_date_time[:-6],'%a, %d %b %Y %X')
+        dispatch_datetime = datetime.datetime.strptime(pub_date_time[:-6],'%a, %d %b %Y %X')
         status_text = description.split(',')[0].split('Status:')[1].strip()
         guid = description.split(',')[1].split('ID:')[1].strip()
 
-        #print "title: {0}\nlink: {1}\npub_date_time:{2}\ndescription:{3}\nguid: {4}\nsource_lat: {5}\nsource_lng: {6}\n\n".format(title,link,pub_date_time,description,guid,source_lat,source_lng)
- 
-        #geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
-        geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False;
-
-        # make dict, and add to list to return
-        item_dict = {
-            'incident_text': title.split(' at ')[0],
-            'short_address': title.split(' at ')[1],
-            'incident_datetime': datetime.datetime.strptime(pub_date_time[:-6],'%a, %d %b %Y %X'),
-            'status_text': description.split(',')[0].split('Status:')[1],
-            'guid': description.split(',')[1].split('ID:')[1],
-            'source_lat': source_lat,
-            'source_lng': source_lng,
-            'geocode_lat': geocode_lat,
-            'geocode_lng': geocode_lng,
-            'full_address': full_address,
-            'geocode_successful': geocode_successful,
-        }
-        items_dict_list.append(item_dict)
-
-        #print item_dom
-        #print item_dict
-
-        #break
-
-    return items_dict_list, successful
-
-def push_items(run_id,items):
-
-    new_incidents = False
-    successful = True
-
-    for item in items:
-
-        exists = Incidents.check_exists(DBSession, item['guid'], item['status_text'])
-
-        print exists
-        print item
-        #print "GUID: {0}, exists = {1}".format(item['guid'], exists)
-
+        # see if the dispatch already exists within the database, and if it doesn't add it
+        exists = Dispatches.check_exists(DBSession, guid, status_text)
         if not exists:
 
             # geocode_lat,geocode_lng,full_address,geocode_success = geocode_address(short_address)
+            geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False;
 
-            Incidents.add_incident(
+            # create the dispatch in the database
+            Dispatches.add_dispatch(
                 session = DBSession,
                 run_id = run_id,
-                status_text = item['status_text'],
-                short_address = item['short_address'],
-                guid = item['guid'],
-                incident_text = item['incident_text'],
-                incident_datetime = item['incident_datetime'],
-                source_lat = item['source_lat'],
-                source_lng = item['source_lng'],
-                geocode_lat = item['geocode_lat'],
-                geocode_lng = item['geocode_lng'],
-                full_address = item['full_address'],
-                geocode_successful = item['geocode_successful'],
+                status_text = status_text,
+                short_address = short_address,
+                guid = guid,
+                dispatch_text = dispatch_text,
+                dispatch_datetime = dispatch_datetime,
+                source_lat = source_lat,
+                source_lng = source_lng,
+                geocode_lat = geocode_lat,
+                geocode_lng = geocode_lng,
+                full_address = full_address,
+                geocode_successful = geocode_successful,
             )
 
-            new_incidents = True
-       
-        raise Exception('debug') 
+            # inc our count of new dispatches
+            new_dispatch_count += 1
 
-    return new_incidents, successful
+    return new_dispatch_count, successful
 
 if __name__ == '__main__':
 
@@ -191,18 +154,23 @@ if __name__ == '__main__':
     #DBSession.configure(bind=engine)
     #Base.metadata.bind = engine
 
-    run = Runs.new_run(DBSession)
-
     url = "http://www2.monroecounty.gov/etc/911/rss.php"
 
-    items, successful = get_rss_feed_as_dict(url)
+    while(True):
 
-    print "Pushing items to database ..."
+        print "Attempting to process RSS feed ..."
 
-    new_incidents, successful = push_items(run.id, items)
+        run = Runs.new_run(DBSession)
 
-    print "Updating run ..."
+        new_dispatch_count, successful = process_rss_feed(run.id,url)
 
-    Runs.update_run(DBSession, run, successful, error_text, new_incidents)
+        print "Successfull processed {0} new dispatches.".format(new_dispatch_count)
 
-    print "Done."
+        new_dispatches = False
+        if new_dispatch_count > 0:
+            new_dispatches = True
+        Runs.update_run(DBSession, run, successful, error_text, new_dispatches)
+
+        print "Waiting for 60 seconds."
+
+        sleep(60)

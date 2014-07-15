@@ -124,45 +124,45 @@ class Agencies(Base):
             )
         return agency
 
-class IncidentTypes(Base):
+class DispatchTypes(Base):
 
     """
     Holds the different types of event types (such as barking dogs, or MVA)
     """
 
-    __tablename__ = 'incident_types'
+    __tablename__ = 'dispatch_types'
     id = Column(Integer, primary_key=True)
-    incident_text = Column(Text)
+    dispatch_text = Column(Text)
     description = Column(Text)
 
     @classmethod
-    def get_from_incident_text(cls, session, incident_text):
+    def get_from_dispatch_text(cls, session, dispatch_text):
         with transaction.manager:
-            incident_type = session.query(
-                IncidentTypes,
+            dispatch_type = session.query(
+                DispatchTypes,
             ).filter(
-                IncidentTypes.incident_text == incident_text,
+                DispatchTypes.dispatch_text == dispatch_text,
             ).first()
-            if incident_type == None:
-                incident_type = IncidentTypes.create_new_incident_type(session, incident_text, '')
-        return incident_type
+            if dispatch_type == None:
+                dispatch_type = DispatchTypes.create_new_dispatch_type(session, dispatch_text, '')
+        return dispatch_type
 
     @classmethod
-    def create_new_incident_type(cls, session, incident_text, description):
+    def create_new_dispatch_type(cls, session, dispatch_text, description):
         with transaction.manager:
-            incident_type = cls(
-                incident_text = incident_text,
+            dispatch_type = cls(
+                dispatch_text = dispatch_text,
                 description = description,
             )
-            session.add(incident_type)
+            session.add(dispatch_type)
             transaction.commit()
-        return incident_type
+        return dispatch_type
 
 class Groups(Base):
 
     """
-    Holds the definition of a group, which has multiple incident types within it. This is
-    to group like incidents together such as car accidents or animal disruptance.
+    Holds the definition of a group, which has multiple dispatch types within it. This is
+    to group like dispatches together such as car accidents or animal disruptance.
     """
   
     __tablename__ = 'groups'
@@ -170,21 +170,34 @@ class Groups(Base):
     name = Column(Text)
     description = Column(Text)
 
-class GroupIncidentTypes(Base):
+    @classmethod
+    def get_from_dispatch_text(cls, session, dispatch_text):
+        with transaction.manager:
+            group = session.query(
+                Groups,
+            ).join(
+                Groups, GroupDispatchTypes.group_id,
+                DispatchTypes, GroupDispatchTypes.dispatch_type_id,
+            ).filter(
+                GroupDispatchTypes.dispatch_text == dispatch_text,
+            ).first()
+        return group
+
+class GroupDispatchTypes(Base):
 
     """
-    Connects incident types to groups.
+    Connects dispatch types to groups.
     """
 
-    __tablename__ = 'group_incident_types'
+    __tablename__ = 'group_dispatch_types'
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey('groups.id'))
-    incident_type_id = Column(Integer, ForeignKey('incident_types.id'))
+    dispatch_type_id = Column(Integer, ForeignKey('dispatch_types.id'))
 
 class Statuses(Base):
 
     """
-    Holds the different statuses that an incident can have (WAITING, DISPATCHED, etc).
+    Holds the different statuses that an dispatch can have (WAITING, DISPATCHED, etc).
     """
 
     __tablename__ = 'statuses'
@@ -218,18 +231,53 @@ class Statuses(Base):
 class Incidents(Base):
 
     """
-    This is the table that holds all of the events that are gathered from the RSS feed.
+    Unique events that may have multiple dispatches.  Matched using time, address, 
+    and dispatch type.
     """
 
     __tablename__ = 'incidents'
+    id = Column(Integer, primary_key=True)
+    incident_datetime = Column(DateTime)
+    group_id = Column(Integer, ForeignKey('groups.id'))
+
+    @classmethod
+    def create_new_incident(cls, session, dispatch_text):
+        with transaction.manager:
+            group = Groups.get_from_dispatch_text(session, dispatch_text)
+            incident = cls(
+                incident_datetime = datetime.datetime.now(),
+                group_id = group.id,
+            )
+            session.add(incident)
+            transaction.commit()
+        return incident
+
+class IncidentsDispatches(Base):
+
+    """
+    Connections Incidents to Dispatches
+    """
+
+    __tablename__ = 'incidents_dispatches'
+    id = Column(Integer, primary_key=True)
+    incident_id = Column(Integer, ForeignKey('incidents.id'))
+    dispatch_id = Column(Integer, ForeignKey('dispatches.id'))
+
+class Dispatches(Base):
+
+    """
+    This is the table that holds all of the events that are gathered from the RSS feed.
+    """
+
+    __tablename__ = 'dispatches'
     id = Column(Integer, primary_key=True)
     run_id = Column(Integer, ForeignKey('runs.id'))
     status_id = Column(Integer, ForeignKey('statuses.id'))
     short_address = Column(Text)
     guid = Column(Text)
     agency_id = Column(Integer, ForeignKey('agencies.id'))
-    incident_type_id = Column(Integer, ForeignKey('incident_types.id'))
-    incident_datetime = Column(DateTime)
+    dispatch_type_id = Column(Integer, ForeignKey('dispatch_types.id'))
+    dispatch_datetime = Column(DateTime)
     source_lat = Column(Float)
     source_lng = Column(Float)
     geocode_lat = Column(Float)
@@ -242,30 +290,30 @@ class Incidents(Base):
         with transaction.manager:
             status = Statuses.get_from_status_text(session, status_text)
             q = session.query(
-                Incidents,
+                Dispatches,
             ).filter(
-                Incidents.guid == guid,
-                Incidents.status_id == status.id,
+                Dispatches.guid == guid,
+                Dispatches.status_id == status.id,
             )
-            incident_exists = session.query(q.exists()).scalar()
-        return incident_exists
+            dispatch_exists = session.query(q.exists()).scalar()
+        return dispatch_exists
 
     @classmethod
-    def add_incident(cls, session, run_id, status_text, short_address,
-            guid, incident_text, incident_datetime, source_lat, source_lng,
+    def add_dispatch(cls, session, run_id, status_text, short_address,
+            guid, dispatch_text, dispatch_datetime, source_lat, source_lng,
             geocode_lat, geocode_lng, full_address, geocode_successful):
         with transaction.manager:
             status = Statuses.get_from_status_text(session, status_text)
             agency = Agencies.get_from_guid(session, guid)
-            incident_type = IncidentTypes.get_from_incident_text(session, incident_text)
-            incident = cls(
+            dispatch_type = DispatchTypes.get_from_dispatch_text(session, dispatch_text)
+            dispatch = cls(
                 run_id = run_id,
                 status_id = status.id,
                 short_address = short_address,
                 guid = guid,
                 agency_id = agency.id,
-                incident_type_id = incident_type.id,
-                incident_datetime = incident_datetime,
+                dispatch_type_id = dispatch_type.id,
+                dispatch_datetime = dispatch_datetime,
                 source_lat = source_lat,
                 source_lng = source_lng,
                 geocode_lat = geocode_lat,
@@ -273,9 +321,9 @@ class Incidents(Base):
                 full_address = full_address,
                 geocode_successful = geocode_successful,
             )
-            session.add(incident)
+            session.add(dispatch)
             transaction.commit()
-        return incident
+        return dispatch
 
 class APICalls(Base):
 
@@ -306,16 +354,16 @@ class APICalls(Base):
             transaction.commit()
         return apicall
 
-class CurrentIncidents(Base):
+class CurrentDispatches(Base):
 
     """
-    This holds a list of the current incidents that are active. This is used to deturmine
+    This holds a list of the current dispatches that are active. This is used to deturmine
     how long it takes different call types to be serviced by the calling agencies.
     """
 
-    __tablename__ = 'current_incidents'
+    __tablename__ = 'current_dispatches'
     id = Column(Integer, primary_key=True)
-    incident_id = Column(Integer, ForeignKey('incidents.id'))
+    dispatch_id = Column(Integer, ForeignKey('dispatches.id'))
 
 class Runs(Base):
 
@@ -328,7 +376,7 @@ class Runs(Base):
     successful = Column(Boolean)
     error_text = Column(Text)
     run_datetime = Column(DateTime)
-    new_incidents = Column(Boolean)
+    new_dispatches = Column(Boolean)
 
     @classmethod
     def new_run(cls, session):
@@ -337,21 +385,21 @@ class Runs(Base):
                 successful = False, #successful,
                 error_text = None, #error_text,
                 run_datetime = datetime.datetime.now(),
-                new_incidents = False, #new_incidents,
+                new_dispatches = False, #new_dispatches,
             )
             session.add(run)
             transaction.commit()
         return run
 
     @classmethod
-    def update_run(cls, session, run, successful, error_text, new_incidents):
+    def update_run(cls, session, run, successful, error_text, new_dispatches):
         with transaction.manager:
             run = update(Runs).where(
                 Runs.id == run.id
             ).values(
                 successful = successful,
                 error_text = error_text,
-                new_incidents = new_incidents,
+                new_dispatches = new_dispatches,
             )
             transaction.commit()
         return run

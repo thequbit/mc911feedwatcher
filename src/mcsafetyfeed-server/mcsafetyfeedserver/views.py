@@ -10,7 +10,19 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
-    #MyModel,
+    Users,
+    AgencyTypes,
+    Agencies,
+    DispatchTypes,
+    Groups,
+    GroupDispatchTypes,
+    Statuses,
+    Incidents,
+    IncidentsDispatches,
+    Dispatches,
+    APICalls,
+    CurrentDispatches,
+    Runs,
     )
 
 
@@ -29,14 +41,15 @@ def status(request):
     resp = json.dumps(system_status)
     return Response(resp,content_type="application/json")
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
-    try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'mcsafetyfeed-server'}
-
+#
+#@view_config(route_name='home', renderer='templates/mytemplate.pt')
+#def my_view(request):
+#    try:
+#        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+#    except DBAPIError:
+#        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+#    return {'one': one, 'project': 'mcsafetyfeed-server'}
+#
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
