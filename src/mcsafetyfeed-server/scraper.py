@@ -126,9 +126,6 @@ def process_rss_feed(run_id,url):
 
             geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
  
-            print "lat/lng: {0}, {1}  success = {2}".format(geocode_lat, geocode_lng, geocode_successful)
-            print "comparing 42.5 < lat < 43.5, and -77.0 > lng > -78.5"
-
             # need to check to make sure that we geo-coded correctly.  This is a sanity check
             # to make sure we are within monroe county.
             if geocode_successful == True \
