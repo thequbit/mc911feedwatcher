@@ -286,6 +286,14 @@ class Dispatches(Base):
     geocode_successful = Column(Boolean)
 
     @classmethod
+    def get_count(cls, session):
+        with transaction.manager:
+            count = session.query(
+                Dispatches,
+            ).count()
+        return count
+
+    @classmethod
     def check_exists(cls, session, guid, status_text):
         with transaction.manager:
             status = Statuses.get_from_status_text(session, status_text)
@@ -404,6 +412,14 @@ class CurrentDispatches(Base):
     guid = Column(Text)
 
     @classmethod
+    def get_count(cls, session):
+        with transaction.manager:
+            count = session.query(
+                CurrentDispatches,
+            ).count()
+        return count
+
+    @classmethod
     def add_current_dispatch(cls, session, guid):
         with transaction.manager:
             current_dispatch = cls(
@@ -446,6 +462,14 @@ class Runs(Base):
     error_text = Column(Text)
     run_datetime = Column(DateTime)
     new_dispatches = Column(Boolean)
+
+    @classmethod
+    def get_count(cls, session):
+        with transaction.manager:
+            count = session.query(
+                Runs,
+            ).count()
+        return count
 
     @classmethod
     def new_run(cls, session):
