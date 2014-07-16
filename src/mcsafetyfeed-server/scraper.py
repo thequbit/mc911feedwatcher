@@ -4,6 +4,7 @@ import datetime
 import urllib
 from time import sleep
 import time
+import json
 
 from xml.dom.minidom import parseString as parse_xml
 
@@ -93,6 +94,7 @@ def process_rss_feed(run_id,url):
     print "Parsing {0} items ...".format(len(items))
 
     # process each item
+    new_dispatch_guids = []
     new_dispatch_count = 0
     for item in items:
         
@@ -120,12 +122,16 @@ def process_rss_feed(run_id,url):
         status_text = description.split(',')[0].split('Status:')[1].strip()
         guid = description.split(',')[1].split('ID:')[1].strip()
 
+        # add guid to list of new guids seen
+        new_dispatch_guids.append(guid)
+
         # see if the dispatch already exists within the database, and if it doesn't add it
         exists = Dispatches.check_exists(DBSession, guid, status_text)
         if not exists:
 
-            geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
- 
+            #geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
+            geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False 
+
             # need to check to make sure that we geo-coded correctly.  This is a sanity check
             # to make sure we are within monroe county.
             if geocode_successful == True \
@@ -137,7 +143,7 @@ def process_rss_feed(run_id,url):
                 geocode_successful = False;
 
             # create the dispatch in the database
-            Dispatches.add_dispatch(
+            dispatch = Dispatches.add_dispatch(
                 session = DBSession,
                 run_id = run_id,
                 status_text = status_text,
@@ -156,7 +162,36 @@ def process_rss_feed(run_id,url):
             # inc our count of new dispatches
             new_dispatch_count += 1
 
-    return new_dispatch_count, successful
+    # get list of current dispatches (not closed)
+    current_dispatch_guids = CurrentDispatches.get_current_dispatch_guids(DBSession)
+
+    # keep track of the number of dispatches that we close
+    closed_dispatch_count = 0
+
+    # check to see if there are any guis that are in the current dispatches list
+    # but are not within the RSS feed, and close them
+    for current_dispatch_guid in current_dispatch_guids:
+        if not current_dispatch_guid in new_dispatch_guids:
+            CurrentDispatches.remove_current_dispatch(DBSession,guid)
+            Dispatches.close_dispatch(
+                DBSession,
+                run_id,
+                current_dispatch_guid,
+            )
+            closed_dispatch_count += 1
+            #print "Removed '{0}' from the current dispatch list".format(current_dispatch_guid)
+
+    # see if there are any new dispatches that need to be added to the current 
+    # dispatches list, and add them.
+    for new_dispatch_guid in new_dispatch_guids:
+        if not new_dispatch_guid in current_dispatch_guids:
+            CurrentDispatches.add_current_dispatch(
+                DBSession,
+                new_dispatch_guid,
+            )
+            #print "Added '{0}' to the current dispatch list".format(new_dispatch_guid)
+
+    return new_dispatch_count, closed_dispatch_count, successful
 
 if __name__ == '__main__':
 
@@ -170,18 +205,20 @@ if __name__ == '__main__':
         run = Runs.new_run(DBSession)
  
         start_time = time.time()
-        new_dispatch_count, successful = process_rss_feed(run.id,url)
+        new_dispatch_count, closed_dispatch_count, successful = process_rss_feed(run.id,url)
         time_taken = time.time() - start_time
 
-        print "Successfull processed {0} new dispatches.".format(new_dispatch_count)
+        print "Successfull added {0} new dispatches and closed {1} existing dispatches.".format(new_dispatch_count, closed_dispatch_count)
 
         new_dispatches = False
         if new_dispatch_count > 0:
             new_dispatches = True
         Runs.update_run(DBSession, run, successful, error_text, new_dispatches)
 
+        rest_time = 30
+
         # see if we need to wait
-        wait_time = 60 - time_taken
+        wait_time = rest_time - time_taken
         if wait_time > 0:
             print "Waiting {0} seconds ...".format(wait_time)
             sleep(wait_time)

@@ -325,6 +325,43 @@ class Dispatches(Base):
             transaction.commit()
         return dispatch
 
+    @classmethod
+    def get_by_guid(cls, session, guid):
+        with transaction.manager:
+            dispatch = session.query(
+                Dispatches,
+            ).filter(
+                Dispatches.guid == guid
+            ).first()
+        return dispatch
+
+    @classmethod
+    def close_dispatch(cls, session, run_id, guid):
+        with transaction.manager:
+            current_dispatch = Dispatches.get_by_guid(DBSession, guid)
+            status = Statuses.get_from_status_text(session, 'CLOSED')
+            agency = Agencies.get_from_guid(session, current_dispatch.guid)
+            #dispatch_type = DispatchTypes.get_from_dispatch_text(session, dispatch_text) 
+            dispatch = cls(
+                run_id = run_id,
+                status_id = status.id,
+                short_address = current_dispatch.short_address,
+                guid = current_dispatch.guid,
+                agency_id = current_dispatch.agency_id,
+                dispatch_type_id = current_dispatch.dispatch_type_id,
+                dispatch_datetime = datetime.datetime.now(),
+                source_lat = current_dispatch.source_lat,
+                source_lng = current_dispatch.source_lng,
+                geocode_lat = current_dispatch.geocode_lat,
+                geocode_lng = current_dispatch.geocode_lng,
+                full_address = current_dispatch.full_address,
+                geocode_successful = current_dispatch.geocode_successful,
+            )
+            session.add(dispatch)
+            transaction.commit()
+        return dispatch
+
+
 class APICalls(Base):
 
     """
@@ -363,7 +400,39 @@ class CurrentDispatches(Base):
 
     __tablename__ = 'current_dispatches'
     id = Column(Integer, primary_key=True)
-    dispatch_id = Column(Integer, ForeignKey('dispatches.id'))
+    #dispatch_id = Column(Integer, ForeignKey('dispatches.id'))
+    guid = Column(Text)
+
+    @classmethod
+    def add_current_dispatch(cls, session, guid):
+        with transaction.manager:
+            current_dispatch = cls(
+                guid = guid,
+            )
+            session.add(current_dispatch)
+            transaction.commit()
+        return current_dispatch
+
+    @classmethod
+    def get_current_dispatch_guids(cls, session):
+        with transaction.manager:
+            current_dispatches = session.query(
+                CurrentDispatches,
+            ).all()
+            current_dispatch_guids = []
+            for current_dispatch in current_dispatches:
+                current_dispatch_guids.append(current_dispatch.guid)
+        return current_dispatch_guids
+
+    @classmethod
+    def remove_current_dispatch(cls, session, guid):
+        with transaction.manager:
+            session.query(
+                CurrentDispatches,
+            ).filter(
+                CurrentDispatches.guid == guid,
+            ).delete()
+            transaction.commit()
 
 class Runs(Base):
 
