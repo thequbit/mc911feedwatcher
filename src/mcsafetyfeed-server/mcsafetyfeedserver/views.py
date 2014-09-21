@@ -36,10 +36,40 @@ system_status = {
 #
 #    return Response('<html><body>hi.</body></html>')
 
-#@view_config(route_name='home', )
-#def home(request):
-#
-#    return {}
+@view_config(route_name='home', renderer='templates/index.mak')
+def home(request):
+
+    return {}
+
+@view_config(route_name='feed', renderer='templates/feed.mak')
+def feed(request):
+
+    return {}
+
+@view_config(route_name='accidents', renderer='templates/accidents.mak')
+def accidents(request):
+
+    return {}
+
+@view_config(route_name='browse', renderer='templates/browse.mak')
+def browse(request):
+
+    return {}
+
+@view_config(route_name='search', renderer='templates/search.mak')
+def search(request):
+
+    return {}
+
+@view_config(route_name='about', renderer='templates/about.mak')
+def about(request):
+
+    return {}
+
+@view_config(route_name='status', renderer='templates/status.mak')
+def about(request):
+
+    return {}
 
 @view_config(route_name='status.json')
 def status(request):

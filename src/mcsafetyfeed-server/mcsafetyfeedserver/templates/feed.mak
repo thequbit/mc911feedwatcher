@@ -1,113 +1,20 @@
-<!doctype html>
-<html class="no-js" lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCSafetyFeed.org | Feed</title>
-    
-    <link rel="stylesheet" href="css/foundation.css" />
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-    
-    <script src="js/vendor/modernizr.js"></script>
-    
-    <style>
-    
-        
-        #map-canvas {
-            margin-top: 5%;
-            min-height: 500px;
-            width: 100%;
-            float: left;
-        }
-        
-        #map-control {
-            margin-top: 5%;
-            padding-top: 10px;
-            padding-left: 10px;
-        }
-        
-        #check-box-container {
-            max-height: 450px;
-            overflow-y: scroll;
-        }
-        
-        .feed-item {
-            border: 1px solid rgba(51,51,51,0.5);
-            border-radius: 3px;
-            background-color: rgba(255,255,0,0.2);
-            margin-top: 2px !important;
-        }
-        
-        /*
-        #feed-stop-stuff {
-            height: 300%;
-        }
-        */
-    
-    </style>
-    
-</head>
-<body>
+<%inherit file="base.mak"/>
 
-    <div class="off-canvas-wrape" data-offcanvas="">
-        <!-- Top nav bar -->
-        <nav id="top-nav-bar" class="top-bar">
-        
-            <ul class="title-area">
-                <li class="name">
-                    <h1><a href="/">mcsafetyfeed.org</a></h1>
-                </li>
-            </ul>
-            
-            <section class="top-bar-section">
-                <!-- Right Nav Section -->
-                <ul class="right">
-                    <li class="divider"></li>
-                    <li class="has-dropdown not-click">
-                        <a href="#">Menu</a>
-                        <ul class="dropdown">
-                            <li class="menu-item">
-                                <a href="/">Home</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="feed">911 Feed</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="accidents">Accidents</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="search">Search</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="browse">Browse</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="status">Status</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="about">About</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="divider"></li>
-                </ul>
-            </section> 
-            
-        </nav>
-    </div>
-    
     <div class="row" id="feed-stop-stuff">
         <div class="large-8 columns">
             <!-- map here -->
             <div id="map-canvas"></div>
-    
+
         </div>
         <div class="large-4 columns">
             <!-- control here -->
             <div id="map-control">
+                <!--
                 <a class="small button" href="#" id="button-select-all">Select All</a>
                 <a class="small button" href="#" id="button-clear-map">Clear Map</a>
+                -->
                 </br>
+                <!--
                 <div id="check-box-container">
                     <input checked="checked" class="checkbox" name="Parking complaint" value="5" type="checkbox">Parking complaint</input></br>
                     <input checked="checked" class="checkbox" name="report of something burning inside not involving the structure" value="6" type="checkbox">report of something burning inside not involving the structure</input></br>
@@ -118,7 +25,7 @@
                     <input checked="checked" class="checkbox" name="Accident of motor vehicles involving unknown injury" value="12" type="checkbox">Accident of motor vehicles involving unknown injury</input></br>
                     <input checked="checked" class="checkbox" name="Barking dogs" value="13" type="checkbox">Barking dogs</input></br><input checked="checked" class="checkbox" name="Odor of smoke" value="15" type="checkbox">Odor of smoke</input></br>
                     <input checked="checked" class="checkbox" name="Dangerous condition - no immediate danger to life or property" value="16" type="checkbox">Dangerous condition - no immediate danger to life or property</input></br>
-                    <input checked="checked" class="checkbox" name="MVA rollover" value="17" type="checkbox">MVA rollover</input></br><input checked="checked" class="checkbox" name="MVA with injuries" value="18" type="checkbox">MVA with injuries</input></br>
+                    <input checked="checked" class="checkbox" name="MVA rollover" value="18" type="checkbox">MVA rollover</input></br><input checked="checked" class="checkbox" name="MVA with injuries" value="18" type="checkbox">MVA with injuries</input></br>
                     <input checked="checked" class="checkbox" name="Accident of motor vehicles involving known injury" value="19" type="checkbox">Accident of motor vehicles involving known injury</input></br>
                     <input checked="checked" class="checkbox" name="report of  a structure fire" value="20" type="checkbox">report of  a structure fire</input></br>
                     <input checked="checked" class="checkbox" name="Traffic light problems" value="21" type="checkbox">Traffic light problems</input></br>
@@ -129,11 +36,13 @@
                     <input checked="checked" class="checkbox" name="MVA person not alert" value="29" type="checkbox">MVA person not alert</input></br>
                     <input checked="checked" class="checkbox" name="MVA ATV" value="33" type="checkbox">MVA ATV</input></br></input></br>
                 </div>
+                -->
             </div>
         </div>
     </div>
-    
-    
+
+
+
     <div class="row">
         <hr/>
         <div class="large-12 columns">
@@ -156,87 +65,34 @@
             </div>
             <!-- feed here -->
             <div id="feed-items"></div>
-            <!--
-            <div class="row feed-item">
-                <div class="large-1 columns">
-                    01:51:00
-                </div>
-                <div class="large-4 columns">
-                    Dangerous condition
-                </div>
-                <div class="large-3 columns">
-                    SB RT 390 AT EXIT 11, Rush
-                </div>
-                <div class="large-2 columns">
-                    Regional Traffic Operations Center
-                </div>
-                <div class="large-2 columns">
-                    RTOC142640323
-                </div>
-            </div>
-            <div class="row feed-item">
-                <div class="large-1 columns">
-                    01:48:00
-                </div>
-                <div class="large-4 columns">
-                    Any dumpster, grass or rubbish fire not posing an exposure problem
-                </div>
-                <div class="large-3 columns">
-                    38 MARKET ST, Brockport
-                </div>
-                <div class="large-2 columns">
-                    Brockport Fire
-                </div>
-                <div class="large-2 columns">
-                    BROF142640313
-                </div>
-            </div>
-            -->
         </div
     </div>
-    
-    <footer class="row">
-        <div class="large-12 columns">
-            <hr/>
-            <div class="row">
-                <div class="large-6 columns">
-                    <p>&copy; Copyright Timothy Duffy, 2014</p>
-                </div>
-                <div class="large-6 columns">
-                    <ul class="inline-list right">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="status">Status</a></li>
-                        <li><a href="about">About</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-    <script src="js/vendor/jquery.js"></script>
-    <script src="js/foundation.min.js"></script>
+    <script src="static/js/vendor/jquery.js"></script>
+    <script src="static/js/foundation.min.js"></script>
     <script>
-        
+
         // init foundation
         $(document).foundation();
-        
+
     </script>
+
 
     <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
     <script>
-    
+
         var map_container = document.getElementById('map-canvas');
-        
+
         var markers = [];
-        
+
         $(document).ready(function() {
-        
+
             var main = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data © OpenStreetMap contributors',
+                attribution: 'Map data Â© OpenStreetMap contributors',
                 minZoom: 10,
                 maxZoom: 16,
             });
-            
+
             window.map = L.map('map-canvas', {
                 center: [43.16412, -77.60124], //[42.6501, -76.3659],
                 zoom: 11,
@@ -244,7 +100,7 @@
                     main
                 ]
             });
-            
+
             /*
             L.control.scale({
                 position: 'bottomright',
@@ -252,19 +108,20 @@
                 imperial: true
             }).addTo(map);
             */
-            
+
+
             // load feed items
-            url = 'dispatches.json';
+            url = '/dispatches.json';
             $.getJSON(url, function( data ) {
-            
+
                 html = '';
                 //for(var i=0; i<data.dispatches.length; i++) {
                 data.dispatches.forEach( function( dispatch ) {
-  
+
                     html += '<div class="row feed-item">';
                     html += '<div class="large-1 columns">';
                     //html += data.dispatches[i].dispatch_datetime.split(' ')[1];
-                    html += dispatch.dispatch_datetime.split(' ')[1];
+                    html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
                     html += '</div>';
                     html += '<div class="large-4 columns">';
                     //html += data.dispatches[i].dispatch_text;
@@ -283,7 +140,7 @@
                     html += dispatch.guid;
                     html += '</div>';
                     html += '</div>';
-                    
+
                     if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
                         marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
                         markers.push(marker);
@@ -291,20 +148,19 @@
                     else {
                         console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
                     }
-                    
+
                     //if ( data.dispatches[i].geocode_successful == true ) {
                     //    if ( data.dispatches[i].geocode_lat != 0 && data.dispatches[i].geocode_lng != 0 ) {
                     //        incident = L.marker([data.dispatches[i].geocode_lat, data.dispatches[i].geocode_lng]).addTo(map);
                     //    }
                     //}
                 });
-                
+
                 $('#feed-items').html(html);
             });
-            
+
         });
-    
+
     </script>
 
-</body>
-</html>
+

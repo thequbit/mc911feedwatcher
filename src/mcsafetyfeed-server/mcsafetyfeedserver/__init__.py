@@ -21,6 +21,14 @@ def main(global_config, **settings):
 
     #config.add_route('system_status', 'system_status.json')
 
+    config.add_route('home', '/')
+    config.add_route('feed', '/feed')
+    config.add_route('accidents', '/accidents')
+    config.add_route('browse', '/browse')
+    config.add_route('search', '/search')
+    config.add_route('about', '/about')
+    config.add_route('status','/status')
+
     config.add_route('status.json','status.json')
     config.add_route('dispatches.json','dispatches.json')
 
