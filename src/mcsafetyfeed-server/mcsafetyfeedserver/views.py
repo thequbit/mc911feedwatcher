@@ -31,16 +31,20 @@ system_status = {
     'alive': True
 }
 
-@view_config(route_name='home')
-def home(request):
+#@view_config(route_name='home')
+#def home(request):
+#
+#    return Response('<html><body>hi.</body></html>')
 
-    return Response('<html><body>hi.</body></html>')
+#@view_config(route_name='home', )
+#def home(request):
+#
+#    return {}
 
 @view_config(route_name='status.json')
 def status(request):
 
-    """
-    Returns the status of the system
+    """ Returns the status of the system
     """
 
     response = {'success': False}
@@ -57,6 +61,57 @@ def status(request):
 
     resp = json.dumps(response)
     return Response(resp,content_type="application/json")
+
+@view_config(route_name='dispatches.json')
+def dispatches(request):
+
+    """ Returns a list of todays dispatches
+    """
+
+    response = {'success': False}
+
+    if True:
+#    try:
+
+        dispatches = Dispatches.get_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now()
+        )
+
+
+        ret_dispatches = []
+        for short_address,guid,dispatch_datetime,source_lat,source_lng, \
+                geocode_lat,geocode_lng,geocode_successful,status_text, \
+                status_description,agency_name,agency_description, \
+                agency_website,dispatch_text,dispatch_description \
+                in dispatches:
+            ret_dispatches.append({
+                'short_address': short_address,
+                'guid': guid,
+                'dispatch_datetime': str(dispatch_datetime),
+                'source_lat': source_lat,
+                'source_lng': source_lng,
+                'geocode_lat': geocode_lat,
+                'geocode_lng': geocode_lng,
+                'geocode_successful': geocode_successful,
+                'status_text': status_text,
+                'status_description': status_description,
+                'agency_name': agency_name,
+                'agency_description': agency_description,
+                'agency_website': agency_website,
+                'dispatch_text': dispatch_text,
+                'dispatch_description': dispatch_description,
+            })
+
+        response['dispatches'] = ret_dispatches
+        response['success'] = True
+
+#    except:
+#        pass
+
+    resp = json.dumps(response)
+    return Response(resp,content_type="application/json")
+
 
 #@view_config(route_name='dispatches')
 #def status(request):

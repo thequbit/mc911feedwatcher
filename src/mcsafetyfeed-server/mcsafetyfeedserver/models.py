@@ -11,7 +11,10 @@ from sqlalchemy import (
     Boolean,
     Float,
     DateTime,
+    Date,
     ForeignKey,
+    cast,
+    desc,
     )
 
 from sqlalchemy import update
@@ -176,7 +179,7 @@ class Groups(Base):
             group = session.query(
                 Groups,
             ).join(
-                Groups, GroupDispatchTypes.group_id,
+                Groups, GroupDispatchTypes.id,
                 DispatchTypes, GroupDispatchTypes.dispatch_type_id,
             ).filter(
                 GroupDispatchTypes.dispatch_text == dispatch_text,
@@ -369,6 +372,38 @@ class Dispatches(Base):
             transaction.commit()
         return dispatch
 
+    @classmethod
+    def get_by_date(cls, session, target_datetime):
+        with transaction.manager:
+            dispatches = session.query(
+                Dispatches.short_address,
+                Dispatches.guid,
+                Dispatches.dispatch_datetime,
+                Dispatches.source_lat,
+                Dispatches.source_lng,
+                Dispatches.geocode_lat,
+                Dispatches.geocode_lng,
+                Dispatches.geocode_successful,
+                Statuses.status_text,
+                Statuses.description,
+                Agencies.agency_name,
+                Agencies.description,
+                Agencies.website,
+                DispatchTypes.dispatch_text,
+                DispatchTypes.description,
+            ).outerjoin(
+                Statuses,Dispatches.status_id == Statuses.id,
+            ).outerjoin(
+                Agencies,Dispatches.agency_id == Agencies.id,
+            ).outerjoin(
+                DispatchTypes,Dispatches.dispatch_type_id == DispatchTypes.id,
+            ).filter(
+                #cast(Dispatches.dispatch_datetime,Date) == \
+                #    cast(target_datetime,Date),
+            ).order_by(
+                desc(Dispatches.dispatch_datetime)
+            ).all()
+        return dispatches
 
 class APICalls(Base):
 

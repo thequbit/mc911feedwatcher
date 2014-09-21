@@ -15,6 +15,8 @@ from ..models import (
     DBSession,
     #MyModel,
     Base,
+    AgencyTypes,
+    Agencies,
     )
 
 
@@ -38,3 +40,22 @@ def main(argv=sys.argv):
     #with transaction.manager:
     #    model = MyModel(name='one', value=1)
     #    DBSession.add(model)
+
+    with transaction.manager:
+        with open('agencies.csv','r') as f:
+            agencies = f.read().split('\n')
+
+        for agency in agencies:
+            if agency.strip() != '':
+                # agencyid, shortname, longname, type, description, websiteurl
+                parts = agency.split('\t')
+                agency_type = AgencyTypes.get_from_code(DBSession, parts[3])
+                a = Agencies(
+                    agency_code = parts[1],
+                    agency_name = parts[2],
+                    type_id = agency_type.id,
+                    description = parts[4],
+                    website = parts[5],
+                )
+                DBSession.add(a)
+                transaction.commit()

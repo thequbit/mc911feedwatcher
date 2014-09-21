@@ -129,8 +129,8 @@ def process_rss_feed(run_id,url):
         exists = Dispatches.check_exists(DBSession, guid, status_text)
         if not exists:
 
-            #geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
-            geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False 
+            geocode_lat,geocode_lng,full_address,geocode_successful = geocode_address(short_address)
+            #geocode_lat = 0; geocode_lng = 0; full_address = ''; geocode_successful = False 
 
             # need to check to make sure that we geo-coded correctly.  This is a sanity check
             # to make sure we are within monroe county.
