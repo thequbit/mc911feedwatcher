@@ -1,5 +1,21 @@
 <%inherit file="base.mak"/>
 
+    <style>
+
+        #check-box-container {
+            overflow: auto;
+            /*overflow-y: hidden;*/
+            white-space: nowrap;
+            padding: 3px;
+            border: 1px solid #DDD;
+        }
+
+        #check-box-container input {
+            margin: 0px !important;
+        }
+
+    </style>
+
     <div class="row" id="feed-stop-stuff">
         <div class="large-8 columns">
             <!-- map here -->
@@ -9,12 +25,8 @@
         <div class="large-4 columns">
             <!-- control here -->
             <div id="map-control">
-                <!--
-                <a class="small button" href="#" id="button-select-all">Select All</a>
-                <a class="small button" href="#" id="button-clear-map">Clear Map</a>
-                -->
-                </br>
-                <!--
+                
+                <h5>Dispatches Types:</h5>
                 <div id="check-box-container">
                     <input checked="checked" class="checkbox" name="Parking complaint" value="5" type="checkbox">Parking complaint</input></br>
                     <input checked="checked" class="checkbox" name="report of something burning inside not involving the structure" value="6" type="checkbox">report of something burning inside not involving the structure</input></br>
@@ -36,14 +48,30 @@
                     <input checked="checked" class="checkbox" name="MVA person not alert" value="29" type="checkbox">MVA person not alert</input></br>
                     <input checked="checked" class="checkbox" name="MVA ATV" value="33" type="checkbox">MVA ATV</input></br></input></br>
                 </div>
-                -->
+
+                <a class="small" href="#" id="button-select-all">Select All</a>
+                <div class="right">
+                    <a class="small" href="#" id="button-clear-map">Clear Map</a>
+                </div>  
             </div>
         </div>
     </div>
 
-
+    <br/>
 
     <div class="row">
+        <div class="large-12 columns"> 
+            <div id="dispatch-counts" class="left"></div>
+            <div class="right">
+                % if start != 0:
+                    <!-- < <a href="/feed?start=0&count=${count}">Previous</a> | -->
+                    < <a href="#" id="previous-link">Previous</a> | 
+                    <!-- < <a href="/feed?start=${start-count}&count=${count}">Previous</a> | -->
+                % endif
+                <!-- <a href="/feed?start=${start+count}&count=${count}">Next</a> > -->
+                <a href="#" id="next-link">Next</a> >
+            </div>
+        </div>
         <hr/>
         <div class="large-12 columns">
             <div class="row">
@@ -63,8 +91,10 @@
                     <h4>Event ID</h4>
                 </div>
             </div>
+
             <!-- feed here -->
-            <div id="feed-items"></div>
+            <div id="feed-items">
+            </div>
         </div
     </div>
 
@@ -84,6 +114,9 @@
         var map_container = document.getElementById('map-canvas');
 
         var markers = [];
+ 
+        var start = ${start};
+        var count = ${count};
 
         $(document).ready(function() {
 
@@ -109,57 +142,124 @@
             }).addTo(map);
             */
 
+            /*
+            $(".checkbox").change(function() {
+                if(this.checked == true) {
+                    $(":checked").each(
+                        function(i,data){
+                            //popmarkers(data);
+                        }
+                    );
+                } else {
+                    // clear map of check box type
+                    if (markerArray) {
+                        for (i in markerArray) {
+                            if( markerArray[i].title == this.name ) {
+                                markerArray[i].setMap(null);
+                                
+                                // TODO: remove item from the array ... becaues this is an empic memory leak
+                            }
+                        }
+                        //markerArray.length = 0;
+                    }
+                }
+            });
+            */
+
+            $('#check-box-container :input').each(function() {
+                var checkbox = $(this);
+                checkbox.attr('checked', false)
+            });
+
+            $('#button-clear-map').on('click', function(e) {
+                
+                //markers.clearMarkers();
+                markers.forEach( function(marker) {
+                    map.removeLayer(marker);
+                });
+
+                markers = [];
+
+                $('#check-box-container :input').each(function() {
+                    var checkbox = $(this);
+                    checkbox.attr('checked', false)
+                });
+                
+            });
+
+            $('#next-link').on('click', function(e) {
+
+                start += count;            
+
+                get_dispatches();
+            
+            });
+
+            $('#previous-link').on('click', function(e) {
+
+                if ( start - count < 0 ) {
+                    start = 0;
+                } else {
+                    start -= count;
+                }
+
+                get_dispatches();
+
+            });
+
+            get_dispatches();
+
+        });
+ 
+        function get_dispatches() {
 
             // load feed items
-            url = '/dispatches.json';
+            url = '/dispatches.json?start=' + start + '&count=' + count;
             $.getJSON(url, function( data ) {
 
                 html = '';
-                //for(var i=0; i<data.dispatches.length; i++) {
                 data.dispatches.forEach( function( dispatch ) {
 
-                    html += '<div class="row feed-item">';
-                    html += '<div class="large-1 columns">';
-                    //html += data.dispatches[i].dispatch_datetime.split(' ')[1];
-                    html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
-                    html += '</div>';
-                    html += '<div class="large-4 columns">';
-                    //html += data.dispatches[i].dispatch_text;
-                    html += dispatch.dispatch_text;
-                    html += '</div>';
-                    html += '<div class="large-3 columns">';
-                    //html += data.dispatches[i].short_address;
-                    html += dispatch.short_address;
-                    html += '</div>';
-                    html += '<div class="large-2 columns">';
-                    //html += data.dispatches[i].agency_name;
-                    html += dispatch.agency_name;
-                    html += '</div>';
-                    html += '<div class="large-2 columns">';
-                    //html += data.dispatches[i].guid;
-                    html += dispatch.guid;
-                    html += '</div>';
-                    html += '</div>';
+                        html += '<div class="row feed-item">';
+                        html += '<div class="large-1 columns">';
+                        //html += data.dispatches[i].dispatch_datetime.split(' ')[1];
+                        html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
+                        html += '</div>';
+                        html += '<div class="large-4 columns">';
+                        //html += data.dispatches[i].dispatch_text;
+                        html += dispatch.dispatch_text;
+                        html += '</div>';
+                        html += '<div class="large-3 columns">';
+                        //html += data.dispatches[i].short_address;
+                        html += dispatch.short_address;
+                        html += '</div>';
+                        html += '<div class="large-2 columns">';
+                        //html += data.dispatches[i].agency_name;
+                        html += dispatch.agency_name;
+                        html += '</div>';
+                        html += '<div class="large-2 columns">';
+                        //html += data.dispatches[i].guid;
+                        html += dispatch.guid;
+                        html += '</div>';
+                        html += '</div>';
 
-                    if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
-                        marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
-                        markers.push(marker);
-                    }
-                    else {
-                        console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
-                    }
+                        if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
+                            marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
+                            markers.push(marker);
+                        }
+                        else {
+                            console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
+                        }
 
-                    //if ( data.dispatches[i].geocode_successful == true ) {
-                    //    if ( data.dispatches[i].geocode_lat != 0 && data.dispatches[i].geocode_lng != 0 ) {
-                    //        incident = L.marker([data.dispatches[i].geocode_lat, data.dispatches[i].geocode_lng]).addTo(map);
-                    //    }
-                    //}
+                    });
+
+                    $('#feed-items').html(html);
+                 
+                    $('#dispatch-counts').html('Displaying Dispatches ' + (start+1) + ' - ' + (start+count) + ' of ' + data.dispatch_count);
                 });
-
-                $('#feed-items').html(html);
-            });
-
-        });
+        }
+        
+    
 
     </script>
 

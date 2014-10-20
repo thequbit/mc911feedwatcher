@@ -44,7 +44,57 @@ def home(request):
 @view_config(route_name='feed', renderer='templates/feed.mak')
 def feed(request):
 
-    return {}
+    if True:
+
+        start = 0
+        try:
+            start = int(request.GET['start'])
+        except:
+            pass
+
+        count = 100
+        try:
+            count = int(request.GET['count'])
+        except:
+            pass
+
+        dispatches = Dispatches.get_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+            start = start,
+            count = count,
+        )
+
+        ret_dispatches = []
+        for short_address,guid,dispatch_datetime,source_lat,source_lng, \
+                geocode_lat,geocode_lng,geocode_successful,status_text, \
+                status_description,agency_name,agency_description, \
+                agency_website,dispatch_text,dispatch_description \
+                in dispatches:
+            ret_dispatches.append({
+                'short_address': short_address,
+                'guid': guid,
+                'dispatch_datetime': str(dispatch_datetime),
+                'source_lat': source_lat,
+                'source_lng': source_lng,
+                'geocode_lat': geocode_lat,
+                'geocode_lng': geocode_lng,
+                'geocode_successful': geocode_successful,
+                'status_text': status_text,
+                'status_description': status_description,
+                'agency_name': agency_name,
+                'agency_description': agency_description,
+                'agency_website': agency_website,
+                'dispatch_text': dispatch_text,
+                'dispatch_description': dispatch_description,
+            })
+
+        dispatch_count, = Dispatches.get_count_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+        )
+
+    return {'dispatches': ret_dispatches, 'start': start, 'count': count, 'dispatch_count': dispatch_count}
 
 @view_config(route_name='accidents', renderer='templates/accidents.mak')
 def accidents(request):
@@ -103,9 +153,23 @@ def dispatches(request):
     if True:
 #    try:
 
+        start = 0
+        try:
+            start = int(request.GET['start'])
+        except:
+            pass
+
+        count = 100
+        try:
+            count = int(request.GET['count'])
+        except:
+            pass
+ 
         dispatches = Dispatches.get_by_date(
             session = DBSession,
-            target_datetime = datetime.datetime.now()
+            target_datetime = datetime.datetime.now(),
+            start = start,
+            count = count,
         )
 
 
@@ -134,6 +198,14 @@ def dispatches(request):
             })
 
         response['dispatches'] = ret_dispatches
+
+        dispatch_count, = Dispatches.get_count_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+        )
+
+        response['dispatch_count'] = dispatch_count
+
         response['success'] = True
 
 #    except:

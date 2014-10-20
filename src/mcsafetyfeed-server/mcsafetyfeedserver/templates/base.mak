@@ -16,57 +16,51 @@
             margin-top: 1%;
         }
 
+        div.title-bar {
+            color: black;
+            background-color: #DDD;
+        }
+
+        div.title-bar a {
+            color: #333;
+        }
+
+        div.top-links {
+            margin-top: 20px !important;
+            margin-bottom: 20px !important;
+            border-bottom: 1px solid #DDD;
+        }
+
     </style>
 
 </head>
 <body>
 
-    <!--<div class="off-canvas-wrape" data-offcanvas="">-->
-        <!-- Top nav bar -->
-        <nav id="top-nav-bar" class="top-bar" data-topbar role="navigation">
+     <div class="title-bar">
+        <div class="row">
+            <div class="large-12 columns">
+                <h3><a href="/">MCSafetyFeed</a></h3>
+            </div>
+        </div>
+    </div>
 
-            <ul class="title-area">
-                <li class="name">
-                    <h1><a href="/">mcsafetyfeed.org</a></h1>
-                </li>
-            </ul>
-
-            <section class="top-bar-section">
-                <!-- Right Nav Section -->
-                <ul class="right">
-                    <li class="divider"></li>
-                    <li class="has-dropdown">
-                        <a href="#">Menu</a>
-                        <ul class="dropdown">
-                            <li class="menu-item">
-                                <a href="/">Home</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="feed">911 Feed</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="accidents">Accidents</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="search">Search</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="browse">Browse</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="status">Status</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="about">About</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="divider"></li>
-                </ul>
-            </section>
-
-        </nav>
-    <!--</div>-->
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="row top-links">
+                <div class="large-8 columns">
+                    <ul class="inline-list">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/feed">Feed</a></li>
+                        <li><a href="/accidents">Accidents</a></li>
+                        <li><a href="/search">Search</a></li>
+                        <li><a href="/browse">Browse</a></li>
+                        <li><a href="/status">Status</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     ${self.body()}
 
@@ -76,17 +70,6 @@
             <div class="row">
                 <div class="large-6 columns">
                     <p>&copy; Copyright Timothy Duffy, 2014</p>
-                </div>
-                <div class="large-6 columns">
-                    <ul class="inline-list right">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/feed">Feed</a></li>
-                        <li><a href="/accidents">Accidents</a></li>  
-                        <li><a href="/search">Search</a></li>
-                        <li><a href="/browse">Browse</a></li>
-                        <li><a href="/status">Status</a></li>
-                        <li><a href="/about">About</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
