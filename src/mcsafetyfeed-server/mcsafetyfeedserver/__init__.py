@@ -31,6 +31,7 @@ def main(global_config, **settings):
 
     config.add_route('status.json','status.json')
     config.add_route('dispatches.json','dispatches.json')
+    config.add_route('dispatch_types.json', 'dispatch_types.json')
 
 
     config.scan()

@@ -12,6 +12,7 @@
 
         #check-box-container input {
             margin: 0px !important;
+            margin-right: 4px !important;
         }
 
     </style>
@@ -28,27 +29,7 @@
                 
                 <h5>Dispatches Types:</h5>
                 <div id="check-box-container">
-                    <input checked="checked" class="checkbox" name="Parking complaint" value="5" type="checkbox">Parking complaint</input></br>
-                    <input checked="checked" class="checkbox" name="report of something burning inside not involving the structure" value="6" type="checkbox">report of something burning inside not involving the structure</input></br>
-                    <input checked="checked" class="checkbox" name="Hit and Run, no injury and no blocking" value="7" type="checkbox">Hit and Run, no injury and no blocking</input></br>
-                    <input checked="checked" class="checkbox" name="Dangerous condition" value="8" type="checkbox">Dangerous condition</input></br>
-                    <input checked="checked" class="checkbox" name="Human life endangered by animal" value="10" type="checkbox">Human life endangered by animal</input></br>
-                    <input checked="checked" class="checkbox" name="Any dumpster, grass or rubbish fire not posing an exposure problem" value="11" type="checkbox">Any dumpster, grass or rubbish fire not posing an exposure problem</input></br>
-                    <input checked="checked" class="checkbox" name="Accident of motor vehicles involving unknown injury" value="12" type="checkbox">Accident of motor vehicles involving unknown injury</input></br>
-                    <input checked="checked" class="checkbox" name="Barking dogs" value="13" type="checkbox">Barking dogs</input></br><input checked="checked" class="checkbox" name="Odor of smoke" value="15" type="checkbox">Odor of smoke</input></br>
-                    <input checked="checked" class="checkbox" name="Dangerous condition - no immediate danger to life or property" value="16" type="checkbox">Dangerous condition - no immediate danger to life or property</input></br>
-                    <input checked="checked" class="checkbox" name="MVA rollover" value="18" type="checkbox">MVA rollover</input></br><input checked="checked" class="checkbox" name="MVA with injuries" value="18" type="checkbox">MVA with injuries</input></br>
-                    <input checked="checked" class="checkbox" name="Accident of motor vehicles involving known injury" value="19" type="checkbox">Accident of motor vehicles involving known injury</input></br>
-                    <input checked="checked" class="checkbox" name="report of  a structure fire" value="20" type="checkbox">report of  a structure fire</input></br>
-                    <input checked="checked" class="checkbox" name="Traffic light problems" value="21" type="checkbox">Traffic light problems</input></br>
-                    <input checked="checked" class="checkbox" name="Wires down, wires arcing, wires blocking roadway" value="22" type="checkbox">Wires down, wires arcing, wires blocking roadway</input></br>
-                    <input checked="checked" class="checkbox" name="MVA auto - pedestrian" value="23" type="checkbox">MVA auto - pedestrian</input></br>
-                    <input checked="checked" class="checkbox" name="MVA auto - bicycle/motorcycle" value="25" type="checkbox">MVA auto - bicycle/motorcycle</input></br>
-                    <input checked="checked" class="checkbox" name="Wires burning in a tree, object on wire" value="26" type="checkbox">Wires burning in a tree, object on wire</input></br>
-                    <input checked="checked" class="checkbox" name="MVA person not alert" value="29" type="checkbox">MVA person not alert</input></br>
-                    <input checked="checked" class="checkbox" name="MVA ATV" value="33" type="checkbox">MVA ATV</input></br></input></br>
                 </div>
-
                 <a class="small" href="#" id="button-select-all">Select All</a>
                 <div class="right">
                     <a class="small" href="#" id="button-clear-map">Clear Map</a>
@@ -115,6 +96,10 @@
 
         var markers = [];
  
+        var dispatch_data = [];
+
+        var dispatch_type_ids = [];
+
         var start = ${start};
         var count = ${count};
 
@@ -123,12 +108,12 @@
             var main = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data © OpenStreetMap contributors',
                 minZoom: 10,
-                maxZoom: 16,
+                maxZoom: 18,
             });
 
             window.map = L.map('map-canvas', {
                 center: [43.16412, -77.60124], //[42.6501, -76.3659],
-                zoom: 11,
+                zoom: 10,
                 layers: [
                     main
                 ]
@@ -142,33 +127,18 @@
             }).addTo(map);
             */
 
-            /*
-            $(".checkbox").change(function() {
-                if(this.checked == true) {
-                    $(":checked").each(
-                        function(i,data){
-                            //popmarkers(data);
-                        }
-                    );
-                } else {
-                    // clear map of check box type
-                    if (markerArray) {
-                        for (i in markerArray) {
-                            if( markerArray[i].title == this.name ) {
-                                markerArray[i].setMap(null);
-                                
-                                // TODO: remove item from the array ... becaues this is an empic memory leak
-                            }
-                        }
-                        //markerArray.length = 0;
-                    }
-                }
-            });
-            */
-
+            
             $('#check-box-container :input').each(function() {
                 var checkbox = $(this);
                 checkbox.attr('checked', false)
+            });
+
+            $('#button-select-all').on('click', function(e) {
+                $('#check-box-container :input').each(function() {
+                    var checkbox = $(this);
+                    checkbox.attr('checked', true)
+                });
+                display_markers();
             });
 
             $('#button-clear-map').on('click', function(e) {
@@ -207,58 +177,131 @@
 
             });
 
-            get_dispatches();
+            update_page();
 
         });
- 
-        function get_dispatches() {
 
+        function update_page() {
+            get_dispatch_types(get_dispatches)
+        }
+
+        function update_dispatch_type_ids() {
+            dispatch_type_ids = [];
+            $('#check-box-container :input').each(function(i, data) {
+                var checkbox = $(data);
+                console.log(checkbox.context.checked);
+                if ( checkbox.context.checked == true ) {
+                    dispatch_type_ids.push(parseInt(checkbox.context.value));
+                } else {
+                }
+            });
+        }
+
+        function get_dispatch_types(callback) {
+            url = '/dispatch_types.json';
+            $.getJSON(url, function( data ) {
+                
+                //dispatch_type_ids = [];
+                
+                var html = '';
+                data.dispatch_types.forEach(function(dispatch_type) {
+                    html += '<input checked="checked" class="checkbox" name="' + dispatch_type.text + '" value="' + dispatch_type.id + '" type="checkbox">' + dispatch_type.text + '</input></br>';
+                    //dispatch_type_ids.push(dispatch_type.id);
+                });
+                
+                $('#check-box-container').html(html);
+
+                update_dispatch_type_ids();
+
+                $('input[type="checkbox"]').change( function() {
+
+                    update_dispatch_type_ids();
+
+                    display_markers();
+                    
+                });
+
+                callback();
+
+            });
+            
+        }
+
+        function get_dispatches() {
             // load feed items
+
+            dispatch_data = [];
+
             url = '/dispatches.json?start=' + start + '&count=' + count;
             $.getJSON(url, function( data ) {
-
-                html = '';
-                data.dispatches.forEach( function( dispatch ) {
-
-                        html += '<div class="row feed-item">';
-                        html += '<div class="large-1 columns">';
-                        //html += data.dispatches[i].dispatch_datetime.split(' ')[1];
-                        html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
-                        html += '</div>';
-                        html += '<div class="large-4 columns">';
-                        //html += data.dispatches[i].dispatch_text;
-                        html += dispatch.dispatch_text;
-                        html += '</div>';
-                        html += '<div class="large-3 columns">';
-                        //html += data.dispatches[i].short_address;
-                        html += dispatch.short_address;
-                        html += '</div>';
-                        html += '<div class="large-2 columns">';
-                        //html += data.dispatches[i].agency_name;
-                        html += dispatch.agency_name;
-                        html += '</div>';
-                        html += '<div class="large-2 columns">';
-                        //html += data.dispatches[i].guid;
-                        html += dispatch.guid;
-                        html += '</div>';
-                        html += '</div>';
-
-                        if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
-                            marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
-                            markers.push(marker);
-                        }
-                        else {
-                            console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
-                        }
-
-                    });
-
-                    $('#feed-items').html(html);
-                 
-                    $('#dispatch-counts').html('Displaying Dispatches ' + (start+1) + ' - ' + (start+count) + ' of ' + data.dispatch_count);
-                });
+                dispatch_data = data;
+                display_dispatches();
+                display_markers();
+            });
         }
         
+        function display_dispatches() {
+            html = '';
+            dispatch_data.dispatches.forEach( function( dispatch ) {
+                html += '<div class="row feed-item">';
+                html += '<div class="large-1 columns">';
+
+                html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
+                html += '</div>';
+                html += '<div class="large-4 columns">';
+
+                html += dispatch.dispatch_text;
+                html += '</div>';
+                html += '<div class="large-3 columns">';
+                
+                html += dispatch.short_address;
+                html += '</div>';
+                html += '<div class="large-2 columns">';
+                
+                html += dispatch.agency_name;
+                html += '</div>';
+                html += '<div class="large-2 columns">';
+                
+                html += dispatch.guid;
+                html += '</div>';
+                html += '</div>';
+                /*
+                if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
+                    marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
+                    markers.push(marker);
+                } else {
+                    //console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
+                }
+                */
+            });
+
+            $('#feed-items').html(html);
+            var display_count = start+count;
+            if ( display_count > dispatch_data.dispatch_count ) {
+                display_count = dispatch_data.dispatch_count;
+            }
+            $('#dispatch-counts').html('Displaying Dispatches ' + (start+1) + ' - ' + display_count + ' of ' + dispatch_data.dispatch_count);
+        }
+        
+        function display_markers() {
+            markers.forEach( function(marker) {
+                map.removeLayer(marker);
+            });
+
+            markers = [];
+
+            dispatch_data.dispatches.forEach( function( dispatch ) {
+                if ( dispatch_type_ids.indexOf(dispatch.dispatch_type_id) != -1 ) {
+                    if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
+                        var marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
+                        markers.push(marker);
+                    } else {
+                        //console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
+                    }
+                }
+            });
+
+        }
     
 
     </script>
