@@ -508,12 +508,14 @@ class CurrentDispatches(Base):
     @classmethod
     def remove_current_dispatch(cls, session, guid):
         with transaction.manager:
-            session.query(
+            dispatch = session.query(
                 CurrentDispatches,
             ).filter(
                 CurrentDispatches.guid == guid,
-            ).delete()
-            transaction.commit()
+            ).first()
+            if guid != None:
+                session.delete(dispatch)
+                transaction.commit()
 
 class Runs(Base):
 

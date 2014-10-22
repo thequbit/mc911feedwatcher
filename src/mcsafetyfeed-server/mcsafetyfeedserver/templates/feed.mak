@@ -50,29 +50,13 @@
                     <!-- < <a href="/feed?start=${start-count}&count=${count}">Previous</a> | -->
                 % endif
                 <!-- <a href="/feed?start=${start+count}&count=${count}">Next</a> > -->
-                <a href="#" id="next-link">Next</a> >
+                % if dispatch_count > count:
+                    <a href="#" id="next-link">Next</a> >
+                % endif
             </div>
         </div>
         <hr/>
         <div class="large-12 columns">
-            <div class="row">
-                <div class="large-1 columns">
-                    <h4>Time</h4>
-                </div>
-                <div class="large-4 columns">
-                    <h4>Dispatch</h4>
-                </div>
-                <div class="large-3 columns">
-                    <h4>Address</h4>
-                </div>
-                <div class="large-2 columns">
-                    <h4>Agency</h4>
-                </div>
-                <div class="large-2 columns">
-                    <h4>Event ID</h4>
-                </div>
-            </div>
-
             <!-- feed here -->
             <div id="feed-items">
             </div>
@@ -242,7 +226,25 @@
         
         function display_dispatches() {
             html = '';
+            html += '<table>';
+            html += '<thead><tr>';
+            html += '<th width="100">Time</th>';
+            html += '<th width="300">Dispatch</th>';
+            html += '<th width="200">Address</th>';
+            html += '<th width="200">Agency</th>';
+            html += '<th width="150">Event ID</th>';
+            html += '</tr></thead>';
             dispatch_data.dispatches.forEach( function( dispatch ) {
+
+                html += '<tr>';
+                html += '<td>' + dispatch.dispatch_datetime.split(' ')[1].split('.')[0] + '</td>';
+                html += '<td>' + dispatch.dispatch_text + '</td>';
+                html += '<td>' + dispatch.short_address + '</td>';
+                html += '<td>' + dispatch.agency_name + '</td>';
+                html += '<td>' + dispatch.guid + '</td>';
+                html += '</tr>';
+
+                /*
                 html += '<div class="row feed-item">';
                 html += '<div class="large-1 columns">';
 
@@ -265,6 +267,8 @@
                 html += dispatch.guid;
                 html += '</div>';
                 html += '</div>';
+                */
+
                 /*
                 if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
                     marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
@@ -274,6 +278,8 @@
                 }
                 */
             });
+
+            html += '</tbody></table>';
 
             $('#feed-items').html(html);
             var display_count = start+count;
