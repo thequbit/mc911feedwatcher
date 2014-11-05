@@ -102,6 +102,33 @@ def accidents(request):
 
     return {}
 
+@view_config(route_name='agencies', renderer='templates/agencies.mak')
+def agencies(request):
+
+    if True:
+    #try:
+
+        _agencies = Agencies.get_all(
+            session = DBSession,
+        )
+
+        agencies = []
+        for agency_code, agency_name, agency_description, agency_website, \
+                agency_type_code, agency_type_description in _agencies:
+            agencies.append({
+                'agency_code': agency_code,
+                'agency_name': agency_name,
+                'description': agency_description,
+                'website': agency_website,
+                'code': agency_type_code,
+                'description': agency_type_description,
+            })
+
+    #except:
+    #    pass
+
+    return {'agencies': agencies}
+
 @view_config(route_name='browse', renderer='templates/browse.mak')
 def browse(request):
 

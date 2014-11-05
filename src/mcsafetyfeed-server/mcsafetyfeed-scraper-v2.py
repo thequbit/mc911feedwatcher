@@ -8,7 +8,9 @@ import json
 
 from xml.dom.minidom import parseString as parse_xml
 
-from omgeo import Geocoder
+from omgeo import Geocoder as Geocoder2
+
+from pygeocoder import Geocoder
 
 import transaction
 
@@ -32,7 +34,7 @@ from mcsafetyfeedserver.models import (
     Runs,
 )
 
-engine = create_engine('sqlite:///mcsafetyfeed-server.sqlite')
+engine = create_engine('mysql://mcsafetyfeeduser:password123%%%@lisa.duffnet.local/mcsafetyfeeddb')
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
@@ -55,17 +57,23 @@ def text_from_tag(tag, dom):
         string = None
     return string
 
-def geocode_address(short_address):
+def geocode_address_old(short_address):
 
     # https://pypi.python.org/pypi/python-omgeo
 
-    g = Geocoder()
+    g = Geocoder2([['omgeo.services.MapQuest', {'settings': {'api_key': 'Fmjtd%7Cluurn96rl9%2Cbl%3Do5-9w80gr'}}]])
 
-    formed_address = "{0}, NY, USA".format(short_address.lower())
+    formed_address = "{0}, new york".format(short_address.lower())
+
+    formed_address = formed_address.replace('/w ',' and west ').replace('/e ',' and east ').replace('/n ',' and north ').replace('/s ', ' and south ')
+    formed_address = formed_address.replace('/', ' and ')
 
     print "Geocoding '{0}' ...".format(formed_address)
 
     result = g.geocode(formed_address)
+
+    print result
+
     canidates = [c.__dict__ for c in result["candidates"]]
 
     lat = lng = full_address = None
@@ -77,6 +85,36 @@ def geocode_address(short_address):
         success = True    
 
     return lat,lng,full_address,success
+
+def geocode_address(short_address):
+
+    # https://pypi.python.org/pypi/python-omgeo
+
+    formed_address = "{0}, new york".format(short_address.lower())
+
+    #formed_address = formed_address.replace('/w ',' and west ').replace('/e ',' and east ').replace('/n ',' and north ').replace('/s ', ' and south ')
+    formed_address = formed_address.replace('/', ' and ')
+    formed_address = formed_address.replace('nb ','').replace('sb ','')
+
+    print "Geocoding '{0}' ...".format(formed_address)
+
+    results = Geocoder.geocode(formed_address)
+
+    #print results
+
+    lat = results[0].coordinates[0]
+    lng = results[0].coordinates[1]
+
+    full_address = str(results[0])
+
+
+
+    success = results.valid_address
+
+    sleep(.5)
+
+    return lat,lng,full_address,success
+
 
 def process_rss_feed(run_id,url):
 

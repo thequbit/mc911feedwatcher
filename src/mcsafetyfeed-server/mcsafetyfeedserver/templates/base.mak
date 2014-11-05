@@ -52,6 +52,7 @@
                         <li><a href="/">Home</a></li>
                         <li><a href="/feed">Feed</a></li>
                         <li><a href="/accidents">Accidents</a></li>
+                        <li><a href="/agencies">Agencies</a></li>
                         <li><a href="/search">Search</a></li>
                         <li><a href="/browse">Browse</a></li>
                         <li><a href="/status">Status</a></li>
@@ -66,7 +67,7 @@
 
     <footer class="row">
         <div class="large-12 columns">
-            <hr/>
+            <!-- <hr/> -->
             <div class="row">
                 <div class="large-6 columns">
                     <p>&copy; Copyright Timothy Duffy, 2014</p>

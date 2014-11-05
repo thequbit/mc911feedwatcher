@@ -18,16 +18,18 @@
         <center>
         <div class="large-12 columns">
             <ul class="main-top-orbit" data-orbit>
-                <li><img src="/static/media/top.png"></li>
+                <!--<li><img src="/static/media/top.png"></li>-->
                 <!--<li><img src="http://placehold.it/1000x400&amp;text=[%20img%201%20]"></li>-->
                 <!--<li><img src="http://placehold.it/1000x400&amp;text=[%20img%202%20]"></li>
                 <li><img src="http://placehold.it/1000x400&amp;text=[%20img%203%20]"></li>-->
             </ul>
         </div>
+        <!--
         <p style="font-size: 50%;">"RochesterCollage4" by EastOfWest - Own work. Licensed under Creative Commons Attribution-Share Alike 3.0 via Wikimedia Commons - http://commons.wikimedia.org/wiki/File:RochesterCollage4.jpg#mediaviewer/File:RochesterCollage4.jpg</p>
+        -->
         </center>
     </div>
-    <hr/>
+    <!--<hr/>-->
 
     <div class="row">
         <center><p style="color: red;">MCSafetyFeed.org has no officiation with Monroe County, NY.</p></center>

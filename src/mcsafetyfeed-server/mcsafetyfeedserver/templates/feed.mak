@@ -79,6 +79,7 @@
         var map_container = document.getElementById('map-canvas');
 
         var markers = [];
+        var popups = [];
  
         var dispatch_data = [];
 
@@ -127,9 +128,14 @@
 
             $('#button-clear-map').on('click', function(e) {
                 
-                //markers.clearMarkers();
+                // clear markers
                 markers.forEach( function(marker) {
                     map.removeLayer(marker);
+                });
+
+                // clear popups
+                markers.forEach( function(popup) {
+                    map.removeLayer(popup);
                 });
 
                 markers = [];
@@ -228,7 +234,8 @@
             html = '';
             html += '<table>';
             html += '<thead><tr>';
-            html += '<th width="100">Time</th>';
+            html += '<th width="45">Geo</th>';
+            html += '<th width="101">Time</th>';
             html += '<th width="300">Dispatch</th>';
             html += '<th width="200">Address</th>';
             html += '<th width="200">Agency</th>';
@@ -237,46 +244,19 @@
             dispatch_data.dispatches.forEach( function( dispatch ) {
 
                 html += '<tr>';
+                if ( dispatch.geocode_successful == false ) {
+                    html += '<td><center><b style="color: red; font-size: 120%;">~</b></center></td>';
+                } else {
+                    html += '<td><center><b style="color: green;">&#x2713;</b></center></td>';
+                }
+
                 html += '<td>' + dispatch.dispatch_datetime.split(' ')[1].split('.')[0] + '</td>';
                 html += '<td>' + dispatch.dispatch_text + '</td>';
-                html += '<td>' + dispatch.short_address + '</td>';
+                html += '<td>' + '<a href="#" id="' + dispatch.guid + '">' + dispatch.short_address + '</a>' + '</td>';
                 html += '<td>' + dispatch.agency_name + '</td>';
                 html += '<td>' + dispatch.guid + '</td>';
                 html += '</tr>';
 
-                /*
-                html += '<div class="row feed-item">';
-                html += '<div class="large-1 columns">';
-
-                html += dispatch.dispatch_datetime.split(' ')[1].split('.')[0];
-                html += '</div>';
-                html += '<div class="large-4 columns">';
-
-                html += dispatch.dispatch_text;
-                html += '</div>';
-                html += '<div class="large-3 columns">';
-                
-                html += dispatch.short_address;
-                html += '</div>';
-                html += '<div class="large-2 columns">';
-                
-                html += dispatch.agency_name;
-                html += '</div>';
-                html += '<div class="large-2 columns">';
-                
-                html += dispatch.guid;
-                html += '</div>';
-                html += '</div>';
-                */
-
-                /*
-                if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
-                    marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
-                    markers.push(marker);
-                } else {
-                    //console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
-                }
-                */
             });
 
             html += '</tbody></table>';
@@ -299,8 +279,26 @@
             dispatch_data.dispatches.forEach( function( dispatch ) {
                 if ( dispatch_type_ids.indexOf(dispatch.dispatch_type_id) != -1 ) {
                     if ( dispatch.geocode_lat != null && dispatch.geocode_lng != null && dispatch.geocode_lat != 0 && dispatch.geocode_lng != 0) {
+
                         var marker = L.marker([dispatch.geocode_lat, dispatch.geocode_lng]).addTo(map);
+
+                        var contents = '';
+                        contents += '<div>' + dispatch.dispatch_datetime.split(' ')[1].split('.')[0] + '<br/>';
+                        contents +=           dispatch.dispatch_text + '<br/>';
+                        contents +=           dispatch.short_address + '<br/>';
+                        contents +=           dispatch.agency_name + '<br/>';
+                        contents +=           dispatch.guid + '<br/>';
+                        contents += '</div>';
+
+                        marker.bindPopup(contents).onOpen;
+
+                        $('#' + dispatch.guid).on('click', function(e) {
+                            
+                            marker.openPopup();
+                        });
+
                         markers.push(marker);
+
                     } else {
                         //console.log([dispatch.geocode_lat, dispatch.geocode_lng]);
                     }

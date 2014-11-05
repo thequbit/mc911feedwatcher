@@ -127,6 +127,23 @@ class Agencies(Base):
             )
         return agency
 
+    @classmethod
+    def get_all(cls, session):
+        with transaction.manager:
+            agencies = session.query(
+                Agencies.agency_code,
+                Agencies.agency_name,
+                Agencies.description,
+                Agencies.website,
+                AgencyTypes.code,
+                AgencyTypes.description,
+            ).join(
+                AgencyTypes, AgencyTypes.id == Agencies.type_id,
+            ).order_by(
+                Agencies.agency_code,    
+            ).all()
+        return agencies
+
 class DispatchTypes(Base):
 
     """
@@ -216,7 +233,7 @@ class Statuses(Base):
 
     __tablename__ = 'statuses'
     id = Column(Integer, primary_key=True)
-    status_text = Column(Integer)
+    status_text = Column(Text)
     description = Column(Text)
 
     @classmethod
