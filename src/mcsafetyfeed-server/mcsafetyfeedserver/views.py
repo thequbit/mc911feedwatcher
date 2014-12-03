@@ -36,13 +36,121 @@ system_status = {
 #
 #    return Response('<html><body>hi.</body></html>')
 
-#@view_config(route_name='home', )
-#def home(request):
-#
-#    return {}
+@view_config(route_name='home', renderer='templates/index.mak')
+def home(request):
+
+    return {}
+
+@view_config(route_name='feed', renderer='templates/feed.mak')
+def feed(request):
+
+    if True:
+
+        start = 0
+        try:
+            start = int(request.GET['start'])
+        except:
+            pass
+
+        count = 100
+        try:
+            count = int(request.GET['count'])
+        except:
+            pass
+
+        dispatches = Dispatches.get_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+            start = start,
+            count = count,
+        )
+
+        ret_dispatches = []
+        for short_address, guid, dispatch_datetime, source_lat, source_lng, \
+                geocode_lat, geocode_lng, geocode_successful, status_text, \
+                status_description, agency_name, agency_description, \
+                agency_website, dispatch_id, dispatch_text, \
+                dispatch_description in dispatches:
+            ret_dispatches.append({
+                'short_address': short_address,
+                'guid': guid,
+                'dispatch_datetime': str(dispatch_datetime),
+                'source_lat': source_lat,
+                'source_lng': source_lng,
+                'geocode_lat': geocode_lat,
+                'geocode_lng': geocode_lng,
+                'geocode_successful': geocode_successful,
+                'status_text': status_text,
+                'status_description': status_description,
+                'agency_name': agency_name,
+                'agency_description': agency_description,
+                'agency_website': agency_website,
+                'dispatch_id': dispatch_id,
+                'dispatch_text': dispatch_text,
+                'dispatch_description': dispatch_description,
+            })
+
+        dispatch_count, = Dispatches.get_count_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+        )
+
+    return {'dispatches': ret_dispatches, 'start': start, 'count': count, 'dispatch_count': dispatch_count}
+
+@view_config(route_name='accidents', renderer='templates/accidents.mak')
+def accidents(request):
+
+    return {}
+
+@view_config(route_name='agencies', renderer='templates/agencies.mak')
+def agencies(request):
+
+    if True:
+    #try:
+
+        _agencies = Agencies.get_all(
+            session = DBSession,
+        )
+
+        agencies = []
+        for agency_code, agency_name, agency_description, agency_website, \
+                agency_type_code, agency_type_description in _agencies:
+            agencies.append({
+                'agency_code': agency_code,
+                'agency_name': agency_name,
+                'description': agency_description,
+                'website': agency_website,
+                'code': agency_type_code,
+                'description': agency_type_description,
+            })
+
+    #except:
+    #    pass
+
+    return {'agencies': agencies}
+
+@view_config(route_name='browse', renderer='templates/browse.mak')
+def browse(request):
+
+    return {}
+
+@view_config(route_name='search', renderer='templates/search.mak')
+def search(request):
+
+    return {}
+
+@view_config(route_name='about', renderer='templates/about.mak')
+def about(request):
+
+    return {}
+
+@view_config(route_name='status', renderer='templates/status.mak')
+def status(request):
+
+    return {}
 
 @view_config(route_name='status.json')
-def status(request):
+def status_json(request):
 
     """ Returns the status of the system
     """
@@ -62,6 +170,38 @@ def status(request):
     resp = json.dumps(response)
     return Response(resp,content_type="application/json")
 
+@view_config(route_name='dispatch_types.json')
+def dispatch_types(request):
+
+    response = {'success': False}
+
+    #try:
+    if True:
+
+        dispatch_types = DispatchTypes.get_all(
+            session = DBSession,
+        )
+
+        ret_dispatch_types = []
+        for dispatch_type_id, dispatch_type_dispatch_text, \
+                dispatch_type_description in dispatch_types:
+            ret_dispatch_types.append({
+                'id': dispatch_type_id,
+                'text': dispatch_type_dispatch_text,
+                'description': dispatch_type_description,
+            })
+
+        response['dispatch_types'] = ret_dispatch_types
+
+        response['success'] = True
+
+#    except:
+#        pass
+
+    resp = json.dumps(response)
+    return Response(resp,content_type="application/json")
+
+
 @view_config(route_name='dispatches.json')
 def dispatches(request):
 
@@ -73,9 +213,23 @@ def dispatches(request):
     if True:
 #    try:
 
+        start = 0
+        try:
+            start = int(request.GET['start'])
+        except:
+            pass
+
+        count = 100
+        try:
+            count = int(request.GET['count'])
+        except:
+            pass
+ 
         dispatches = Dispatches.get_by_date(
             session = DBSession,
-            target_datetime = datetime.datetime.now()
+            target_datetime = datetime.datetime.now(),
+            start = start,
+            count = count,
         )
 
 
@@ -83,8 +237,8 @@ def dispatches(request):
         for short_address,guid,dispatch_datetime,source_lat,source_lng, \
                 geocode_lat,geocode_lng,geocode_successful,status_text, \
                 status_description,agency_name,agency_description, \
-                agency_website,dispatch_text,dispatch_description \
-                in dispatches:
+                agency_website, dispatch_type_id, dispatch_text, \
+                dispatch_description in dispatches:
             ret_dispatches.append({
                 'short_address': short_address,
                 'guid': guid,
@@ -99,11 +253,20 @@ def dispatches(request):
                 'agency_name': agency_name,
                 'agency_description': agency_description,
                 'agency_website': agency_website,
+                'dispatch_type_id': dispatch_type_id,
                 'dispatch_text': dispatch_text,
                 'dispatch_description': dispatch_description,
             })
 
         response['dispatches'] = ret_dispatches
+
+        dispatch_count, = Dispatches.get_count_by_date(
+            session = DBSession,
+            target_datetime = datetime.datetime.now(),
+        )
+
+        response['dispatch_count'] = dispatch_count
+
         response['success'] = True
 
 #    except:
@@ -112,41 +275,4 @@ def dispatches(request):
     resp = json.dumps(response)
     return Response(resp,content_type="application/json")
 
-
-#@view_config(route_name='dispatches')
-#def status(request):
-#
-#    """
-#    return the dispatches for the date requested 
-#    """
-#
-#    resp = json.dumps({})
-#
-#    return Response(resp,content_type='application/json')
-
-#
-#@view_config(route_name='home', renderer='templates/mytemplate.pt')
-#def my_view(request):
-#    try:
-#        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-#    except DBAPIError:
-#        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-#    return {'one': one, 'project': 'mcsafetyfeed-server'}
-#
-
-#conn_err_msg = """\
-#Pyramid is having a problem using your SQL database.  The problem
-#might be caused by one of the following things:
-#
-#1.  You may need to run the "initialize_mcsafetyfeed-server_db" script
-#    to initialize your database tables.  Check your virtual
-#    environment's "bin" directory for this script and try to run it.
-#
-#2.  Your database server may not be running.  Check that the
-#    database server referred to by the "sqlalchemy.url" setting in
-#    your "development.ini" file is running.
-#
-#After you fix the problem, please restart the Pyramid application to
-#try it again.
-#"""
 

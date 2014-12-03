@@ -17,7 +17,7 @@ from sqlalchemy import (
     desc,
     )
 
-from sqlalchemy import update
+from sqlalchemy import update, func, DATE
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -127,6 +127,23 @@ class Agencies(Base):
             )
         return agency
 
+    @classmethod
+    def get_all(cls, session):
+        with transaction.manager:
+            agencies = session.query(
+                Agencies.agency_code,
+                Agencies.agency_name,
+                Agencies.description,
+                Agencies.website,
+                AgencyTypes.code,
+                AgencyTypes.description,
+            ).join(
+                AgencyTypes, AgencyTypes.id == Agencies.type_id,
+            ).order_by(
+                Agencies.agency_code,    
+            ).all()
+        return agencies
+
 class DispatchTypes(Base):
 
     """
@@ -160,6 +177,17 @@ class DispatchTypes(Base):
             session.add(dispatch_type)
             transaction.commit()
         return dispatch_type
+
+    @classmethod
+    def get_all(cls, session):
+        with transaction.manager:
+            dispatch_types = session.query(
+                DispatchTypes.id,
+                DispatchTypes.dispatch_text,
+                DispatchTypes.description,
+            ).filter(
+            ).all()
+        return dispatch_types
 
 class Groups(Base):
 
@@ -205,7 +233,7 @@ class Statuses(Base):
 
     __tablename__ = 'statuses'
     id = Column(Integer, primary_key=True)
-    status_text = Column(Integer)
+    status_text = Column(Text)
     description = Column(Text)
 
     @classmethod
@@ -373,7 +401,7 @@ class Dispatches(Base):
         return dispatch
 
     @classmethod
-    def get_by_date(cls, session, target_datetime):
+    def get_by_date(cls, session, target_datetime, start, count):
         with transaction.manager:
             dispatches = session.query(
                 Dispatches.short_address,
@@ -389,6 +417,7 @@ class Dispatches(Base):
                 Agencies.agency_name,
                 Agencies.description,
                 Agencies.website,
+                DispatchTypes.id,
                 DispatchTypes.dispatch_text,
                 DispatchTypes.description,
             ).outerjoin(
@@ -398,12 +427,30 @@ class Dispatches(Base):
             ).outerjoin(
                 DispatchTypes,Dispatches.dispatch_type_id == DispatchTypes.id,
             ).filter(
-                #cast(Dispatches.dispatch_datetime,Date) == \
-                #    cast(target_datetime,Date),
+                func.date(Dispatches.dispatch_datetime) == \
+                    target_datetime.date(),
             ).order_by(
                 desc(Dispatches.dispatch_datetime)
+            ).offset(
+                start
+            ).limit(
+                count
             ).all()
         return dispatches
+
+    @classmethod
+    def get_count_by_date(cls, session, target_datetime):
+        with transaction.manager:
+            count = session.query(
+                func.count(Dispatches.id),
+            ).filter(
+                func.date(Dispatches.dispatch_datetime) == \
+                    target_datetime.date(),
+            #).order_by(
+            #    desc(Dispatches.dispatch_datetime)
+            ).first()
+
+        return count
 
 class APICalls(Base):
 
@@ -478,12 +525,14 @@ class CurrentDispatches(Base):
     @classmethod
     def remove_current_dispatch(cls, session, guid):
         with transaction.manager:
-            session.query(
+            dispatch = session.query(
                 CurrentDispatches,
             ).filter(
                 CurrentDispatches.guid == guid,
-            ).delete()
-            transaction.commit()
+            ).first()
+            if guid != None:
+                session.delete(dispatch)
+                transaction.commit()
 
 class Runs(Base):
 
