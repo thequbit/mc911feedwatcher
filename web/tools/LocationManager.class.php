@@ -18,7 +18,7 @@
 					$date = date("Y-m-d");
 			
 				// create the query
-				$query = 'SELECT DISTINCT itemid,event,fulladdress,lat,lng FROM incidents WHERE pubdate = ? AND lat <> "" AND lng <> "" GROUP BY itemid ORDER BY pubtime DESC';
+				$query = 'SELECT DISTINCT itemid,event,fulladdress,lat,lng,pubdate,pubtime,agencies.longname AS agencyname FROM incidents JOIN agencies ON incidents.agencyid = agencies.agencyid WHERE pubdate = ? AND lat <> "" AND lng <> "" GROUP BY itemid ORDER BY pubtime DESC';
 			
 				$mysqli = $db->Connect();
 				$stmt = $mysqli->prepare($query);
@@ -36,7 +36,10 @@
 													'event' => $result['event'],
 													'fulladdress' => $result['fulladdress'],
 													'lat' => $result['lat'],
-													'lng' => $result['lng']
+													'lng' => $result['lng'],
+                                                    'publishdate' => $result['pubdate'],
+                                                    'publishtime' => $result['pubtime'],
+                                                    'agencyname' => $result['agencyname']
 												  );
 					
 					$incidents[] = $incident;

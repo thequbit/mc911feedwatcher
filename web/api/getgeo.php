@@ -21,11 +21,12 @@
 	
 	$mgr = new LocationManager();
 	
-	if( $typeid == "" )
+	if( $typeid == "" ) {
 		$locations = $mgr->GetLocationsByDay($date);
-	else
+        echo json_encode($locations);
+    }
+	else {
 		$locations = $mgr->GetLocationsByDayByType($date,$typeid);
-	
-	echo json_encode($locations);
-	
+        echo '{"typeid": "' . $typeid . '", "locations": ' . json_encode($locations) . '}';
+    }
 ?>

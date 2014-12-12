@@ -187,6 +187,9 @@
 	// page js functions
 	// 
 
+    //var markerdata = {};
+	var locationdata = {};
+
 	function createcheckboxes()
 	{
 		var html = '<div class="left">';
@@ -199,7 +202,7 @@
 			// create check boxes
 			for(n=0; n<response.length; n++)
 			{
-				html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].id + '">' + response[n].incidentname + '</br>';
+				html += '<input class="checkbox" type="checkbox" name="' + response[n].incidentname + '" value="' + response[n].incidentname + '">' + response[n].incidentname + '</br>';
 			}
 			
 			// add clear button
@@ -214,17 +217,20 @@
 				for (var i = 0; i < inputs.length; i++) {  
 					if (inputs[i].type == "checkbox") {
 						inputs[i].checked = true;
-						popmarkers(inputs[i].value);
+						//popmarkers(inputs[i].value);
 						//alert(inputs[i].value);
+						
+						if (markerArray) {
+							for (i in markerArray) { 
+								//if( markerArray[i].title == this.name )
+								//{
+									markerArray[i].setVisible(true);
+								//}
+							}
+						}
 					}
 				}
-				/*	
-				// clear the check boxes
-				$(":checked").each( function(i,data) {
-					this.checked = true;
-					popmarker(data);
-				});
-				*/
+				
 			});
 			
 			$("#btnclearmap").click( function()
@@ -241,25 +247,29 @@
 			$(".checkbox").change(function() {
 
 				if(this.checked == true) {
-					$(":checked").each(
-						function(i,data){
-							popmarkers(data);
-						}
-					);
+					//$(":checked").each(
+						//function(i,data){
+							if (markerArray) {
+								for (i in markerArray) { 
+									if( markerArray[i].title == this.name )
+									{
+										markerArray[i].setVisible(true);
+									}
+								}
+							}
+						//}
+					//);
 				}
 				else
 				{
 					// clear map of check box type
 					if (markerArray) {
-						for (i in markerArray) {
+						for (i in markerArray) { 
 							if( markerArray[i].title == this.name )
 							{
-								markerArray[i].setMap(null);
-								
-								// TODO: remove item from the array ... becaues this is an empic memory leak
+								markerArray[i].setVisible(false);
 							}
 						}
-						//markerArray.length = 0;
 					}
 				}
 			});
@@ -274,20 +284,61 @@
 		
 	}
 
-	function popmarkers(data)
-	{
-		var url = "./api/getgeo.php?date=<?php echo $date; ?>&typeid=" + $(data).val();
-		$.getJSON(url, function (response) { 
-			var n;
-			for(n=0; n<response.length; n++)
-			{
+	function getlocations() {
+		
+		var url = "./api/getgeo.php?date=<?php echo $date; ?>";
+		$.getJSON(url, function( data ) {
+
+			locationdata = {};
+		
+			data.forEach( function( item ) {
+			
+				if ( locationdata[item.event] == undefined ) {
+					locationdata[item.event] = [];
+				}
 				
+				locationdata[item.event].push(item);
+			
+			});
+			
+			for( var key in locationdata ) {
+			
+				// create the markers for the incident type
+				makemarkers(locationdata[key]);
+			
+			};
+			
+			//console.log('getlocations() locationdata:');
+			//console.log(locationdata);
+			
+			// create all the map settings html
+			createcheckboxes();
+		
+		});
+		
+	}
+
+    function makemarkers(locations) {
+        
+		console.log('makemarkers() locations:');
+		console.log(locations);
+		
+		//if ( locations == undefined ) {
+		//	return;
+		//}
+		
+		var n;
+        for(n=0; n<locations.length; n++)
+        {
+            
+			//if ( locations[n].displayed == false ) {
+			
 				// decode json data
-				var lat = response[n].lat;
-				var lng = response[n].lng;
-				var incident = response[n].incident;
-				var itemid = response[n].itemid;
-				var fulladdress = response[n].fulladdress;
+				var lat = locations[n].lat;
+				var lng = locations[n].lng;
+				var incident = locations[n].incident;
+				var itemid = locations[n].itemid;
+				var fulladdress = locations[n].fulladdress;
 				
 				// create marker from json data
 				var myLatLng = new google.maps.LatLng(lat,lng);
@@ -304,11 +355,13 @@
 				
 				// push the marker to the array of markers on the map
 				markerArray.push(marker);
-				
-				//marker = "";
-			}   
-		});
-	}
+
+			//}
+            
+            //marker = "";
+        }
+		
+    }
 
 	function createpopup(marker, contentstring)
 	{
@@ -327,18 +380,21 @@
 
 	function clearmarkers()
 	{
+		console.log('clearing all markers');
+	
 		// clear map of check box type
 		if (markerArray) {
-			for (i in markerArray) {				
-				markerArray[i].setMap(null);
-				
-				//
-				// TODO: remove item from the array ... becaues this is an empic memory leak
-				//
+			for (i in markerArray) {
+				markerArray[i].setVisible(false);
 			}
-			//markerArray.length = 0;
+			console.log('markers cleared.');
 		}
 	}
+	
+	function showmarkers(incidentname){
+			
+	}
+	
 
 	function checkallboxes()
 	{
@@ -350,8 +406,10 @@
 	// page primary function
 	//
 		
-	// create all the map settings html
-	createcheckboxes();
+	
+	
+	// get the location data for the day
+	getlocations();
 	
 	</script>
 			
