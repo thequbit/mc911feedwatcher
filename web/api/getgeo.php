@@ -12,7 +12,17 @@
 	require_once("../tools/LocationManager.class.php");
 
 	$date = $_GET["date"];
-	$typeid = $_GET["typeid"];
+    $typeid = "";
+	if( isset($_GET['year']) ) {
+    
+        $typeid = $_GET["typeid"];
+        
+        if( $util->IsNumber($typeid) == false )
+        {
+            $typeid = "";
+        }
+        
+    }
 	
 	// do some sanity checking
 	$util = new UtilityManager();
@@ -20,11 +30,6 @@
 	{
 		// not a valid date, set to today's date
 		$date = date("Y-m-d");
-	}
-	
-	if( $util->IsNumber($typeid) == false )
-	{
-		$typeid = "";
 	}
 	
 	$mgr = new LocationManager();
