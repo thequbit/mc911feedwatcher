@@ -13,7 +13,7 @@
 		// Page Functions
 		//
 	
-		function GetIncidentsByDay($date)
+		function GetIncidentsByDay($date, $agencyShortName)
 		{
 			dprint( "GetIncidentsByDay() Start." );
 			
@@ -25,12 +25,32 @@
 				if( $date == "" )
 					$date = date("Y-m-d");
 			
-				// create the query
-				$query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
+                if ( $agencyShortName == "" )
+                {
+            
+                    // create the query
+                    $query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
 			
-				$mysqli = $db->Connect();
-				$stmt = $mysqli->prepare($query);
-				$stmt->bind_param("s", $date); // bind the varibale
+                    $mysqli = $db->Connect();
+                    $stmt = $mysqli->prepare($query);
+                    $stmt->bind_param("s", $date); // bind the varibale
+                    
+                }
+                else 
+                {
+                    
+                    $agencyManager = new AgencyManager();
+                    $agency = $agencyManager->GetAgencyFromShortName($agencyShortName);
+                    
+                    // create the query
+                    $query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? AND pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
+			
+                    $mysqli = $db->Connect();
+                    $stmt = $mysqli->prepare($query);
+                    $stmt->bind_param("is", $agency->agencyid, $date); // bind the varibale
+                    
+                }
+                    
 				$results = $db->Execute($stmt);
 			
 				// create an array to put our results into

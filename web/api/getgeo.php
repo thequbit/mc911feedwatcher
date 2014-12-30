@@ -11,6 +11,11 @@
 	require_once("../tools/UtilityManager.class.php");
 	require_once("../tools/LocationManager.class.php");
 
+    if( isset($_GET['agency']) )
+        $agencyShortName = $_GET['agency'];
+    else
+        $agencyShortName = "";
+
 	$date = $_GET["date"];
     $typeid = "";
 	if( isset($_GET['year']) ) {
@@ -35,7 +40,7 @@
 	$mgr = new LocationManager();
 	
 	if( $typeid == "" ) {
-		$locations = $mgr->GetLocationsByDay($date);
+		$locations = $mgr->GetLocationsByDay($date,$agencyShortName);
         echo json_encode($locations);
     }
 	else {

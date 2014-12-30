@@ -12,6 +12,11 @@
 		
 		$util = new UtilityManager();
 	
+        if( isset($_GET['agency']) )
+			$agencyShortName = $_GET['agency'];
+		else
+			$agencyShortName = "";
+    
 		// get the posted data variable
 		if( isset($_GET['date']) )
 			$date = $_GET['date'];
@@ -62,10 +67,11 @@
 		// calculate yesterday
 		$yesterdaytime = strtotime ('-1 day', strtotime($date)) ;
 		$yesterday = date('Y-m-d', $yesterdaytime);
-	
+
+
 		// get all of the incidents for the date passed in by the user
 		$incidentManager = new IncidentManager();
-		$incidents = $incidentManager->GetIncidentsByDay($date);
+		$incidents = $incidentManager->GetIncidentsByDay($date, $agencyShortName);
 	
 		// to handle all agency related querys
 		$agencyManager = new AgencyManager();
@@ -83,13 +89,21 @@
 			echo '</div>';				
 		}
 
-		echo '<br><br>';
+        echo '<br><br>';
 
 		echo '<div>';
 
 		echo '<br>';
 
 		echo '<center><h2>Incidents for ' . date("l F j, Y",strtotime($date)) . '</h2></center>';
+
+        if ( $agencyShortName != "" )
+        {
+            $targetAgency = $agencyManager->GetAgencyFromShortName($agencyShortName);
+            
+            echo '<br/><center><h2>Displaying Incidents only for <i style="color: darkred;">' . $targetAgency->longname . '</i></h2></center>';
+        }
+        
 
 		echo '<center>';
 		echo '<br>';
@@ -286,7 +300,7 @@
 
 	function getlocations() {
 		
-		var url = "./api/getgeo.php?date=<?php echo $date; ?>";
+		var url = "./api/getgeo.php?date=<?php echo $date; ?>&agency=<?php echo $agencyShortName?>";
 		$.getJSON(url, function( data ) {
 
 			locationdata = {};
