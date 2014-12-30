@@ -1,5 +1,13 @@
 <?php
 
+	// allow cross-domain access
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Methods: GET');
+	
+	// tell the client that it is a JSON object
+	header('content-type: application/json; charset=utf-8');
+	
+
 	require_once("../tools/UtilityManager.class.php");
 	require_once("../tools/LocationManager.class.php");
 
