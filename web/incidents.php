@@ -12,11 +12,11 @@
 		
 		$util = new UtilityManager();
 	
-        if( isset($_GET['agency']) )
+		if( isset($_GET['agency']) )
 			$agencyShortName = $_GET['agency'];
 		else
 			$agencyShortName = "";
-    
+	
 		// get the posted data variable
 		if( isset($_GET['date']) )
 			$date = $_GET['date'];
@@ -53,7 +53,15 @@
 
 	
 	<?php
+
+                function getmicrotime()
+                { 
+                    list($usec, $sec) = explode(" ", microtime());
+                    return ((float)$usec + (float)$sec);
+                }
 	
+                $start_time = getmicrotime();
+
 		//require_once("./tools/Database.class.php");
 		
 		require_once("./tools/IncidentManager.class.php");
@@ -70,9 +78,16 @@
 
 
 		// get all of the incidents for the date passed in by the user
+
+                $start_get_incidents = getmicrotime();
+
 		$incidentManager = new IncidentManager();
 		$incidents = $incidentManager->GetIncidentsByDay($date, $agencyShortName);
-	
+
+                $end_get_incidents = getmicrotime();
+
+                echo "\n\n<!-- incidents gotten in: " . ($end_get_incidents - $start_get_incidents) . "-->";
+
 		// to handle all agency related querys
 		$agencyManager = new AgencyManager();
 	
@@ -89,7 +104,7 @@
 			echo '</div>';				
 		}
 
-        echo '<br><br>';
+		echo '<br><br>';
 
 		echo '<div>';
 
@@ -97,13 +112,13 @@
 
 		echo '<center><h2>Incidents for ' . date("l F j, Y",strtotime($date)) . '</h2></center>';
 
-        if ( $agencyShortName != "" )
-        {
-            $targetAgency = $agencyManager->GetAgencyFromShortName($agencyShortName);
-            
-            echo '<br/><center><h2>Displaying Incidents only for <i style="color: darkred;">' . $targetAgency->longname . '</i></h2></center>';
-        }
-        
+		if ( $agencyShortName != "" )
+		{
+			$targetAgency = $agencyManager->GetAgencyFromShortName($agencyShortName);
+			
+			echo '<br/><center><h2>Displaying Incidents only for <i style="color: darkred;">' . $targetAgency->longname . '</i></h2></center>';
+		}
+		
 
 		echo '<center>';
 		echo '<br>';
@@ -138,7 +153,7 @@
 			echo "Total number of incidents today:<b>" . count($incidents) . "</b><br><br>";
 		
 			echo '<div class="incidents">';
-			echo '<table>';
+			echo '<table style="border-collapse:collapse;">';
 			echo '<tr>';
 			echo '<td><b><font size="4">Time</font></b></th>';
 			echo '<td><b><font size="4">Event</font></b></th>';
@@ -150,31 +165,54 @@
 			// generate dictionaries so we don't have to query the DB every time.
 			$longNameDict = $agencyManager->GetAgencyLongNameDictionary();
 			$shortNameDict = $agencyManager->GetAgencyShortNameDictionary();
-		
+	
+                        $start_loop = getmicrotime();
+	
+			$pingpong = false;
+
 			// print the events to the page
 			foreach($incidents as $incident)
 			{
 				
 				// print out the row
-				echo '<tr>';
+				if ( $pingpong ) {
+					echo '<tr>';
+				}
+				else {
+					echo '<tr style="background-color: rgba(0,0,255,0.05);">';
+				}
 				//echo '<a name="' . $incident->itemid . '"></a>';
-				echo '<td width="100">' . $incident->pubtime . '</td>';
-				echo '<td width="400">' . $incident->event . '</td>';
-				if( $incident->lat == "" || $incident->lng == "" )
-					echo '<td width="300">' . $incident->address . '</td>';
-				else
-					echo '<td width="300"><a href="https://maps.google.com/maps?z=16&t=m&q=loc:' . $incident->lat . "+" . $incident->lng . '">' . $incident->address . '</a></td>';
-				echo '<td width="250"><a href="viewagency.php?agency=' . $shortNameDict[$incident->agencyid] . '">' . $longNameDict[$incident->agencyid] . '</a></td>';
-				echo '<td width="100">' . $incident->itemid . '</td>';
+				echo '<td style="padding: 4px;" width="100">' . $incident->pubtime . '</td>';
+				echo '<td style="padding: 4px;"width="400">' . $incident->event . '</td>';
+				if( $incident->lat == "" || $incident->lng == "" ) {
+					echo '<td style="padding: 2px;"width="300">' . $incident->address . '</td>';
+				}
+				else {
+					echo '<td style="padding: 4px;"width="300">';
+					echo '<a href="https://maps.google.com/maps?z=16&t=m&q=loc:' . $incident->lat . "+" . $incident->lng . '">' . $incident->address . '</a>';
+					echo '</td>';
+				}
+				echo '<td style="padding: 4px;" width="250"><a href="viewagency.php?agency=' . $shortNameDict[$incident->agencyid] . '">' . $longNameDict[$incident->agencyid] . '</a></td>';
+				echo '<td style="padding: 4px;" width="100">' . $incident->itemid . '</td>';
 				echo '</tr>';
+
+				$pingpong = !$pingpong;
 			}
 		
+                        $end_loop = getmicrotime();
+
+                        echo "\n\n<!-- loop was completed in: " . ($end_loop - $start_loop) . "-->";
+
 			echo '</table>';
 			echo '</div>';
 		}
 		
 		echo '</div>';
 		
+                $end_time = getmicrotime();
+
+                echo "\n\n<!-- page was generated in: " . ($end_time - $start_time) . "-->";
+
 	?>	
 
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -189,19 +227,19 @@
 
 	var markerArray = [];
 
-    var map = new google.maps.Map(mapdiv, {
-        zoom: 10,
-        center: new google.maps.LatLng(43.1547, -77.6158),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
+	var map = new google.maps.Map(mapdiv, {
+		zoom: 10,
+		center: new google.maps.LatLng(43.1547, -77.6158),
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	});
 
-    var currentinfowindow = new google.maps.InfoWindow();
+	var currentinfowindow = new google.maps.InfoWindow();
 
 	//
 	// page js functions
 	// 
 
-    //var markerdata = {};
+	//var markerdata = {};
 	var locationdata = {};
 
 	function createcheckboxes()
@@ -332,25 +370,25 @@
 		
 	}
 
-    function makemarkers(locations) {
-        
-		console.log('makemarkers() locations:');
-		console.log(locations);
+	function makemarkers(locations) {
+		
+		//console.log('makemarkers() locations:');
+		//console.log(locations);
 		
 		//if ( locations == undefined ) {
 		//	return;
 		//}
 		
 		var n;
-        for(n=0; n<locations.length; n++)
-        {
-            
+		for(n=0; n<locations.length; n++)
+		{
+			
 			//if ( locations[n].displayed == false ) {
 			
 				// decode json data
 				var lat = locations[n].lat;
 				var lng = locations[n].lng;
-				var incident = locations[n].incident;
+				var event = locations[n].event;
 				var itemid = locations[n].itemid;
 				var fulladdress = locations[n].fulladdress;
 				
@@ -361,21 +399,21 @@
 					//shadow: shadow,
 					//icon:image,
 					map: map,
-					title: incident,
+					title: event,
 					zIndex: 1
 				});
 				
-				createpopup(marker,'<b>' + incident + '</b></br>' + itemid + '</br>' + fulladdress + '</br>' + lat + ', ' + lng + '</br>');
+				createpopup(marker,'<b>' + event + '</b></br>' + itemid + '</br>' + fulladdress + '</br>' + lat + ', ' + lng + '</br>');
 				
 				// push the marker to the array of markers on the map
 				markerArray.push(marker);
 
 			//}
-            
-            //marker = "";
-        }
+			
+			//marker = "";
+		}
 		
-    }
+	}
 
 	function createpopup(marker, contentstring)
 	{
@@ -394,14 +432,14 @@
 
 	function clearmarkers()
 	{
-		console.log('clearing all markers');
+		//console.log('clearing all markers');
 	
 		// clear map of check box type
 		if (markerArray) {
 			for (i in markerArray) {
 				markerArray[i].setVisible(false);
 			}
-			console.log('markers cleared.');
+			//console.log('markers cleared.');
 		}
 	}
 	
@@ -416,7 +454,7 @@
 		
 	}
 
-    //
+	//
 	// page primary function
 	//
 		

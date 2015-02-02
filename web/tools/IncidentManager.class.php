@@ -25,69 +25,85 @@
 				if( $date == "" )
 					$date = date("Y-m-d");
 			
-                if ( $agencyShortName == "" )
-                {
-            
-                    // create the query
-                    $query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
+			if ( $agencyShortName == "" )
+					{
 			
-                    $mysqli = $db->Connect();
-                    $stmt = $mysqli->prepare($query);
-                    $stmt->bind_param("s", $date); // bind the varibale
-                    
-                }
-                else 
-                {
-                    
-                    $agencyManager = new AgencyManager();
-                    $agency = $agencyManager->GetAgencyFromShortName($agencyShortName);
-                    
-                    // create the query
-                    $query = 'SELECT DISTINCT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? AND pubdate = ? GROUP BY itemid ORDER BY pubtime DESC';
+			// create the query
+					$query = 'SELECT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE pubdate = ? ORDER BY pubtime DESC';
 			
-                    $mysqli = $db->Connect();
-                    $stmt = $mysqli->prepare($query);
-                    $stmt->bind_param("is", $agency->agencyid, $date); // bind the varibale
-                    
-                }
-                    
+					$mysqli = $db->Connect();
+					$stmt = $mysqli->prepare($query);
+					$stmt->bind_param("s", $date); // bind the varibale
+					
+				}
+				else 
+				{
+					
+					$agencyManager = new AgencyManager();
+					$agency = $agencyManager->GetAgencyFromShortName($agencyShortName);
+					
+					// create the query
+					$query = 'SELECT itemid,event,address,pubdate,pubtime,status,itemid,scrapedatetime,agencyid,fulladdress,lat,lng,zipcode FROM incidents WHERE agencyid = ? AND pubdate = ? ORDER BY pubtime DESC';
+			
+					$mysqli = $db->Connect();
+					$stmt = $mysqli->prepare($query);
+					$stmt->bind_param("is", $agency->agencyid, $date); // bind the varibale
+					
+				}
+			
+                                $start_get = getmicrotime();
+		
 				$results = $db->Execute($stmt);
 			
+				$end_get = getmicrotime();
+
+                                echo "\n\n<!-- sql get incidents took: " . ($end_get - $start_get). "-->";
+
 				// create an array to put our results into
 				$incidents = array();
-				
+                                $ids = array();			
+
+				$start_loop = getmicrotime();
+	
 				// decode the rows
 				foreach( $results as $result )
 				{
-					$incident = new Incident();
-				
-					// pull the information from the row
-					$incident->event = $result['event'];
-					$incident->address = $result['address'];
-					$incident->pubdate = $result['pubdate'];
-					$incident->pubtime = $result['pubtime'];
-					$incident->status = $result['status'];
-					$incident->itemid = $result['itemid'];
-					$incident->scrapedatetime = $result['scrapedatetime'];
-					$incident->agencyid = $result['agencyid'];
-					$incident->fulladdress = $result['fulladdress'];
-					$incident->lat = $result['lat'];
-					$incident->lng = $result['lng'];
-					$incident->zipcode = $result['zipcode'];
+					if ( !in_array( $result['itemid'], $ids ) ) {
+						$incident = new Incident();
+		
+						// pull the information from the row
+						$incident->event = $result['event'];
+						$incident->address = $result['address'];
+						$incident->pubdate = $result['pubdate'];
+						$incident->pubtime = $result['pubtime'];
+						$incident->status = $result['status'];
+						$incident->itemid = $result['itemid'];
+						$incident->scrapedatetime = $result['scrapedatetime'];
+						$incident->agencyid = $result['agencyid'];
+						$incident->fulladdress = $result['fulladdress'];
+						$incident->lat = $result['lat'];
+						$incident->lng = $result['lng'];
+						$incident->zipcode = $result['zipcode'];
 					
-					
-					$incidents[] = $incident;
+						$incidents[] = $incident;
+
+						$ids[] = $result['itemid'];
+					}
 				}
 			
+				$end_loop = getmicrotime();
+
+				echo "\n\n<!-- incidents loop took: " . ($end_loop - $start_loop). "-->";
+
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
-			
+		
 			}
 			catch (Exception $e)
 			{
 				dprint( "Caught exception: " . $e->getMessage() );
 			}
-			
+		
 			dprint("GetIncidentsByDay() Done.");
 			
 			return $incidents;
