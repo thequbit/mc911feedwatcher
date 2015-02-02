@@ -5,6 +5,8 @@
 	
 	require_once("EventManager.class.php");
 	require_once("EventType.class.php");
+
+       
 	
 	class IncidentManager
 	{
@@ -51,21 +53,12 @@
 					
 				}
 			
-                                $start_get = getmicrotime();
-		
 				$results = $db->Execute($stmt);
 			
-				$end_get = getmicrotime();
-
-                                echo "\n\n<!-- sql get incidents took: " . ($end_get - $start_get). "-->";
-
 				// create an array to put our results into
 				$incidents = array();
-                                $ids = array();			
+				$ids = array();			
 
-				$start_loop = getmicrotime();
-	
-				// decode the rows
 				foreach( $results as $result )
 				{
 					if ( !in_array( $result['itemid'], $ids ) ) {
@@ -91,10 +84,6 @@
 					}
 				}
 			
-				$end_loop = getmicrotime();
-
-				echo "\n\n<!-- incidents loop took: " . ($end_loop - $start_loop). "-->";
-
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
 		
@@ -247,10 +236,50 @@
 		{
 			
 			dprint( "GetIncidentCountsByDate() Start." );
-			
+		
+			$incidents = $this->GetIncidentsByDay($date, "");
+	
+			$dict = array();
+
+			foreach( $incidents as $incident) {
+
+				if ( !array_key_exists(strtolower($incident->event), $dict) ) {
+					$dict[strtolower($incident->event)] = 1;
+				}
+				else {
+					$dict[strtolower($incident->event)] += 1;
+				}
+
+			}
+
+			echo "\n\n// " . json_encode($dict) . " //";
+
+			// create an instance of our event manager
+			$eventManager = new EventManager();
+								
+			// get all of the known event types
+			$eventtypes = $eventManager->GetEventTypes();
+						
+			// create an array to return that has our counts in it
+			$counts = array();
+						
+			// create our count list based on our dictionary entries
+			foreach($eventtypes as $eventtype)
+			{
+				$id = strtolower($eventtype->eventtype);
+								
+				// add the count for the event type to the counts array.  If it doesn't exist, it will be zero
+				if( isset($dict[$id]) )
+					$counts[] = $dict[$id];
+				else
+					$counts[] = 0;
+			}
+
+			/*
+
 			try
 			{
-		
+				
 				$db = new DatabaseTool();
 		
 				if( $date == "" )
@@ -309,6 +338,10 @@
 				dprint( "Caught exception: " . $e->getMessage() );
 			}
 			
+			*/
+
+			
+
 			dprint("GetIncidentCountsByDate() Done.");
 				
 			// return our array of counts for the event types
