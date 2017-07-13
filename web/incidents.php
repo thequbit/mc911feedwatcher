@@ -19,14 +19,22 @@
 	
 		// get the posted data variable
 		if( isset($_GET['date']) )
+		{
 			$date = $_GET['date'];
+		}	
 		else
-			$date = date("Y-m-d");
+		{
+			//$date = date("Y-m-d");
+			$date = new DateTime( 'now', new DateTimeZone('America/New_York'));
+                        $date = $date->format('Y-m-d');
+		}
 
 		// see if we got a date passed in, or if we should be use todays date
 		if( $date == "" )
 		{
-			$date = date("Y-m-d");
+			//$date = date("Y-m-d");
+			$date = new DateTime( 'now', new DateTimeZone('America/New_York'));
+                        $date = $date->format('Y-m-d');
 		}
 		
 		// check for none-case ... we handle as the current date later in code
@@ -179,7 +187,7 @@
 					echo '<tr>';
 				}
 				else {
-					echo '<tr style="background-color: rgba(0,0,255,0.05);">';
+					echo '<tr style="background-color: rgba(0,0,255,0.1);">';
 				}
 				//echo '<a name="' . $incident->itemid . '"></a>';
 				echo '<td style="padding: 4px;" width="100">' . $incident->pubtime . '</td>';

@@ -1,7 +1,7 @@
 <?php
 
 	require_once("DatabaseTool.class.php");
-	require_once("Incident.class.php");
+	require_once(__DIR__.'/Incident.class.php');
 	
 	require_once("EventManager.class.php");
 	require_once("EventType.class.php");
@@ -19,13 +19,17 @@
 		{
 			dprint( "GetIncidentsByDay() Start." );
 			
-			try
-			{
+			//try
+			//{
 		
 				$db = new DatabaseTool();
 			
 				if( $date == "" )
-					$date = date("Y-m-d");
+				{
+					//$date = date("Y-m-d");
+					$date = new DateTime( 'now', new DateTimeZone('America/New_York'));
+					$date = $date->format('Y-m-d');
+				}
 			
 			if ( $agencyShortName == "" )
 					{
@@ -87,11 +91,11 @@
 				// close our DB connection
 				$db->Close($mysqli, $stmt);
 		
-			}
-			catch (Exception $e)
-			{
-				dprint( "Caught exception: " . $e->getMessage() );
-			}
+			//}
+			//catch (Exception $e)
+			//{
+			//	dprint( "Caught exception: " . $e->getMessage() );
+			//}
 		
 			dprint("GetIncidentsByDay() Done.");
 			
