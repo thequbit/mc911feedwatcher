@@ -250,7 +250,7 @@ def process_rss_feed(run_id,url):
 if __name__ == '__main__':
 
     error_text = ''
-    url = "http://www2.monroecounty.gov/etc/911/rss.php"
+    url = "https://www.monroecounty.gov/incidents911.rss"
 
     if True:
     #while(True):

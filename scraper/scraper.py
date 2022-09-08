@@ -11,7 +11,7 @@ from xml.dom.minidom import parseString
 
 import datetime
 
-_xmlsourceurl = "http://www2.monroecounty.gov/etc/911/rss.php"
+_xmlsourceurl = "https://www.monroecounty.gov/incidents911.rss"
 _geoheader = '<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:atom="http://www.w3.org/2005/Atom">'
 _geofooter = '</rss>'
 
